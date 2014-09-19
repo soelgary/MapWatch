@@ -1,0 +1,25 @@
+1) What maps are we going to look at?
+
+2) What type of personalization are we going to look at? -google, bing, apple, openstreetmaps, nokiamaps
+  Google maps personalizes restaurants/stores. Do we want to look at that?
+  Are we just looking at borders?
+
+3) What metrics are we going to use?
+
+4) What experiments are we going to run?
+
+5) How can we automate the experiments?
+
+6) what research has already been done in this area?
+
+- how to collect data
+  1 - image processing
+  2 - parse json data
+
+
+google maps rest api
+  /maps/vt
+    sends images of the map to build
+
+
+get zoom level, script to download tiles
