@@ -12,10 +12,13 @@ public class App {
 		ImageDao imageDao = new ImageDao();
 		System.out.println(imageUrlDao.size());
 
-		ImageUrl image1 = imageUrlDao.get(0);
-		FileFetcher fetcher = new FileFetcher();
-		HttpEntity entity = fetcher.getImage(image1);
-		imageDao.saveImage("image1.png", entity);
+		//ImageUrl image1 = imageUrlDao.get(0);
+		//FileFetcher fetcher = new FileFetcher();
+		//HttpEntity entity = fetcher.getImage(image1);
+		//imageDao.saveImage("imageApp.png", entity);
+		
+		StaticMapFetcher mapFetcher = new StaticMapFetcher();
+		mapFetcher.fetch();
 		
 	}
 }

@@ -9,7 +9,8 @@ import org.apache.http.HttpEntity;
 
 public class ImageDao {
 
-	private static final String OUTPUT_DIR = "/Users/garysoeller/dev/src/maps/src/main/resources/";
+	private static final String OUTPUT_DIR = "/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/";
+	//private static final String OUTPUT_DIR = "/home/soelgary/Maps";
 
 	public void saveImage(String filename, HttpEntity entity) {
 		File imageFile = new File(OUTPUT_DIR + filename);

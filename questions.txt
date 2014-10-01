@@ -23,3 +23,16 @@ google maps rest api
 
 
 get zoom level, script to download tiles
+
+TODO:
+  Need a casper script that can find the image names of all the tiles and change zoom and location
+      find a zoom level
+      manually find lat/lon to one left or right where none of the images are the same and do the same for up/down
+      make requests with those scales
+
+https://www.google.co.in/maps/@30.9163641,78.8214118,8z
+https://www.google.com/maps/@30.9163641,78.8214118,8z
+---very interesting
+
+
+what countries does Google have a site?

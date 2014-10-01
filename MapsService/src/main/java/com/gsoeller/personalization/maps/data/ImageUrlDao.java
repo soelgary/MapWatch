@@ -16,7 +16,8 @@ public class ImageUrlDao {
 	
 	public ImageUrlDao() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("/Users/garysoeller/dev/src/maps/src/main/resources/google.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/google.txt"));
+			//BufferedReader br = new BufferedReader(new FileReader("/home/soelgary/Maps/google.txt"));
 			String line;
 			while((line = br.readLine()) != null) {
 				images.add(new ImageUrl(MapWebsite.GoogleMaps, new URL(MapWebsite.GoogleMaps.getBaseUrl() + line)));
