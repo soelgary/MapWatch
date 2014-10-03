@@ -24,25 +24,33 @@ Check Status
 
 You now need to check the status of the database. It should tell you that there is 1 changeSet that has not been applied.
 
-```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db status ../config.yaml```
+```
+java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db status ../config.yaml
+```
 
 Tag Your Schema
 ================
 
 Now you need to tag your schema. Please make sure to modify the command so that the date is correct
 
-```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db tag ../config.yaml 2014-10-03-pre-user-move```
+```
+java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db tag ../config.yaml 2014-10-03-pre-user-move
+```
 
 Make the Migration
 ==================
 
 We are ready to actually make the migration now.
 
-```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db migrate ../config.yaml```
+```
+java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db migrate ../config.yaml
+```
 
 Check Status
 ============
 
 Check the status again. This time it should say that the database is up to date.
 
-```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db status ../config.yaml```
+```
+java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db status ../config.yaml
+```
