@@ -18,7 +18,7 @@ public class App {
 		//imageDao.saveImage("imageApp.png", entity);
 		
 		StaticMapFetcher mapFetcher = new StaticMapFetcher();
-		mapFetcher.fetch();
+		mapFetcher.fetch("temp");
 		
 	}
 }

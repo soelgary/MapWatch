@@ -22,13 +22,13 @@ public class StaticMapFetcher {
 	private static final Logger LOG = LoggerFactory.getLogger(StaticMapFetcher.class);
 	
 	
-	public void fetch() {
+	public void fetch(String filename) {
 		HttpGet request  = new HttpGet(STATIC_MAP_API_ENDPOINT);
 		try {
 			CloseableHttpResponse response = client.execute(request);
 			if(response.getStatusLine().getStatusCode() == 200) {
 				LOG.info("Successfully made a request to the Static Maps API");
-				imageDao.saveImage("temp1.png", response.getEntity());
+				imageDao.saveImage(filename + ".png", response.getEntity());
 			} else {
 				LOG.error("Request to Static Maps API Failed");
 				LOG.error(response.getStatusLine().getReasonPhrase());
