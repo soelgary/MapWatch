@@ -7,11 +7,17 @@ public class Map {
 	private MapRequest mapRequest;
 	private DateTime dateTime;
 	private boolean hasChanged;
+	private int id;
 	
 	private Map(MapBuilder builder) {
 		this.mapRequest = builder.mapRequest;
 		this.dateTime = builder.dateTime;
 		this.hasChanged = builder.hasChanged;
+		this.id = builder.id;
+	}
+	
+	public int getId() {
+		return id;
 	}
 	
 	public MapRequest getMapRequest() {
@@ -31,6 +37,7 @@ public class Map {
 		private MapRequest mapRequest;
 		private DateTime dateTime;
 		private boolean hasChanged;
+		private int id;
 		
 		public MapBuilder setMapRequest(MapRequest mapRequest) {
 			this.mapRequest = mapRequest;
@@ -44,6 +51,10 @@ public class Map {
 		
 		public MapBuilder setHasChanged(boolean hasChanged) {
 			this.hasChanged = hasChanged;
+			return this;
+		}
+		public MapBuilder setId(int id) {
+			this.id = id;
 			return this;
 		}
 		
