@@ -10,6 +10,8 @@ public class MapRequest {
 	private Language language;
 	private int id;
 	
+	private final String API_ENDPOINT = "http://maps.googleapis.com/maps/api/staticmap";
+	
 	public MapRequest() {}
 	
 	public MapRequest(double latitude, double longitude, int zoom, int xDimension, int yDimension, Region region, Language language) {
@@ -52,6 +54,10 @@ public class MapRequest {
 
 	public Language getLanguage() {
 		return language;
+	}
+	
+	public String buildRequestUrl() {
+		return String.format("%s?latitude=%s&longitude=%s&xDimension=%s&yDimension=%s&zoom=%s&language=%s&region=%s", API_ENDPOINT, latitude, longitude, xDimension, yDimension, zoom, language, region);
 	}
 
 	private MapRequest(MapRequestBuilder builder) {
