@@ -2,6 +2,7 @@ package com.gsoeller.personalization.maps;
 
 import org.skife.jdbi.v2.DBI;
 
+import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.resources.MapsResource;
 
 import io.dropwizard.Application;
@@ -31,7 +32,8 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			throws Exception {
 		final DBIFactory factory = new DBIFactory();
 	    final DBI jdbi = factory.build(environment, config.getDataSourceFactory(), "mysql");
-	    environment.jersey().register(new MapsResource());
+	    MapRequestDao mapRequestDao = jdbi.onDemand(MapRequestDao.class);
+	    environment.jersey().register(new MapsResource(mapRequestDao));
 	}
 
 }

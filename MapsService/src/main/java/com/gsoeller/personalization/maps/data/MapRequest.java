@@ -1,19 +1,36 @@
 package com.gsoeller.personalization.maps.data;
 
 public class MapRequest {
-	private final int latitude;
-	private final int longitude;
-	private final int zoom;
-	private final int xDimension;
-	private final int yDimension;
-	private final Region region;
-	private final Language language;
+	private double latitude;
+	private double longitude;
+	private int zoom;
+	private int xDimension;
+	private int yDimension;
+	private Region region;
+	private Language language;
+	private int id;
 	
-	public int getLatitude() {
+	public MapRequest() {}
+	
+	public MapRequest(double latitude, double longitude, int zoom, int xDimension, int yDimension, Region region, Language language) {
+		this.language = language;
+		this.region = region;
+		this.zoom = zoom;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.xDimension = xDimension;
+		this.yDimension = yDimension;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	public double getLatitude() {
 		return latitude;
 	}
 
-	public int getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
@@ -45,16 +62,18 @@ public class MapRequest {
 		this.yDimension = builder.yDimension;
 		this.region = builder.region;
 		this.language = builder.language;
+		this.id = builder.id;
 	}
 	
 	public static class MapRequestBuilder {
-		private int latitude;
-		private int longitude;
+		private double latitude;
+		private double longitude;
 		private int zoom;
 		private int xDimension;
 		private int yDimension;
 		private Region region;
 		private Language language;
+		private int id;
 		
 		public MapRequestBuilder() {
 			latitude = 26;
@@ -66,12 +85,17 @@ public class MapRequest {
 			language = Language.English;
 		}
 		
-		public MapRequestBuilder setLatitude(int latitude) {
+		public MapRequestBuilder setId(int id) {
+			this.id = id;
+			return this;
+		}
+		
+		public MapRequestBuilder setLatitude(double latitude) {
 			this.latitude = latitude;
 			return this;
 		}
 		
-		public MapRequestBuilder setLongitude(int longitude) {
+		public MapRequestBuilder setLongitude(double longitude) {
 			this.longitude = longitude;
 			return this;
 		}
