@@ -57,7 +57,7 @@ public class MapRequest {
 	}
 	
 	public String buildRequestUrl() {
-		return String.format("%s?latitude=%s&longitude=%s&xDimension=%s&yDimension=%s&zoom=%s&language=%s&region=%s", API_ENDPOINT, latitude, longitude, xDimension, yDimension, zoom, language, region);
+		return String.format("%s?center=%s,%s&size=%sx%s&zoom=%s&language=%s&region=%s", API_ENDPOINT, latitude, longitude, xDimension, yDimension, zoom, language, region);
 	}
 
 	private MapRequest(MapRequestBuilder builder) {
