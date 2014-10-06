@@ -1,4 +1,4 @@
-package com.gsoeller.personalization.maps.data;
+package com.gsoeller.personalization.maps.dao;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

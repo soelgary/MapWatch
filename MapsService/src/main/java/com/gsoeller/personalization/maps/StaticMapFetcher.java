@@ -12,7 +12,7 @@ import org.joda.time.DateTime;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
-import com.gsoeller.personalization.maps.data.ImageDao;
+import com.gsoeller.personalization.maps.dao.ImageDao;
 import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.Map.MapBuilder;
 import com.gsoeller.personalization.maps.data.MapRequest;
