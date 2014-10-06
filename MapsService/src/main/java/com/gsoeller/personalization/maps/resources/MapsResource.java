@@ -27,7 +27,7 @@ public class MapsResource {
 	@GET
 	public List<MapRequest> getMapRequests() {
 		List<MapRequest> request = dao.getRequests();
-		Map map = new Map.MapBuilder().setMapRequest(request.get(0)).build();
+		Map map = new Map.MapBuilder().setMapRequest(request.get(0).getId()).build();
 		System.out.println(request.get(0).buildRequestUrl());
 		return request;
 	}
