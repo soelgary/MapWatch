@@ -2,6 +2,7 @@ package com.gsoeller.personalization.maps;
 
 import java.io.IOException;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -46,14 +47,13 @@ public class StaticMapFetcher {
 		}
 	}
 
-	public Map fetch(MapRequest request) {
+	public HttpResponse fetch(MapRequest request) {
 		HttpGet httpGet = new HttpGet(request.buildRequestUrl());
 		try {
 			CloseableHttpResponse response = client.execute(httpGet);
 			if (response.getStatusLine().getStatusCode() == 200) {
 				LOG.info("Successfully made a request to the Static Maps API");
-				MapBuilder mapBuilder = new Map.MapBuilder().setDateTime(DateTime.now()).setMapRequest(request).setHasChanged(false);
-				System.out.println(response.getEntity());
+				return response;
 			} else {
 				LOG.error("Request to Static Maps API Failed");
 				LOG.error(response.getStatusLine().getReasonPhrase());
@@ -65,6 +65,6 @@ public class StaticMapFetcher {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		throw new RuntimeException("An error occurred making a request to Google");
 	}
 }
