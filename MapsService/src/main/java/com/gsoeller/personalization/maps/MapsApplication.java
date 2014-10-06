@@ -65,8 +65,8 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				.newTrigger()
 				.withIdentity("Fetch Trigger", "group1")
 				.startNow()
-				.withSchedule(SimpleScheduleBuilder.simpleSchedule()
-								.withIntervalInSeconds(5).repeatForever())
+				//.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+				//				.withIntervalInSeconds(5).repeatForever())
 				.build();
 		
 
