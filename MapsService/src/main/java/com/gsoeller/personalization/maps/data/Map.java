@@ -4,23 +4,29 @@ import org.joda.time.DateTime;
 
 public class Map {
 
-	private MapRequest mapRequest;
+	private int mapRequest;
 	private DateTime dateTime;
 	private boolean hasChanged;
 	private int id;
+	private String path;
 	
 	private Map(MapBuilder builder) {
 		this.mapRequest = builder.mapRequest;
 		this.dateTime = builder.dateTime;
 		this.hasChanged = builder.hasChanged;
 		this.id = builder.id;
+		this.path = builder.path;
+	}
+	
+	public String getPath() {
+		return path;
 	}
 	
 	public int getId() {
 		return id;
 	}
 	
-	public MapRequest getMapRequest() {
+	public int getMapRequest() {
 		return mapRequest;
 	}
 	
@@ -34,12 +40,18 @@ public class Map {
 	
 	public static class MapBuilder {
 		
-		private MapRequest mapRequest;
+		private int mapRequest;
 		private DateTime dateTime;
 		private boolean hasChanged;
 		private int id;
+		private String path;
 		
-		public MapBuilder setMapRequest(MapRequest mapRequest) {
+		public MapBuilder setPath(String path) {
+			this.path = path;
+			return this;
+		}
+		
+		public MapBuilder setMapRequest(int mapRequest) {
 			this.mapRequest = mapRequest;
 			return this;
 		}
