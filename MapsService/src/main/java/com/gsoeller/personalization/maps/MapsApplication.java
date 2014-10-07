@@ -48,7 +48,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				config.getDataSourceFactory(), "mysql");
 		mapRequestDao = jdbi.onDemand(MapRequestDao.class);
 		environment.jersey().register(new MapsResource(mapRequestDao));
-		startFetchJob();
+		//startFetchJob();
 	}
 
 	private void startFetchJob() throws SchedulerException {

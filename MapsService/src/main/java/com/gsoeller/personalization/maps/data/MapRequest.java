@@ -87,7 +87,7 @@ public class MapRequest {
 			zoom = 5;
 			xDimension = 600;
 			yDimension = 600;
-			region = Region.En;
+			region = Region.us;
 			language = Language.English;
 		}
 		

@@ -21,14 +21,7 @@ public class MapRequestMapper implements ResultSetMapper<MapRequest>{
 		} else {
 			throw new RuntimeException("Invalid language was saved, " + savedLanguage);
 		}
-		Region region;
-		String savedRegion = r.getString("region");
-		if(savedRegion.equals("En")) {
-			region = Region.En;
-		} else {
-			throw new RuntimeException("Invalid region was saved, " + savedRegion);
-		}
-		int id = r.getInt("id");
+		Region region = Region.findRegion(r.getString("region"));
 		MapRequest request = new MapRequest.MapRequestBuilder().setLatitude(r.getDouble("latitude"))
 				.setLongitude(r.getDouble("longitude"))
 				.setXDimension(r.getInt("xDimension"))
