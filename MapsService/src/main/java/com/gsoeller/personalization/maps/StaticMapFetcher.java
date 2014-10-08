@@ -19,7 +19,7 @@ import com.gsoeller.personalization.maps.data.MapRequest;
 
 public class StaticMapFetcher {
 	private final String API_KEY = "AIzaSyCuoblPc_plcMWIOGi7C5Td2mRQccxkpuc";
-	private final String STATIC_MAP_API_ENDPOINT = "http://maps.googleapis.com/maps/api/staticmap?center=26,78&zoom=5&size=600x600&sensor=true&region=en&language=english&key="
+	private final String STATIC_MAP_API_ENDPOINT = "http://maps.googleapis.com/maps/api/staticmap?center=26,78&zoom=5&size=600x600&sensor=true&region=cn&language=english&key="
 			+ API_KEY;
 	private final CloseableHttpClient client = HttpClients.createDefault();
 	private final ImageDao imageDao = new ImageDao();
@@ -49,6 +49,8 @@ public class StaticMapFetcher {
 
 	public HttpResponse fetch(MapRequest request) {
 		HttpGet httpGet = new HttpGet(request.buildRequestUrl());
+		//HttpGet httpGet = new HttpGet(STATIC_MAP_API_ENDPOINT); --> modify this and it will show the hashing works
+		System.out.println(request.buildRequestUrl());
 		try {
 			CloseableHttpResponse response = client.execute(httpGet);
 			if (response.getStatusLine().getStatusCode() == 200) {

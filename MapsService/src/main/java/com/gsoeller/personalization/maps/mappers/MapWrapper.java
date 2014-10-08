@@ -14,13 +14,13 @@ public class MapWrapper implements ResultSetMapper<Map> {
 
 	public Map map(int arg0, ResultSet r, StatementContext arg2)
 			throws SQLException {
-		MapBuilder builder = new Map.MapBuilder()
+		return new Map.MapBuilder()
 			.setId(r.getInt("id"))
 			.setHasChanged(r.getBoolean("hasChanged"))
 			.setMapRequest(r.getInt("mapRequest"))
 			.setDateTime(new DateTime(r.getTimestamp("dateTime")))
-			.setPath(r.getString("path"));
-		return builder.build();
+			.setPath(r.getString("path"))
+			.setHash(r.getString("hash")).build();
 	}
 
 }

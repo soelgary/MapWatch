@@ -17,11 +17,11 @@ public interface MapDao {
 	@Mapper(MapWrapper.class)
 	public List<Map> getMaps();
 	
-	@SqlQuery("Select * from Map where mapRequest = 1 order by dateTime DESC limit 1")
+	@SqlQuery("Select * from Map where mapRequest = :mapRequest order by dateTime DESC limit 1")
 	@Mapper(MapWrapper.class)
 	public List<Map> getMapMostRecentWithMapRequestId(@Bind("mapRequest") int mapRequest);
 	
-	@SqlUpdate("Insert into Map (hasChanged, mapRequest, path) values (:hasChanged, :mapRequest, :path)")
+	@SqlUpdate("Insert into Map (hasChanged, mapRequest, path, hash) values (:hasChanged, :mapRequest, :path, :hash)")
 	@GetGeneratedKeys
-	public int saveMap(@Bind("hasChanged") boolean hasChanged, @Bind("mapRequest") int mapRequest, @Bind("path") String path);
+	public int saveMap(@Bind("hasChanged") boolean hasChanged, @Bind("mapRequest") int mapRequest, @Bind("path") String path, @Bind("hash") String hash);
 }

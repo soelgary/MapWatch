@@ -9,6 +9,7 @@ public class Map {
 	private boolean hasChanged;
 	private int id;
 	private String path;
+	private String hash;
 	
 	private Map(MapBuilder builder) {
 		this.mapRequest = builder.mapRequest;
@@ -16,6 +17,11 @@ public class Map {
 		this.hasChanged = builder.hasChanged;
 		this.id = builder.id;
 		this.path = builder.path;
+		this.hash = builder.hash;
+	}
+	
+	public String getHash() {
+		return hash;
 	}
 	
 	public String getPath() {
@@ -45,6 +51,12 @@ public class Map {
 		private boolean hasChanged;
 		private int id;
 		private String path;
+		private String hash;
+		
+		public MapBuilder setHash(String hash) {
+			this.hash = hash;
+			return this;
+		}
 		
 		public MapBuilder setPath(String path) {
 			this.path = path;
