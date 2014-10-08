@@ -54,3 +54,9 @@ Check the status again. This time it should say that the database is up to date.
 ```
 java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db status ../config.yaml
 ```
+
+Wishlist
+=========
+1. Set up email alerts. Whenever we detect a new form of personalization, emails should be sent out to those involved in the project with details.
+2. Set up an admin interface. Researchers involved should have an interface to see all of the personalization. We should be able to approve or disapprove it as well and approving it would make it public somehow.
+3. Add capabilities for more map providers.
