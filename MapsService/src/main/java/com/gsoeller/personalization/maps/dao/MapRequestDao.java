@@ -14,14 +14,15 @@ import com.gsoeller.personalization.maps.mappers.MapRequestMapper;
 
 public interface MapRequestDao {
 	
-	@SqlQuery("select * from MapRequest")
+	@SqlQuery("select * from MapRequest cross join location where MapRequest.location = Location.id;")
 	@Mapper(MapRequestMapper.class)
 	public List<MapRequest> getRequests();
 	
 	@SqlQuery("select * from MapRequest where id=:id")
-	public Optional<MapRequest> getRequest(@Bind("id") int id);
+	@Mapper(MapRequestMapper.class)
+	public List<MapRequest> getRequest(@Bind("id") int id);
 
-	@SqlUpdate("insert into MapRequest (latitude, longitude, zoom, xDimension, yDimension, region, language) values (:latitude, :longitude, :zoom, :xDimension, :yDimension, :region, :language)")
+	@SqlUpdate("insert into MapRequest (location, zoom, xDimension, yDimension, region, language) values (:location, :zoom, :xDimension, :yDimension, :region, :language)")
 	@GetGeneratedKeys
-	public int addMapRequest(@Bind("latitude") double latitude, @Bind("longitude") double longitude, @Bind("zoom") int zoom, @Bind("xDimension") int xDimension, @Bind("yDimension") int yDimension, @Bind("region") String region, @Bind("language") String language);
+	public int addMapRequest(@Bind("location") int location, @Bind("zoom") int zoom, @Bind("xDimension") int xDimension, @Bind("yDimension") int yDimension, @Bind("region") String region, @Bind("language") String language);
 }

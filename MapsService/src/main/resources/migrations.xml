@@ -62,4 +62,29 @@
     		</column> 
     	</addColumn>
     </changeSet>
+    
+    <changeSet id="4" author="gary">
+    	<createTable tableName="Location">
+    		<column name="id" type="int" autoIncrement="true">
+    			<constraints primaryKey="true" nullable="false"/>
+    		</column>
+    		<column name="longitude" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latitude" type="double">
+                <constraints nullable="false"/>
+            </column>
+    	</createTable>
+    	<dropColumn tableName="MapRequest" columnName="latitude"/>
+    	<dropColumn tableName="MapRequest" columnName="longitude"/>
+    	<addColumn tableName="MapRequest">
+    		<column name="location" type="int">
+    			<constraints nullable="false"/>
+    		</column>
+    	</addColumn> 
+    </changeSet>
+    
+    <changeSet id="5" author="gary">
+    	<addForeignKeyConstraint constraintName="location" referencedTableName="Location" baseColumnNames="Location" baseTableName="MapRequest" referencedColumnNames="id"/>
+    </changeSet>
 </databaseChangeLog>

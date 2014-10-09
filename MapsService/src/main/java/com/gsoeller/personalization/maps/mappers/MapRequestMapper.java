@@ -7,6 +7,7 @@ import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
 import com.gsoeller.personalization.maps.data.Language;
+import com.gsoeller.personalization.maps.data.Location;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.data.Region;
 
@@ -22,8 +23,14 @@ public class MapRequestMapper implements ResultSetMapper<MapRequest>{
 			throw new RuntimeException("Invalid language was saved, " + savedLanguage);
 		}
 		Region region = Region.findRegion(r.getString("region"));
-		MapRequest request = new MapRequest.MapRequestBuilder().setLatitude(r.getDouble("latitude"))
-				.setLongitude(r.getDouble("longitude"))
+		Location location = new Location.LocationBuilder()
+			.setId(r.getInt("location"))
+			.setLatitude(r.getDouble("Location.latitude"))
+			.setLongitude(r.getDouble("Location.longitude"))
+			.build();
+		
+		MapRequest request = new MapRequest.MapRequestBuilder()
+				.setLocation(location)
 				.setXDimension(r.getInt("xDimension"))
 				.setYDimension(r.getInt("yDimension"))
 				.setRegion(region)

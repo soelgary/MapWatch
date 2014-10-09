@@ -12,6 +12,7 @@ INPUT_FILE = 'points.txt'
 X_DIMENSION = 600
 Y_DIMENSION = 600
 LANGUAGE = "English"
+HEADERS = {'content-type': 'application/json'}
 
 CC_TLD = ["ac", "ad"]#, "ae", "af", "ag", "ai", "al", "am", "an", "ao", "aq", "ar", "as", "at", "au", "aw", "ax", "az", "ba", "bb", "bd", "be", "bf", "bg", "bh", "bi", "bj", "bm", "bn", "bo", "br", "bs", "bt", "bv", "bw", "by", "bz", 
           #"ca", "cc", "cd", "cf", "cg", "ch", "ci", "ck", "cl", "cm", "cn", "co", "cr", "cs", "cu", "cv", "cw", "cx", "cy", "cz", "dd", "de", "dj", "dk", "dm", "do", "dz", "ec", "ee", "eg", "eh", "er", "es", "et", "eu", "fi", "fj",
@@ -21,18 +22,29 @@ CC_TLD = ["ac", "ad"]#, "ae", "af", "ag", "ai", "al", "am", "an", "ao", "aq", "a
           #"pt", "pw", "py", "qa", "re", "ro", "rs", "ru", "rw", "sa", "sb", "sc", "sd", "se", "sg", "sh", "si", "sj", "sk", "sl", "sm", "sn", "so", "sr", "ss", "st", "su", "sv", "sx", "sy", "sz", "tc", "td", "tf", "tg", "th", "tj",
           #"tk", "tl", "tm", "tn", "to", "tp", "tr", "tt", "tv", "tw", "tz", "ua", "ug", "uk", "us", "uy", "uz", "va", "vc", "ve", "vg", "vi", "vn", "vu", "wf", "ws", "ye", "yt", "yu", "za", "zm", "zr", "zw"]
 
-def make_request(latitude, longitude, zoom, cc_tld):
+def make_request(location, zoom, cc_tld):
   payload = {
-    "latitude": latitude,
-    "longitude": longitude,
+    "location": {
+      "id": location,
+    },
     "zoom": zoom,
     "xDimension": X_DIMENSION,
     "yDimension": Y_DIMENSION,
     "region": cc_tld,
     "language": LANGUAGE
   }
-  headers = {'content-type': 'application/json'}
-  r = requests.post(HOST + PATH, data=json.dumps(payload), headers=headers)
+  
+  r = requests.post(HOST + PATH, data=json.dumps(payload), headers=HEADERS)
+
+def add_location(latitude, longitude):
+  payload = {
+    "latitude": latitude,
+      "longitude": longitude
+  }
+
+  r = requests.post(HOST + PATH + '/location', data=json.dumps(payload), headers=HEADERS)
+  return r.json()['id']
+
   
 
 def load_data():
@@ -41,7 +53,8 @@ def load_data():
     latitude = data[1]
     longitude = data[2]
     zoom = data[3]
+    loc_id = add_location(latitude, longitude)
     for cc_tld in CC_TLD:
-      make_request(latitude, longitude, zoom, cc_tld)
+      make_request(loc_id, zoom, cc_tld)
 
 load_data()

@@ -11,6 +11,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.skife.jdbi.v2.DBI;
 
+import com.gsoeller.personalization.maps.dao.LocationDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.resources.MapsResource;
@@ -25,6 +26,7 @@ import io.dropwizard.setup.Environment;
 public class MapsApplication extends Application<MapsConfiguration> {
 
 	private MapRequestDao mapRequestDao;
+	private LocationDao locationDao;
 	
 	public static void main(String[] args) throws Exception {
 		new MapsApplication().run(args);
@@ -47,8 +49,9 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		final DBI jdbi = factory.build(environment,
 				config.getDataSourceFactory(), "mysql");
 		mapRequestDao = jdbi.onDemand(MapRequestDao.class);
-		environment.jersey().register(new MapsResource(mapRequestDao));
-		startFetchJob();
+		locationDao = jdbi.onDemand(LocationDao.class);
+		environment.jersey().register(new MapsResource(mapRequestDao, locationDao));
+		//startFetchJob();
 	}
 
 	private void startFetchJob() throws SchedulerException {
