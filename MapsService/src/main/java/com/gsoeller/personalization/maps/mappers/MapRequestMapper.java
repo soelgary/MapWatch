@@ -25,8 +25,8 @@ public class MapRequestMapper implements ResultSetMapper<MapRequest>{
 		Region region = Region.findRegion(r.getString("region"));
 		Location location = new Location.LocationBuilder()
 			.setId(r.getInt("location"))
-			.setLatitude(r.getDouble("Location.latitude"))
-			.setLongitude(r.getDouble("Location.longitude"))
+			.setLatitude(r.getDouble("latitude"))
+			.setLongitude(r.getDouble("longitude"))
 			.build();
 		
 		MapRequest request = new MapRequest.MapRequestBuilder()
@@ -35,6 +35,7 @@ public class MapRequestMapper implements ResultSetMapper<MapRequest>{
 				.setYDimension(r.getInt("yDimension"))
 				.setRegion(region)
 				.setLanguage(language)
+				.setZoom(r.getInt("zoom"))
 				.setId(r.getInt("id"))
 				.build();
 		return request;

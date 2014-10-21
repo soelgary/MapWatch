@@ -18,7 +18,7 @@ public interface MapRequestDao {
 	@Mapper(MapRequestMapper.class)
 	public List<MapRequest> getRequests();
 	
-	@SqlQuery("select * from MapRequest where id=:id")
+	@SqlQuery("select * from MapRequest cross join location where MapRequest.location = Location.id;")
 	@Mapper(MapRequestMapper.class)
 	public List<MapRequest> getRequest(@Bind("id") int id);
 
