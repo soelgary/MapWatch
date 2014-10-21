@@ -14,6 +14,7 @@ import org.skife.jdbi.v2.DBI;
 import com.gsoeller.personalization.maps.dao.LocationDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
+import com.gsoeller.personalization.maps.jobs.RequestJob;
 import com.gsoeller.personalization.maps.resources.MapsResource;
 
 import io.dropwizard.Application;
@@ -51,7 +52,26 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		mapRequestDao = jdbi.onDemand(MapRequestDao.class);
 		locationDao = jdbi.onDemand(LocationDao.class);
 		environment.jersey().register(new MapsResource(mapRequestDao, locationDao));
-		//startFetchJob();
+		startFetchJob();
+		//startRequestJob();
+	}
+	
+	private void startRequestJob() throws SchedulerException {
+		SchedulerFactory schedFact = new StdSchedulerFactory();
+		Scheduler sched = schedFact.getScheduler();
+		sched.start();
+
+		JobDetail job = JobBuilder.newJob(RequestJob.class)
+				.withIdentity("Request Job", "group1").build();
+
+		Trigger trigger = TriggerBuilder
+				.newTrigger()
+				.withIdentity("Request Trigger", "group1")
+				.startNow()
+				//.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+				//				.withIntervalInSeconds(5).repeatForever())
+				.build();
+		sched.scheduleJob(job, trigger);
 	}
 
 	private void startFetchJob() throws SchedulerException {
