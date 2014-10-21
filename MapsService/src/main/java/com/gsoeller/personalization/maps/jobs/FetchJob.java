@@ -9,6 +9,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
 
@@ -22,14 +24,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
+import com.google.common.util.concurrent.RateLimiter;
 import com.gsoeller.personalization.maps.StaticMapFetcher;
 import com.gsoeller.personalization.maps.dao.ImageDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
-import com.gsoeller.personalization.maps.data.Language;
 import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapRequest;
-import com.gsoeller.personalization.maps.data.Region;
 
 public class FetchJob implements Job {
 
@@ -40,6 +41,8 @@ public class FetchJob implements Job {
 	private Handle handle;
 	private MapDao mapDao;
 
+	private final RateLimiter limiter = RateLimiter.create(1);
+	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private static final Logger LOG = LoggerFactory.getLogger(FetchJob.class);
 
 	public FetchJob() {
@@ -47,7 +50,6 @@ public class FetchJob implements Job {
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
 		mapDao = handle.attach(MapDao.class);
-
 	}
 
 	public void execute(JobExecutionContext context)
@@ -56,58 +58,54 @@ public class FetchJob implements Job {
 		MapRequestDao dao = (MapRequestDao) context.getJobDetail()
 				.getJobDataMap().get("MapRequestDao");
 		List<MapRequest> requests = dao.getRequests();
-		for (MapRequest request : requests) {
-			//MapRequest temp = new MapRequest.MapRequestBuilder()
-			//	.setLanguage(Language.English)
-			//	.setLatitude(100)
-			//	.setLongitude(31)
-			//	.setXDimension(600)
-			//	.setYDimension(600)
-			//	.setZoom(6)
-			//	.setRegion(Region.us)
-			//	.build();
-				
-			HttpResponse response = fetcher.fetch(request);
-			String newImage = UUID.randomUUID().toString() + ".png";
-			imageDao.saveImage(newImage, response.getEntity());
+		for (final MapRequest request : requests) {
+			limiter.acquire();
+			executorService.execute(new Runnable() {
 
-			Optional<String> oldImage = getPathForLastMapRequest(request
-					.getId());
+				public void run() {
+					HttpResponse response = fetcher.fetch(request);
+					String newImage = UUID.randomUUID().toString() + ".png";
+					imageDao.saveImage(newImage, response.getEntity());
 
-			if (oldImage.isPresent()) {
-				boolean hasChanged;
-				String imagePath;
+					Optional<String> oldImage = getPathForLastMapRequest(request
+							.getId());
 
-				if (sameImage(newImage, oldImage.get())) {
-					hasChanged = false;
-					imagePath = oldImage.get();
-					imageDao.removeImage(newImage);
-					LOG.info("Images are the same. Removing newest one to save space.");
-				} else {
-					hasChanged = true;
-					imagePath = newImage;
-					LOG.info("Images are different. Keeping both images in the filesystem");
+					if (oldImage.isPresent()) {
+						boolean hasChanged;
+						String imagePath;
+
+						if (sameImage(newImage, oldImage.get())) {
+							hasChanged = false;
+							imagePath = oldImage.get();
+							imageDao.removeImage(newImage);
+							LOG.info("Images are the same. Removing newest one to save space.");
+						} else {
+							hasChanged = true;
+							imagePath = newImage;
+							LOG.info("Images are different. Keeping both images in the filesystem");
+						}
+						saveImage(hasChanged, request.getId(), imagePath);
+					} else {
+						saveImage(false, request.getId(), newImage);
+					}
 				}
-				saveImage(hasChanged, request.getId(), imagePath);
-			} else {
-				saveImage(false, request.getId(), newImage);
-			}
-
+			});
 		}
 	}
-	
+
 	private void saveImage(boolean hasChanged, int id, String path) {
-			try {
-				mapDao.saveMap(false, id, path, getImageHash(path));
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		
+		try {
+			mapDao.saveMap(false, id, path, getImageHash(path));
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
-	private String getImageHash(String path) throws IOException, NoSuchAlgorithmException {
+	private String getImageHash(String path) throws IOException,
+			NoSuchAlgorithmException {
 		BufferedImage image = imageDao.getImage(path);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		ImageIO.write(image, "png", outputStream);
@@ -123,7 +121,7 @@ public class FetchJob implements Job {
 		for (int i = 0; i < inBytes.length; i++) {
 			hexString += Integer.toString((inBytes[i] & 0xff) + 0x100, 16)
 					.substring(1);
-		} 
+		}
 		return hexString;
 	}
 
