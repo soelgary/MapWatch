@@ -16,6 +16,7 @@ import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
 import com.gsoeller.personalization.maps.resources.MapsResource;
+import com.gsoeller.personalization.maps.smtp.SmtpClient;
 
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
@@ -52,8 +53,10 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		mapRequestDao = jdbi.onDemand(MapRequestDao.class);
 		locationDao = jdbi.onDemand(LocationDao.class);
 		environment.jersey().register(new MapsResource(mapRequestDao, locationDao));
-		startFetchJob();
+		
+		//startFetchJob();
 		//startRequestJob();
+		SmtpClient smtpClient = new SmtpClient();
 	}
 	
 	private void startRequestJob() throws SchedulerException {
