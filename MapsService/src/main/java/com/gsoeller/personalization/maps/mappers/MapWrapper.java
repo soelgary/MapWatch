@@ -6,9 +6,7 @@ import java.sql.SQLException;
 import org.joda.time.DateTime;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
-
 import com.gsoeller.personalization.maps.data.Map;
-import com.gsoeller.personalization.maps.data.Map.MapBuilder;
 
 public class MapWrapper implements ResultSetMapper<Map> {
 
@@ -20,7 +18,8 @@ public class MapWrapper implements ResultSetMapper<Map> {
 			.setMapRequest(r.getInt("mapRequest"))
 			.setDateTime(new DateTime(r.getTimestamp("dateTime")))
 			.setPath(r.getString("path"))
-			.setHash(r.getString("hash")).build();
+			.setHash(r.getString("hash"))
+			.setFetchJob(r.getInt("fetchJob"))
+			.build();
 	}
-
 }

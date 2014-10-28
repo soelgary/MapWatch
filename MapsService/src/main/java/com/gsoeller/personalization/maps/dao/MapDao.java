@@ -21,7 +21,7 @@ public interface MapDao {
 	@Mapper(MapWrapper.class)
 	public List<Map> getMapMostRecentWithMapRequestId(@Bind("mapRequest") int mapRequest);
 	
-	@SqlUpdate("Insert into Map (hasChanged, mapRequest, path, hash) values (:hasChanged, :mapRequest, :path, :hash)")
+	@SqlUpdate("Insert into Map (hasChanged, mapRequest, path, hash, FetchJob) values (:hasChanged, :mapRequest, :path, :hash, :fetchJob)")
 	@GetGeneratedKeys
-	public int saveMap(@Bind("hasChanged") boolean hasChanged, @Bind("mapRequest") int mapRequest, @Bind("path") String path, @Bind("hash") String hash);
+	public int saveMap(@Bind("hasChanged") boolean hasChanged, @Bind("mapRequest") int mapRequest, @Bind("path") String path, @Bind("hash") String hash, @Bind("fetchJob") int fetchJob);
 }

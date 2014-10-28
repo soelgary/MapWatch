@@ -1,90 +1,110 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-    <changeSet id="1" author="gary">
-        <createTable tableName="MapRequest">
-            <column name="id" type="int" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="latitude" type="double">
-                <constraints nullable="false"/>
-            </column>
-            <column name="longitude" type="double">
-                <constraints nullable="false"/>
-            </column>
-            <column name="zoom" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="xDimension" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="yDimension" type="int">
-                <constraints nullable="false"/>
-            </column>
-            <column name="region" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="language" type="varchar(255)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-    </changeSet>
-    
-    <changeSet id="2" author="gary">
-    	<createTable tableName="Map">
-    		<column name="id" type="int" autoIncrement="true">
-    			<constraints primaryKey="true" nullable="false"/>
-    		</column>
-    		<column name="hasChanged" type="boolean">
-    			<constraints nullable="false"/>
-    		</column>
-    		<column name="mapRequest" type="int">
-    			<constraints nullable="false"/>
-    		</column>
-    		<column name="dateTime" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
-    			<constraints nullable="false"/>
-    		</column>
-    		<column name="path" type="varchar(255)">
-    			<constraints nullable="false"/>
-    		</column>
-    	</createTable>
-    </changeSet>
-    
-    <changeSet id="3" author="gary">
-    	<addColumn tableName="Map">
-    		<column name="hash" type="varchar(32)">
-    			<constraints nullable="false"/>
-    		</column> 
-    	</addColumn>
-    </changeSet>
-    
-    <changeSet id="4" author="gary">
-    	<createTable tableName="Location">
-    		<column name="id" type="int" autoIncrement="true">
-    			<constraints primaryKey="true" nullable="false"/>
-    		</column>
-    		<column name="longitude" type="double">
-                <constraints nullable="false"/>
-            </column>
-            <column name="latitude" type="double">
-                <constraints nullable="false"/>
-            </column>
-    	</createTable>
-    	<dropColumn tableName="MapRequest" columnName="latitude"/>
-    	<dropColumn tableName="MapRequest" columnName="longitude"/>
-    	<addColumn tableName="MapRequest">
-    		<column name="location" type="int">
-    			<constraints nullable="false"/>
-    		</column>
-    	</addColumn> 
-    </changeSet>
-    
-    <changeSet id="5" author="gary">
-    	<addForeignKeyConstraint constraintName="location" referencedTableName="Location" baseColumnNames="Location" baseTableName="MapRequest" referencedColumnNames="id"/>
-    </changeSet>
+	<changeSet id="1" author="gary">
+		<createTable tableName="MapRequest">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="latitude" type="double">
+				<constraints nullable="false" />
+			</column>
+			<column name="longitude" type="double">
+				<constraints nullable="false" />
+			</column>
+			<column name="zoom" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="xDimension" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="yDimension" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="region" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="language" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="2" author="gary">
+		<createTable tableName="Map">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="hasChanged" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="mapRequest" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="dateTime" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="path" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
+
+	<changeSet id="3" author="gary">
+		<addColumn tableName="Map">
+			<column name="hash" type="varchar(32)">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="4" author="gary">
+		<createTable tableName="Location">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="longitude" type="double">
+				<constraints nullable="false" />
+			</column>
+			<column name="latitude" type="double">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<dropColumn tableName="MapRequest" columnName="latitude" />
+		<dropColumn tableName="MapRequest" columnName="longitude" />
+		<addColumn tableName="MapRequest">
+			<column name="location" type="int">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+	</changeSet>
+
+	<changeSet id="5" author="gary">
+		<addForeignKeyConstraint constraintName="location"
+			referencedTableName="Location" baseColumnNames="Location"
+			baseTableName="MapRequest" referencedColumnNames="id" />
+	</changeSet>
+
+	<changeSet id="6" author="gary">
+		<createTable tableName="FetchJob">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="startTime" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<addColumn tableName="Map">
+			<column name="FetchJob" type="int">
+				<constraints nullable="false" />
+			</column>
+		</addColumn>
+		<addForeignKeyConstraint constraintName="job"
+			referencedTableName="FetchJob" baseColumnNames="FetchJob"
+			baseTableName="Map" referencedColumnNames="id" />
+	</changeSet>
 </databaseChangeLog>

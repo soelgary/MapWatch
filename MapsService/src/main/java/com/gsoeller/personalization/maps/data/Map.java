@@ -10,6 +10,7 @@ public class Map {
 	private int id;
 	private String path;
 	private String hash;
+	private int fetchJob;
 	
 	private Map(MapBuilder builder) {
 		this.mapRequest = builder.mapRequest;
@@ -18,6 +19,7 @@ public class Map {
 		this.id = builder.id;
 		this.path = builder.path;
 		this.hash = builder.hash;
+		this.fetchJob = builder.fetchJob;
 	}
 	
 	public String getHash() {
@@ -44,6 +46,10 @@ public class Map {
 		return hasChanged;
 	}
 	
+	public int getFetchJob() {
+		return fetchJob;
+	}
+	
 	public static class MapBuilder {
 		
 		private int mapRequest;
@@ -52,6 +58,7 @@ public class Map {
 		private int id;
 		private String path;
 		private String hash;
+		private int fetchJob;
 		
 		public MapBuilder setHash(String hash) {
 			this.hash = hash;
@@ -79,6 +86,11 @@ public class Map {
 		}
 		public MapBuilder setId(int id) {
 			this.id = id;
+			return this;
+		}
+		
+		public MapBuilder setFetchJob(int fetchJob) {
+			this.fetchJob = fetchJob;
 			return this;
 		}
 		

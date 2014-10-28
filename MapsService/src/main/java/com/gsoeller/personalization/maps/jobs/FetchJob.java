@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.RateLimiter;
 import com.gsoeller.personalization.maps.StaticMapFetcher;
+import com.gsoeller.personalization.maps.dao.FetchJobDao;
 import com.gsoeller.personalization.maps.dao.ImageDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
@@ -40,6 +41,7 @@ public class FetchJob implements Job {
 	private DBI dbi;
 	private Handle handle;
 	private MapDao mapDao;
+	private FetchJobDao fetchJobDao;
 
 	private final RateLimiter limiter = RateLimiter.create(1);
 	private ExecutorService executorService = Executors.newCachedThreadPool();
@@ -50,6 +52,7 @@ public class FetchJob implements Job {
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
 		mapDao = handle.attach(MapDao.class);
+		fetchJobDao = handle.attach(FetchJobDao.class);
 	}
 
 	public void execute(JobExecutionContext context)
@@ -57,6 +60,7 @@ public class FetchJob implements Job {
 		LOG.info("Fetching maps");
 		MapRequestDao dao = (MapRequestDao) context.getJobDetail()
 				.getJobDataMap().get("MapRequestDao");
+		final int fetchJob = fetchJobDao.createFetchJob();
 		List<MapRequest> requests = dao.getRequests();
 		for (final MapRequest request : requests) {
 			limiter.acquire();
@@ -84,18 +88,18 @@ public class FetchJob implements Job {
 							imagePath = newImage;
 							LOG.info("Images are different. Keeping both images in the filesystem");
 						}
-						saveImage(hasChanged, request.getId(), imagePath);
+						saveImage(hasChanged, request.getId(), imagePath, fetchJob);
 					} else {
-						saveImage(false, request.getId(), newImage);
+						saveImage(false, request.getId(), newImage, fetchJob);
 					}
 				}
 			});
 		}
 	}
 
-	private void saveImage(boolean hasChanged, int id, String path) {
+	private void saveImage(boolean hasChanged, int id, String path, int fetchJob) {
 		try {
-			mapDao.saveMap(false, id, path, getImageHash(path));
+			mapDao.saveMap(false, id, path, getImageHash(path), fetchJob);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
