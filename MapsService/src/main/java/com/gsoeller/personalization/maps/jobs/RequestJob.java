@@ -59,7 +59,7 @@ public class RequestJob implements Job {
 				}
 			}
 		}
-		
+		System.exit(0);
 	}
 
 }

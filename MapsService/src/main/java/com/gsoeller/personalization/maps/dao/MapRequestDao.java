@@ -8,11 +8,17 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
-import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.mappers.MapRequestMapper;
 
 public interface MapRequestDao {
+	
+	@SqlQuery("select count(*) from MapRequest")
+	public int countRows();
+	
+	@SqlQuery("select * from MapRequest cross join location where MapRequest.location = Location.id limit :offset,:limit;")
+	@Mapper(MapRequestMapper.class)
+	public List<MapRequest> getRequests(@Bind("limit") int limit, @Bind("offset") int offset);
 	
 	@SqlQuery("select * from MapRequest cross join location where MapRequest.location = Location.id;")
 	@Mapper(MapRequestMapper.class)

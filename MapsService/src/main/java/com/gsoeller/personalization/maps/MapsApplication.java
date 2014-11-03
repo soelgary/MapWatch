@@ -11,7 +11,6 @@ import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
-import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
@@ -19,10 +18,10 @@ import org.skife.jdbi.v2.DBI;
 
 import com.gsoeller.personalization.maps.dao.LocationDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
+import com.gsoeller.personalization.maps.jobs.ComparisonJob;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
 import com.gsoeller.personalization.maps.resources.MapsResource;
-import com.gsoeller.personalization.maps.smtp.SmtpClient;
 
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
@@ -60,7 +59,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			System.out.println("fetching");
 			startFetchJob();
 		} else if(cmd.hasOption("compare")) {
-			
+			startCompareJob();
 		}
 	}
 
@@ -83,10 +82,21 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		mapRequestDao = jdbi.onDemand(MapRequestDao.class);
 		locationDao = jdbi.onDemand(LocationDao.class);
 		environment.jersey().register(new MapsResource(mapRequestDao, locationDao));
+	}
+	
+	private static void startCompareJob() throws SchedulerException {
+		SchedulerFactory schedFact = new StdSchedulerFactory();
+		Scheduler sched = schedFact.getScheduler();
+		sched.start();
 		
-		//startFetchJob();
-		//startRequestJob();
-		//SmtpClient smtpClient = new SmtpClient();
+		JobDetail job = JobBuilder.newJob(ComparisonJob.class)
+				.withIdentity("Comparison Job", "group1").build();
+		
+		Trigger trigger = TriggerBuilder.newTrigger()
+				.withIdentity("Comparison Trigger", "group1")
+				.startNow()
+				.build();
+		sched.scheduleJob(job, trigger);
 	}
 	
 	private static void startRequestJob() throws SchedulerException {
@@ -122,8 +132,6 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				//.withSchedule(SimpleScheduleBuilder.simpleSchedule()
 				//				.withIntervalInSeconds(5).repeatForever())
 				.build();
-		System.out.println("triggered");
 		sched.scheduleJob(job, trigger);
-		System.out.println("scheduled");
 	}
 }

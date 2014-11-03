@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.RateLimiter;
 import com.gsoeller.personalization.maps.StaticMapFetcher;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
@@ -62,7 +63,19 @@ public class FetchJob implements Job {
 		LOG.info("Fetching maps");
 		System.out.println("fetching maps");
 		final int fetchJob = fetchJobDao.createFetchJob();
-		List<MapRequest> requests = mapRequestDao.getRequests();
+		int offset = 0;
+		int batchSize = 100;
+		while(true) {
+			List<MapRequest> requests = getNextBatchOfRequests(batchSize, offset);
+			if(requests.isEmpty()) {
+				break;
+			}
+			processRequests(requests, fetchJob);
+		}
+		System.exit(0);
+	}
+	
+	private void processRequests(List<MapRequest> requests, final int fetchJob) {
 		for (final MapRequest request : requests) {
 			limiter.acquire();
 			executorService.execute(new Runnable() {
@@ -98,6 +111,10 @@ public class FetchJob implements Job {
 		}
 	}
 
+	private List<MapRequest> getNextBatchOfRequests(int limit, int offset) {
+		return mapRequestDao.getRequests(limit, offset);
+	}
+	
 	private void saveImage(boolean hasChanged, int id, String path, int fetchJob) {
 		try {
 			mapDao.saveMap(false, id, path, getImageHash(path), fetchJob);
