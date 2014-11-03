@@ -42,6 +42,7 @@ public class FetchJob implements Job {
 	private Handle handle;
 	private MapDao mapDao;
 	private FetchJobDao fetchJobDao;
+	private MapRequestDao mapRequestDao;
 
 	private final RateLimiter limiter = RateLimiter.create(1);
 	private ExecutorService executorService = Executors.newCachedThreadPool();
@@ -53,15 +54,15 @@ public class FetchJob implements Job {
 		handle = dbi.open();
 		mapDao = handle.attach(MapDao.class);
 		fetchJobDao = handle.attach(FetchJobDao.class);
+		mapRequestDao = handle.attach(MapRequestDao.class);
 	}
 
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
 		LOG.info("Fetching maps");
-		MapRequestDao dao = (MapRequestDao) context.getJobDetail()
-				.getJobDataMap().get("MapRequestDao");
+		System.out.println("fetching maps");
 		final int fetchJob = fetchJobDao.createFetchJob();
-		List<MapRequest> requests = dao.getRequests();
+		List<MapRequest> requests = mapRequestDao.getRequests();
 		for (final MapRequest request : requests) {
 			limiter.acquire();
 			executorService.execute(new Runnable() {
