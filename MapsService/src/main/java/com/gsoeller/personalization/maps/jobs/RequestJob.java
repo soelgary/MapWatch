@@ -16,9 +16,9 @@ import com.gsoeller.personalization.maps.dao.MapRequestDao;
 
 public class RequestJob implements Job {
 
-	private final int startLat = -90;
+	private final int startLat = -60;
 	private final int startLon = -180;
-	private final int maxLat = 90;
+	private final int maxLat = 75;
 	private final int maxLon = 180;
 	private final int latMultiple = 8;
 	private final int lonMultiple = 15;
