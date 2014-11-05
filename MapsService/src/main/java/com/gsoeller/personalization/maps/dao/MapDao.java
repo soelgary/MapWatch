@@ -24,4 +24,7 @@ public interface MapDao {
 	@SqlUpdate("Insert into Map (hasChanged, mapRequest, path, hash, FetchJob) values (:hasChanged, :mapRequest, :path, :hash, :fetchJob)")
 	@GetGeneratedKeys
 	public int saveMap(@Bind("hasChanged") boolean hasChanged, @Bind("mapRequest") int mapRequest, @Bind("path") String path, @Bind("hash") String hash, @Bind("fetchJob") int fetchJob);
+	
+	@SqlUpdate("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest & Map.FetchJob = :fetchJob")
+	public List<Map> getMapsFromFetchJob(@Bind("fetchJob") int fetchJob);
 }
