@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 
 public class Map {
 
-	private int mapRequest;
+	private MapRequest mapRequest;
 	private DateTime dateTime;
 	private boolean hasChanged;
 	private int id;
@@ -34,7 +34,7 @@ public class Map {
 		return id;
 	}
 	
-	public int getMapRequest() {
+	public MapRequest getMapRequest() {
 		return mapRequest;
 	}
 	
@@ -52,7 +52,7 @@ public class Map {
 	
 	public static class MapBuilder {
 		
-		private int mapRequest;
+		private MapRequest mapRequest;
 		private DateTime dateTime;
 		private boolean hasChanged;
 		private int id;
@@ -70,7 +70,7 @@ public class Map {
 			return this;
 		}
 		
-		public MapBuilder setMapRequest(int mapRequest) {
+		public MapBuilder setMapRequest(MapRequest mapRequest) {
 			this.mapRequest = mapRequest;
 			return this;
 		}

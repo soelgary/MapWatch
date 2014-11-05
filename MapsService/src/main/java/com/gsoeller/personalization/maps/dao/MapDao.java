@@ -13,11 +13,11 @@ import com.gsoeller.personalization.maps.mappers.MapWrapper;
 
 public interface MapDao {
 
-	@SqlQuery("Select * from Map")
+	@SqlQuery("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest")
 	@Mapper(MapWrapper.class)
 	public List<Map> getMaps();
 	
-	@SqlQuery("Select * from Map where mapRequest = :mapRequest order by dateTime DESC limit 1")
+	@SqlQuery("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest & MapRequest.MapRequest = :mapRequest order by dateTime DESC limit 1")
 	@Mapper(MapWrapper.class)
 	public List<Map> getMapMostRecentWithMapRequestId(@Bind("mapRequest") int mapRequest);
 	
