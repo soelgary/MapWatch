@@ -60,6 +60,8 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			startFetchJob();
 		} else if(cmd.hasOption("compare")) {
 			startCompareJob();
+		} else {
+			new MapsApplication().run(args);
 		}
 	}
 
