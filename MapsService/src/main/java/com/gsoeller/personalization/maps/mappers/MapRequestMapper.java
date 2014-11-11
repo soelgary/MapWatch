@@ -13,8 +13,12 @@ import com.gsoeller.personalization.maps.data.Region;
 
 public class MapRequestMapper implements ResultSetMapper<MapRequest>{
 
-	public MapRequest map(int arg0, ResultSet r, StatementContext arg2)
-			throws SQLException {
+	private String lat = "latitude";
+	private String lon = "longitude";
+	private String locLat = "location.latitude";
+	private String locLon = "location.longitude";
+	
+	public MapRequest map(int arg0, ResultSet r, StatementContext arg2, String latitude, String longitude) throws SQLException {
 		Language language;
 		String savedLanguage = r.getString("language");
 		if(savedLanguage.equals("English")) {
@@ -25,8 +29,8 @@ public class MapRequestMapper implements ResultSetMapper<MapRequest>{
 		Region region = Region.findRegion(r.getString("region"));
 		Location location = new Location.LocationBuilder()
 			.setId(r.getInt("location"))
-			.setLatitude(r.getDouble("latitude"))
-			.setLongitude(r.getDouble("longitude"))
+			.setLatitude(r.getDouble(latitude))
+			.setLongitude(r.getDouble(longitude))
 			.build();
 		
 		MapRequest request = new MapRequest.MapRequestBuilder()
@@ -39,6 +43,15 @@ public class MapRequestMapper implements ResultSetMapper<MapRequest>{
 				.setId(r.getInt("id"))
 				.build();
 		return request;
+	}
+	
+	public MapRequest mapWithLocation(int arg0, ResultSet r, StatementContext arg2) throws SQLException {
+		return map(arg0, r, arg2, lat, lon);
+	}
+	
+	public MapRequest map(int arg0, ResultSet r, StatementContext arg2)
+			throws SQLException {
+		return map(arg0, r, arg2, lat, lon);
 	}
 
 }

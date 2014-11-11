@@ -44,7 +44,7 @@ public class FetchJob implements Job {
 	private FetchJobDao fetchJobDao;
 	private MapRequestDao mapRequestDao;
 
-	private final RateLimiter limiter = RateLimiter.create(1);
+	private final RateLimiter limiter = RateLimiter.create(.25);
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private static final Logger LOG = LoggerFactory.getLogger(FetchJob.class);
 
@@ -67,14 +67,23 @@ public class FetchJob implements Job {
 		while(true) {
 			List<MapRequest> requests = getNextBatchOfRequests(batchSize, offset);
 			if(requests.isEmpty()) {
-				break;
+				//break;
 			}
-			processRequests(requests, fetchJob);
+			try {
+				processRequests(requests, fetchJob);
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			offset+=batchSize;
 		}
-		System.exit(0);
+		//System.exit(0);
 	}
 	
-	private void processRequests(List<MapRequest> requests, final int fetchJob) {
+	private void processRequests(List<MapRequest> requests, final int fetchJob) throws NoSuchAlgorithmException, IOException {
 		for (final MapRequest request : requests) {
 			limiter.acquire();
 			executorService.execute(new Runnable() {
@@ -83,23 +92,34 @@ public class FetchJob implements Job {
 					HttpResponse response = fetcher.fetch(request);
 					String newImage = UUID.randomUUID().toString() + ".png";
 					imageDao.saveImage(newImage, response.getEntity());
-
-					Optional<String> oldImage = getPathForLastMapRequest(request
-							.getId());
+					//System.exit(0);
+					Optional<String> oldImage = getPathForLastMapRequest(request.getId());
 
 					if (oldImage.isPresent()) {
 						boolean hasChanged;
 						String imagePath;
-
-						if (sameImage(newImage, oldImage.get())) {
+						
+						boolean sameImage;
+						try {
+							sameImage = sameImage(newImage, oldImage.get());
+						} catch (NoSuchAlgorithmException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							throw new RuntimeException("");
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							throw new RuntimeException("");
+						}
+						if (sameImage) {
 							hasChanged = false;
 							imagePath = oldImage.get();
 							imageDao.removeImage(newImage);
-							LOG.info("Images are the same. Removing newest one to save space.");
+							System.out.println("Images are the same. Removing newest one to save space.");
 						} else {
 							hasChanged = true;
 							imagePath = newImage;
-							LOG.info("Images are different. Keeping both images in the filesystem");
+							System.out.println("Images are different. Keeping both images in the filesystem");
 						}
 						saveImage(hasChanged, request.getId(), imagePath, fetchJob);
 					} else {
@@ -134,6 +154,7 @@ public class FetchJob implements Job {
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(data);
 		byte[] hash = md.digest();
+		System.out.println("Hash is\t" + returnHex(hash));
 		return returnHex(hash);
 	}
 
@@ -146,19 +167,20 @@ public class FetchJob implements Job {
 		return hexString;
 	}
 
-	public boolean sameImage(String path1, String path2) {
+	public boolean sameImage(String path1, String path2) throws NoSuchAlgorithmException, IOException {
 		// This is just placeholder code. The next step is to actually compare
 		// images here
-		return true;
+		//return true;
+		return getImageHash(path1).equals(getImageHash(path2));
 	}
 
 	public Optional<String> getPathForLastMapRequest(int mapRequestId) {
 		List<Map> map = mapDao.getMapMostRecentWithMapRequestId(mapRequestId);
 		if (!map.isEmpty()) {
-			LOG.info("Found an old image");
+			System.out.println("Found an old image");
 			return Optional.of(map.get(0).getPath());
 		}
-		LOG.info("Did not find an old image");
+		System.out.println("Did not find an old image");
 		return Optional.absent();
 	}
 }

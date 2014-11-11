@@ -55,10 +55,10 @@ public class ComparisonJob implements Job {
 	
 	public void compareFetchJob(int fetchJob) {
 		// is there any difference between countries?
-		List<Map> maps = mapDao.getMapsFromFetchJob(fetchJob);
+		List<Map> maps = mapDao.getMaps();//mapDao.getMapsFromFetchJob(fetchJob);
 		// need to check hash of images
 		
-		// key -> hash
+		// key -> hash ---- should probably be changes to MapRequest
 		// value -> map
 		// will show which maps have the same image and which ones do not
 		Multimap<String, Map> mapHashes = HashMultimap.create();;

@@ -13,11 +13,11 @@ import com.gsoeller.personalization.maps.mappers.MapWrapper;
 
 public interface MapDao {
 
-	@SqlQuery("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest")
+	@SqlQuery("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest limit 100")
 	@Mapper(MapWrapper.class)
 	public List<Map> getMaps();
 	
-	@SqlQuery("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest & MapRequest.MapRequest = :mapRequest order by dateTime DESC limit 1")
+	@SqlQuery("Select * from Map cross join MapRequest where mapRequest = :mapRequest order by dateTime DESC limit 1")
 	@Mapper(MapWrapper.class)
 	public List<Map> getMapMostRecentWithMapRequestId(@Bind("mapRequest") int mapRequest);
 	
@@ -25,6 +25,8 @@ public interface MapDao {
 	@GetGeneratedKeys
 	public int saveMap(@Bind("hasChanged") boolean hasChanged, @Bind("mapRequest") int mapRequest, @Bind("path") String path, @Bind("hash") String hash, @Bind("fetchJob") int fetchJob);
 	
-	@SqlUpdate("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest & Map.FetchJob = :fetchJob")
+	//@SqlUpdate("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest & Map.FetchJob = :fetchJob")
+	@SqlUpdate("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest & Map.FetchJob = 17")
+	@Mapper(MapWrapper.class)
 	public List<Map> getMapsFromFetchJob(@Bind("fetchJob") int fetchJob);
 }

@@ -69,6 +69,7 @@ public enum Region {
 	ee,
 	eg,
 	eh,
+	en,
 	er,
 	es,
 	et,
