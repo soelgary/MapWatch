@@ -54,10 +54,10 @@ public class StaticMapFetcher {
 		try {
 			CloseableHttpResponse response = client.execute(httpGet);
 			if (response.getStatusLine().getStatusCode() == 200) {
-				LOG.info("Successfully made a request to the Static Maps API");
+				System.out.println("Successfully made a request to the Static Maps API");
 				return response;
 			} else {
-				LOG.error("Request to Static Maps API Failed");
+				System.out.println("Request to Static Maps API Failed");
 				LOG.error(response.getStatusLine().getReasonPhrase());
 			}
 		} catch (ClientProtocolException e) {

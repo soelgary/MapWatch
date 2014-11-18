@@ -67,7 +67,11 @@ public class FetchJob implements Job {
 		while(true) {
 			List<MapRequest> requests = getNextBatchOfRequests(batchSize, offset);
 			if(requests.isEmpty()) {
-				//break;
+				executorService.shutdown();
+			}
+			if(executorService.isTerminated()) {
+				System.out.println("WERE DONE");
+				System.exit(0);
 			}
 			try {
 				processRequests(requests, fetchJob);
@@ -105,11 +109,11 @@ public class FetchJob implements Job {
 						} catch (NoSuchAlgorithmException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-							throw new RuntimeException("");
+							throw new RuntimeException("error");
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
-							throw new RuntimeException("");
+							throw new RuntimeException("errorrrr");
 						}
 						if (sameImage) {
 							hasChanged = false;
@@ -122,6 +126,7 @@ public class FetchJob implements Job {
 							System.out.println("Images are different. Keeping both images in the filesystem");
 						}
 						saveImage(hasChanged, request.getId(), imagePath, fetchJob);
+						System.out.println("Saved image");
 					} else {
 						saveImage(false, request.getId(), newImage, fetchJob);
 					}
