@@ -1,5 +1,6 @@
 package com.gsoeller.personalization.maps.jobs;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,12 +14,16 @@ import org.skife.jdbi.v2.Handle;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.Region;
+import com.gsoeller.personalization.maps.smtp.MapsEmail;
+import com.gsoeller.personalization.maps.smtp.MapsEmail.MapsEmailBuilder;
+import com.gsoeller.personalization.maps.smtp.SmtpClient;
 
 public class ComparisonJob implements Job {
 	
@@ -26,6 +31,7 @@ public class ComparisonJob implements Job {
 	private Handle handle;
 	private FetchJobDao fetchJobDao;
 	private MapDao mapDao;
+	private SmtpClient smtpClient = new SmtpClient();
 	
 	public ComparisonJob() {
 		dbi = new DBI("jdbc:mysql://localhost/Maps", "root", "");
@@ -72,25 +78,37 @@ public class ComparisonJob implements Job {
 			System.out.println("No personalization for this map");
 		} else {
 			System.out.println("Personalization has been found");
+			String emailBody = String.format("Hash\t\t\t\t\t\t\t\tPath\n");
+			for(String hash: mapHashes.asMap().keySet()) {
+				emailBody += String.format("%s\t%s\n", hash, mapHashes.get(hash).iterator().next().getPath());
+			}
+			try {
+			MapsEmail email = new MapsEmailBuilder()
+				.setSubject("Personalization Between Countries")
+				.setmMessage(emailBody)
+				.addTo("mapspersonalization@gmail.com")
+				.build();
+			smtpClient.sendEmail(email);
+			} catch(IOException e) {
+				System.out.println("Cannot read properties file");
+			}
 		}
 	}
 	
 	public void compareFetchJobs(int fetchJob1, int fetchJob2) {
 		// is there any difference between the two given fetch jobs?
-		HashMap<Region, List<Map>> regionHashMap = Maps.newHashMap();
-		for(Region region: regionHashMap.keySet()) {
-			List<Map> maps = regionHashMap.get(region);
-			if(maps.size() < 2) {
-				System.out.println("No personalization has occurred");
-			} else {
-				Optional<String> hash = Optional.absent();
-				for(Map currentMap: maps) {
-					if(hash.isPresent() && currentMap.getHash().equals(hash.get())) {
-						System.out.println("Personalization has occurred");
-					} else if(!hash.isPresent()) {
-						hash = Optional.of(currentMap.getHash());
-					}
+		
+		for(Region region: Region.values()) {
+			List<Map> job1Map = mapDao.getMapsFromFetchJobAndRegion(fetchJob1, region.toString());
+			List<Map> job2Map = mapDao.getMapsFromFetchJobAndRegion(fetchJob2, region.toString());
+			if(job1Map.size() == job2Map.size() && job2Map.size() == 1) {
+				Map map1 = job1Map.get(0);
+				Map map2 = job2Map.get(0);
+				if (!map1.getHash().equals(map2.getHash())) {
+					System.out.println("PERSONALIZATION");
 				}
+			} else {
+				System.out.println("Does not know what to compare");
 			}
 		}
 	}

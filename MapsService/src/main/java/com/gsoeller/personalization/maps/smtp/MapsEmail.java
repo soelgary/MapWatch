@@ -22,18 +22,16 @@ public class MapsEmail {
 	private final String subject;
 	private final String message;
 
-	private MapsEmail(String hostname, int port, boolean useSSL,
-			String username, String password, String from, List<String> to,
-			String subject, String message) {
-		this.hostname = hostname;
-		this.port = port;
-		this.useSSL = useSSL;
-		this.password = password;
-		this.from = from;
-		this.to = to;
-		this.subject = subject;
-		this.message = message;
-		this.username = username;
+	private MapsEmail(MapsEmailBuilder builder) {
+		this.hostname = builder.hostname;
+		this.port = builder.port;
+		this.useSSL = builder.useSSL;
+		this.password = builder.password;
+		this.from = builder.from;
+		this.to = builder.to;
+		this.subject = builder.subject;
+		this.message = builder.message;
+		this.username = builder.username;
 	}
 
 	public String getHostname() {
@@ -87,7 +85,7 @@ public class MapsEmail {
 		return email;
 	}
 
-	public class MapsEmailBuilder {
+	public static class MapsEmailBuilder {
 		private String hostname;
 		private int port = 465;
 		private boolean useSSL = true;
@@ -132,8 +130,7 @@ public class MapsEmail {
 		}
 
 		public MapsEmail build() {
-			return new MapsEmail(hostname, port, useSSL, username, password,
-					from, to, subject, message);
+			return new MapsEmail(this);
 		}
 	}
 }

@@ -12,6 +12,10 @@ public class Map {
 	private String hash;
 	private int fetchJob;
 	
+	public String toString() {
+		return path;
+	}
+	
 	private Map(MapBuilder builder) {
 		this.mapRequest = builder.mapRequest;
 		this.dateTime = builder.dateTime;

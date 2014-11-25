@@ -26,7 +26,11 @@ public interface MapDao {
 	public int saveMap(@Bind("hasChanged") boolean hasChanged, @Bind("mapRequest") int mapRequest, @Bind("path") String path, @Bind("hash") String hash, @Bind("fetchJob") int fetchJob);
 	
 	//@SqlUpdate("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest & Map.FetchJob = :fetchJob")
-	@SqlUpdate("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest & Map.FetchJob = 17")
+	@SqlQuery("Select * from Map cross join MapRequest where MapRequest.id = Map.MapRequest & Map.FetchJob = :fetchJob")
 	@Mapper(MapWrapper.class)
 	public List<Map> getMapsFromFetchJob(@Bind("fetchJob") int fetchJob);
+	
+	@SqlQuery("select * from (select * from (select m.id, m.path, m.hash, mr.region, m.fetchjob, m.hasChanged, mr.id as mapRequest, m.dateTime from map m inner join maprequest mr on m.maprequest = mr.id inner join fetchjob f on m.fetchjob = f.id) as t where region = :region) as tt  where fetchjob = :fetchJob;")
+	@Mapper(MapWrapper.class)
+	public List<Map> getMapsFromFetchJobAndRegion(@Bind("fetchJob") int fetchJob, @Bind("region") String region);
 }
