@@ -1,0 +1,8 @@
+database:
+  driverClass: com.mysql.jdbc.Driver
+
+  user: googlemaps
+
+  password: googlemaps
+
+  url: jdbc:mysql://localhost/GoogleMaps

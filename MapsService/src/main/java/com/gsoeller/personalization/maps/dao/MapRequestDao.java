@@ -9,6 +9,7 @@ import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 import com.gsoeller.personalization.maps.data.MapRequest;
+import com.gsoeller.personalization.maps.mappers.MapRequestIDMapper;
 import com.gsoeller.personalization.maps.mappers.MapRequestMapper;
 
 public interface MapRequestDao {
@@ -31,4 +32,8 @@ public interface MapRequestDao {
 	@SqlUpdate("insert into MapRequest (location, zoom, xDimension, yDimension, region, language) values (:location, :zoom, :xDimension, :yDimension, :region, :language)")
 	@GetGeneratedKeys
 	public int addMapRequest(@Bind("location") int location, @Bind("zoom") int zoom, @Bind("xDimension") int xDimension, @Bind("yDimension") int yDimension, @Bind("region") String region, @Bind("language") String language);
+
+	@SqlQuery("select * from MapRequest cross join location where region = :region")
+	@Mapper(MapRequestIDMapper.class)
+	public List<Integer> getRequestByRegion(@Bind("region") String region);
 }

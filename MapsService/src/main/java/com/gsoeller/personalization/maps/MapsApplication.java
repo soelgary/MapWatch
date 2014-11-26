@@ -11,6 +11,7 @@ import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.SchedulerFactory;
+import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
@@ -97,6 +98,8 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		Trigger trigger = TriggerBuilder.newTrigger()
 				.withIdentity("Comparison Trigger", "group1")
 				.startNow()
+				.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+								.withIntervalInHours(24).repeatForever())
 				.build();
 		sched.scheduleJob(job, trigger);
 	}
@@ -113,8 +116,6 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				.newTrigger()
 				.withIdentity("Request Trigger", "group1")
 				.startNow()
-				//.withSchedule(SimpleScheduleBuilder.simpleSchedule()
-				//				.withIntervalInSeconds(5).repeatForever())
 				.build();
 		sched.scheduleJob(job, trigger);
 	}
@@ -131,8 +132,8 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				.newTrigger()
 				.withIdentity("Fetch Trigger", "group1")
 				.startNow()
-				//.withSchedule(SimpleScheduleBuilder.simpleSchedule()
-				//				.withIntervalInSeconds(5).repeatForever())
+				.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+								.withIntervalInHours(24).repeatForever())
 				.build();
 		sched.scheduleJob(job, trigger);
 	}

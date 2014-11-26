@@ -10,6 +10,7 @@ public class MapRequest {
 	private int id;
 	
 	private final String API_ENDPOINT = "http://maps.googleapis.com/maps/api/staticmap";
+	private final String API_KEY = "AIzaSyCuoblPc_plcMWIOGi7C5Td2mRQccxkpuc";
 	
 	public MapRequest() {}
 	
@@ -51,7 +52,7 @@ public class MapRequest {
 	}
 	
 	public String buildRequestUrl() {
-		return String.format("%s?center=%s,%s&size=%sx%s&zoom=%s&language=%s&region=%s", API_ENDPOINT, location.getLatitude(), location.getLongitude(), xDimension, yDimension, zoom, language, region);
+		return String.format("%s?center=%s,%s&size=%sx%s&zoom=%s&language=%s&region=%s&key=%s", API_ENDPOINT, location.getLatitude(), location.getLongitude(), xDimension, yDimension, zoom, language, region, API_KEY);
 	}
 
 	private MapRequest(MapRequestBuilder builder) {

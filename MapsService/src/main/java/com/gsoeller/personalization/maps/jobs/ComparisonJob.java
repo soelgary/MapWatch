@@ -19,6 +19,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
+import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.Region;
 import com.gsoeller.personalization.maps.smtp.MapsEmail;
@@ -31,6 +32,7 @@ public class ComparisonJob implements Job {
 	private Handle handle;
 	private FetchJobDao fetchJobDao;
 	private MapDao mapDao;
+	private MapRequestDao mapRequestDao;
 	private SmtpClient smtpClient = new SmtpClient();
 	
 	public ComparisonJob() {
@@ -39,6 +41,7 @@ public class ComparisonJob implements Job {
 		handle = dbi.open();
 		fetchJobDao = handle.attach(FetchJobDao.class);
 		mapDao = handle.attach(MapDao.class);
+		mapRequestDao = handle.attach(MapRequestDao.class);
 	}
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -95,12 +98,20 @@ public class ComparisonJob implements Job {
 		}
 	}
 	
+	public HashMap<Region, Integer> pairRegionWithMapRequest() {
+		HashMap<Region, Integer> regions = Maps.newHashMap();
+		for(Region region: Lists.newArrayList(Region.en)){//Region.values()) {
+			regions.put(region, mapRequestDao.getRequestByRegion(region.toString()).iterator().next());
+		}
+		return regions;
+	}
+	
 	public void compareFetchJobs(int fetchJob1, int fetchJob2) {
 		// is there any difference between the two given fetch jobs?
-		
-		for(Region region: Region.values()) {
-			List<Map> job1Map = mapDao.getMapsFromFetchJobAndRegion(fetchJob1, region.toString());
-			List<Map> job2Map = mapDao.getMapsFromFetchJobAndRegion(fetchJob2, region.toString());
+		HashMap<Region, Integer> regions = pairRegionWithMapRequest();
+		for(Region region: Lists.newArrayList(Region.en)) {//Region.values()) {
+			List<Map> job1Map = mapDao.getMapsFromFetchJobAndRegion(fetchJob1, regions.get(region));
+			List<Map> job2Map =  mapDao.getMapsFromFetchJobAndRegion(fetchJob2, regions.get(region));
 			if(job1Map.size() == job2Map.size() && job2Map.size() == 1) {
 				Map map1 = job1Map.get(0);
 				Map map2 = job2Map.get(0);

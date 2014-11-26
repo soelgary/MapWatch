@@ -30,7 +30,8 @@ public interface MapDao {
 	@Mapper(MapWrapper.class)
 	public List<Map> getMapsFromFetchJob(@Bind("fetchJob") int fetchJob);
 	
-	@SqlQuery("select * from (select * from (select m.id, m.path, m.hash, mr.region, m.fetchjob, m.hasChanged, mr.id as mapRequest, m.dateTime from map m inner join maprequest mr on m.maprequest = mr.id inner join fetchjob f on m.fetchjob = f.id) as t where region = :region) as tt  where fetchjob = :fetchJob;")
+	//@SqlQuery("select * from (select * from (select m.id, m.path, m.hash, mr.region, m.fetchjob, m.hasChanged, mr.id as mapRequest, m.dateTime from map m inner join maprequest mr on m.maprequest = mr.id inner join fetchjob f on m.fetchjob = f.id) as t where region = :region) as tt  where fetchjob = :fetchJob;")
+	@SqlQuery("select * from (select * from map as t where fetchjob = 10) as tt where maprequest = 1;")
 	@Mapper(MapWrapper.class)
-	public List<Map> getMapsFromFetchJobAndRegion(@Bind("fetchJob") int fetchJob, @Bind("region") String region);
+	public List<Map> getMapsFromFetchJobAndRegion(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
 }

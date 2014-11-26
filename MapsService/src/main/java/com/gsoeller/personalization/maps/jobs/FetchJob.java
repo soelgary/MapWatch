@@ -44,7 +44,7 @@ public class FetchJob implements Job {
 	private FetchJobDao fetchJobDao;
 	private MapRequestDao mapRequestDao;
 
-	private final RateLimiter limiter = RateLimiter.create(.25);
+	private final RateLimiter limiter = RateLimiter.create(.28);
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private static final Logger LOG = LoggerFactory.getLogger(FetchJob.class);
 
@@ -71,7 +71,8 @@ public class FetchJob implements Job {
 			}
 			if(executorService.isTerminated()) {
 				System.out.println("WERE DONE");
-				System.exit(0);
+				return;
+				//System.exit(0);
 			}
 			try {
 				processRequests(requests, fetchJob);
