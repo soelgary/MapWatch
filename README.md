@@ -6,12 +6,14 @@ This is a research project taking place at Northeastern University. The purpose 
 How to Setup
 ============
 
-######## Fill Database
+##### Fill Database
 
 Initially, the database must be filled with ```MapRequests```. A ```MapRequest``` is simply a set of variables that can be converted into a request to the Google Maps Static API endpoint. Run ```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -create``` to fill the database. Only do this once as it will always add new values to the db.
 
+##### Fetch Maps
 Now you can run the fetch job as many times as necessary. The command to do so is ```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -fetch```. Do not run this on any machine besides achtung because the API key will only work from that IP address. Also do not run this multiple times, because the current rate limit is .28 requests/second. This equates to over 24,000 requests/day. We are only allowed 25,000/day. 
 
+##### Compare Maps
 Once the fetch job is done you can run the comparison job by running ```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -compare```. This will email results to mapspersonalization@gmail.com. This job does not save anything to the db, so run as often as necessary.
 
 
