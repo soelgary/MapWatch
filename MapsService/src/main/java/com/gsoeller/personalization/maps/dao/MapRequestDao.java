@@ -17,15 +17,15 @@ public interface MapRequestDao {
 	@SqlQuery("select count(*) from MapRequest")
 	public int countRows();
 	
-	@SqlQuery("select * from MapRequest cross join location where MapRequest.location = Location.id limit :offset,:limit;")
+	@SqlQuery("select * from MapRequest cross join Location where MapRequest.location = Location.id limit :offset,:limit;")
 	@Mapper(MapRequestMapper.class)
 	public List<MapRequest> getRequests(@Bind("limit") int limit, @Bind("offset") int offset);
 	
-	@SqlQuery("select * from MapRequest cross join location where MapRequest.location = Location.id;")
+	@SqlQuery("select * from MapRequest cross join Location where MapRequest.location = Location.id;")
 	@Mapper(MapRequestMapper.class)
 	public List<MapRequest> getRequests();
 	
-	@SqlQuery("select * from MapRequest cross join location where MapRequest.location = Location.id;")
+	@SqlQuery("select * from MapRequest cross join Location where MapRequest.location = Location.id;")
 	@Mapper(MapRequestMapper.class)
 	public List<MapRequest> getRequest(@Bind("id") int id);
 
@@ -33,7 +33,7 @@ public interface MapRequestDao {
 	@GetGeneratedKeys
 	public int addMapRequest(@Bind("location") int location, @Bind("zoom") int zoom, @Bind("xDimension") int xDimension, @Bind("yDimension") int yDimension, @Bind("region") String region, @Bind("language") String language);
 
-	@SqlQuery("select * from MapRequest cross join location where region = :region")
+	@SqlQuery("select * from MapRequest cross join Location where region = :region")
 	@Mapper(MapRequestIDMapper.class)
 	public List<Integer> getRequestByRegion(@Bind("region") String region);
 }

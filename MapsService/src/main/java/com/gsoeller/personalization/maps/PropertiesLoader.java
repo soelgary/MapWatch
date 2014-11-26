@@ -15,7 +15,7 @@ public class PropertiesLoader {
 	}
 	
 	public PropertiesLoader() throws IOException {
-		input = new FileInputStream("achtung.properties");
+		input = new FileInputStream("/home/soelgary/Maps/achtung.properties");
 		prop.load(input);
 	}
 

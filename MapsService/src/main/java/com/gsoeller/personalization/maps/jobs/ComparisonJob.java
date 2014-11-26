@@ -17,6 +17,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
@@ -35,8 +36,9 @@ public class ComparisonJob implements Job {
 	private MapRequestDao mapRequestDao;
 	private SmtpClient smtpClient = new SmtpClient();
 	
-	public ComparisonJob() {
-		dbi = new DBI("jdbc:mysql://localhost/Maps", "root", "");
+	public ComparisonJob() throws IOException {
+		PropertiesLoader propLoader = new PropertiesLoader();
+		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
 		fetchJobDao = handle.attach(FetchJobDao.class);

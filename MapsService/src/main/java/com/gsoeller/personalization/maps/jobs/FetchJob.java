@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.RateLimiter;
+import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.StaticMapFetcher;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
 import com.gsoeller.personalization.maps.dao.ImageDao;
@@ -48,8 +49,9 @@ public class FetchJob implements Job {
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private static final Logger LOG = LoggerFactory.getLogger(FetchJob.class);
 
-	public FetchJob() {
-		dbi = new DBI("jdbc:mysql://localhost/Maps", "root", "");
+	public FetchJob() throws IOException {
+		PropertiesLoader propLoader = new PropertiesLoader();
+		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
 		mapDao = handle.attach(MapDao.class);

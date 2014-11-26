@@ -1,5 +1,6 @@
 package com.gsoeller.personalization.maps.jobs;
 
+import java.io.IOException;
 import java.util.List;
 
 import io.dropwizard.jdbi.OptionalContainerFactory;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.dao.LocationDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.data.Box;
@@ -46,8 +48,9 @@ public class RequestJob implements Job {
 
 	private static final Logger LOG = LoggerFactory.getLogger(FetchJob.class);
 
-	public RequestJob() {
-		dbi = new DBI("jdbc:mysql://localhost/Maps", "root", "");
+	public RequestJob() throws IOException {
+		PropertiesLoader propLoader = new PropertiesLoader();
+		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
 		mapRequestDao = handle.attach(MapRequestDao.class);

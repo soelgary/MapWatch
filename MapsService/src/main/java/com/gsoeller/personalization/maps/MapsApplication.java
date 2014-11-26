@@ -37,7 +37,6 @@ public class MapsApplication extends Application<MapsConfiguration> {
 	private LocationDao locationDao;
 	
 	public static void main(String[] args) throws Exception {
-		
 		Options options = new Options();
 		options.addOption("test", false, "Run the application/job using the maps.properties file");
 		options.addOption("s", false, "Run the dropwizard server to get REST api access");
@@ -53,7 +52,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		if(cmd.hasOption("test")) {
 			configFile = "/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/maps.properties";
 		} else {
-			configFile = "achtung.properties";
+			configFile = "/home/soelgary/Maps/achtung.properties";
 		}
 		if(cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
