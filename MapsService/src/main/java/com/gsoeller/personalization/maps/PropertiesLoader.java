@@ -9,8 +9,13 @@ public class PropertiesLoader {
 	private Properties prop = new Properties();
 	private InputStream input = null;
 
+	public PropertiesLoader(String configFile) throws IOException {
+		input = new FileInputStream(configFile);
+		prop.load(input);
+	}
+	
 	public PropertiesLoader() throws IOException {
-		input = new FileInputStream("/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/maps.properties");
+		input = new FileInputStream("achtung.properties");
 		prop.load(input);
 	}
 

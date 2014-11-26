@@ -37,8 +37,9 @@ public class MapsApplication extends Application<MapsConfiguration> {
 	private LocationDao locationDao;
 	
 	public static void main(String[] args) throws Exception {
-		PropertiesLoader propLoader = new PropertiesLoader();
+		
 		Options options = new Options();
+		options.addOption("test", false, "Run the application/job using the maps.properties file");
 		options.addOption("s", false, "Run the dropwizard server to get REST api access");
 		options.addOption("create", false, "Create the requests to the maps api to be run every time period");
 		options.addOption("fetch", false, "Run the job to fetch requests for each map");
@@ -48,11 +49,17 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		options.addOption(option);
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = parser.parse(options, args);
-		
+		String configFile;
+		if(cmd.hasOption("test")) {
+			configFile = "/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/maps.properties";
+		} else {
+			configFile = "achtung.properties";
+		}
 		if(cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("Maps Personalization", options);
 		} else if(cmd.hasOption("s")) {
+			PropertiesLoader propLoader = new PropertiesLoader(configFile);
 			new MapsApplication().run(new String[] {"server", propLoader.getProperty("config")});
 		} else if(cmd.hasOption("create")) {
 			startRequestJob();

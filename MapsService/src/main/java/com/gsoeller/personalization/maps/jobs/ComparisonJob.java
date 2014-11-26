@@ -94,6 +94,7 @@ public class ComparisonJob implements Job {
 			smtpClient.sendEmail(email);
 			} catch(IOException e) {
 				System.out.println("Cannot read properties file");
+				e.printStackTrace();
 			}
 		}
 	}
