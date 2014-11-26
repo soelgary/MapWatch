@@ -36,5 +36,5 @@ public interface MapDao {
 	public List<Map> getMapsFromFetchJobAndRegion(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
 	
 	@SqlQuery("Select path from Map where hash = :hash limit 1")
-	public String getPathWithHash(@Bind("hash") String hash);
+	public List<String> getPathWithHash(@Bind("hash") String hash);
 }

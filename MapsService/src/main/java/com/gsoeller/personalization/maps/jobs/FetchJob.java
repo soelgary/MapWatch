@@ -99,8 +99,9 @@ public class FetchJob implements Job {
 					HttpResponse response = fetcher.fetch(request);
 					String newImage = UUID.randomUUID().toString() + ".png";
 					imageDao.saveImage(newImage, response.getEntity());
+					Optional<String> existingPath = getExistingPath(newImage);
 					//System.exit(0);
-					Optional<String> oldImage = getPathForLastMapRequest(request.getId());
+					Optional<String> oldImage = getPathForLastMapRequest(request.getId(), existingPath);
 
 					if (oldImage.isPresent()) {
 						boolean hasChanged;
@@ -181,12 +182,33 @@ public class FetchJob implements Job {
 		//return true;
 		return getImageHash(path1).equals(getImageHash(path2));
 	}
+	
+	public Optional<String> getExistingPath(String path) {
+		try {
+			String hash = getImageHash(path);
+			List<String> hashPath = mapDao.getPathWithHash(hash);
+			if (hashPath.isEmpty()) {
+				return Optional.absent();
+			}
+			return Optional.fromNullable(hashPath.get(0));
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return Optional.absent();
+	}
 
-	public Optional<String> getPathForLastMapRequest(int mapRequestId) {
+	public Optional<String> getPathForLastMapRequest(int mapRequestId, Optional<String> existingPath) {
 		List<Map> map = mapDao.getMapMostRecentWithMapRequestId(mapRequestId);
 		if (!map.isEmpty()) {
 			System.out.println("Found an old image");
 			return Optional.of(map.get(0).getPath());
+		} else if(existingPath.isPresent()) {
+			System.out.println("Found the same image on disk");
+			return existingPath;
 		}
 		System.out.println("Did not find an old image");
 		return Optional.absent();
