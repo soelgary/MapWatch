@@ -96,44 +96,47 @@ public class FetchJob implements Job {
 			executorService.execute(new Runnable() {
 
 				public void run() {
-					HttpResponse response = fetcher.fetch(request);
-					String newImage = UUID.randomUUID().toString() + ".png";
-					imageDao.saveImage(newImage, response.getEntity());
-					Optional<String> existingPath = getExistingPath(newImage);
-					//System.exit(0);
-					Optional<String> oldImage = getPathForLastMapRequest(request.getId(), existingPath);
+					Optional<HttpResponse> response = fetcher.fetch(request);
+					if(response.isPresent()) {
+						String newImage = UUID.randomUUID().toString() + ".png";
+						imageDao.saveImage(newImage, response.get().getEntity());
+						Optional<String> existingPath = getExistingPath(newImage);
+						//System.exit(0);
+						Optional<String> oldImage = getPathForLastMapRequest(request.getId(), existingPath);
 
-					if (oldImage.isPresent()) {
-						boolean hasChanged;
-						String imagePath;
-						
-						boolean sameImage;
-						try {
-							sameImage = sameImage(newImage, oldImage.get());
-						} catch (NoSuchAlgorithmException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							throw new RuntimeException("error");
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							throw new RuntimeException("errorrrr");
-						}
-						if (sameImage) {
-							hasChanged = false;
-							imagePath = oldImage.get();
-							imageDao.removeImage(newImage);
-							System.out.println("Images are the same. Removing newest one to save space.");
+						if (oldImage.isPresent()) {
+							boolean hasChanged;
+							String imagePath;
+							
+							boolean sameImage;
+							try {
+								sameImage = sameImage(newImage, oldImage.get());
+							} catch (NoSuchAlgorithmException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								throw new RuntimeException("error");
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								throw new RuntimeException("errorrrr");
+							}
+							if (sameImage) {
+								hasChanged = false;
+								imagePath = oldImage.get();
+								imageDao.removeImage(newImage);
+								System.out.println("Images are the same. Removing newest one to save space.");
+							} else {
+								hasChanged = true;
+								imagePath = newImage;
+								System.out.println("Images are different. Keeping both images in the filesystem");
+							}
+							saveImage(hasChanged, request.getId(), imagePath, fetchJob);
+							System.out.println("Saved image");
 						} else {
-							hasChanged = true;
-							imagePath = newImage;
-							System.out.println("Images are different. Keeping both images in the filesystem");
+							saveImage(false, request.getId(), newImage, fetchJob);
 						}
-						saveImage(hasChanged, request.getId(), imagePath, fetchJob);
-						System.out.println("Saved image");
-					} else {
-						saveImage(false, request.getId(), newImage, fetchJob);
 					}
+					
 				}
 			});
 		}
