@@ -67,8 +67,31 @@ public class FetchJob implements Job {
 			throws JobExecutionException {
 		LOG.info("Fetching maps");
 		System.out.println("fetching maps");
-		final int fetchJob = fetchJobDao.createFetchJob();
-		int offset = 0;
+		
+		List<Boolean> finished = fetchJobDao.isLastJobFinished();
+		int currentFetchJob;
+		int offset;
+		if(!finished.isEmpty() && finished.get(0)) {
+			System.out.println("Starting a new fetch job");
+			currentFetchJob = fetchJobDao.createFetchJob();
+			offset = 0;
+		} else {
+			List<Integer> lastFetchJob = fetchJobDao.getLastFetchJob();
+			if(lastFetchJob.isEmpty()) {
+				currentFetchJob = fetchJobDao.createFetchJob();
+				offset = 0;
+			} else {
+				currentFetchJob = lastFetchJob.get(0);
+				List<Integer> lastMapFetched = mapDao.getLastMap();
+				if(lastMapFetched.isEmpty()) {
+					offset = 0;
+				} else {
+					offset = lastMapFetched.get(0);
+				}
+			}
+			System.out.println("Did not finish fetch job. Picking up on fetch job id: " + currentFetchJob + " and offset: " + offset);
+		}
+		final int fetchJob = currentFetchJob;
 		int batchSize = 10;
 		DateTime startTime = DateTime.now();
 		while(true) {

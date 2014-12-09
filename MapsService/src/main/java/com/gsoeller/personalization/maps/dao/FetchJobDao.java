@@ -12,7 +12,12 @@ public interface FetchJobDao {
 	@GetGeneratedKeys
 	public int createFetchJob();
 
-	@SqlQuery("select id from fetchjob order by id desc")
+	@SqlQuery("select id from FetchJob order by id desc")
 	public List<Integer> getFetchJobs();	
 	
+	@SqlQuery("select finished from FetchJob order by startTime desc limit 1")
+	public List<Boolean> isLastJobFinished();
+	
+	@SqlQuery("select id from FetchJob order by startTime desc limit 1")
+	public List<Integer> getLastFetchJob();
 }

@@ -107,4 +107,12 @@
 			referencedTableName="FetchJob" baseColumnNames="FetchJob"
 			baseTableName="Map" referencedColumnNames="id" />
 	</changeSet>
+	
+	<changeSet id="7" author="gary">
+		<addColumn tableName="FetchJob">
+			<column name="finished" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

@@ -37,4 +37,7 @@ public interface MapDao {
 	
 	@SqlQuery("Select path from Map where hash = :hash limit 1")
 	public List<String> getPathWithHash(@Bind("hash") String hash);
+	
+	@SqlQuery("Select mapRequest from Map order by dateTime desc limit 1")
+	public List<Integer> getLastMap();
 }
