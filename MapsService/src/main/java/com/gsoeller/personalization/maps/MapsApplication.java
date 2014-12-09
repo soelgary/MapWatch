@@ -138,8 +138,9 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				.newTrigger()
 				.withIdentity("Fetch Trigger", "group1")
 				.startNow()
-				//.withSchedule(SimpleScheduleBuilder.simpleSchedule()
-				//				.withIntervalInHours(24).repeatForever())
+				.withSchedule(SimpleScheduleBuilder.simpleSchedule()
+						.withIntervalInMinutes(60)
+						.repeatForever())
 				.build();
 		sched.scheduleJob(job, trigger);
 	}

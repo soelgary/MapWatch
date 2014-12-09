@@ -15,6 +15,8 @@ import java.util.concurrent.Executors;
 import javax.imageio.ImageIO;
 
 import org.apache.http.HttpResponse;
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -49,6 +51,8 @@ public class FetchJob implements Job {
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 	private static final Logger LOG = LoggerFactory.getLogger(FetchJob.class);
 
+	private final int MINUTES_TO_RUN = 50;
+	
 	public FetchJob() throws IOException {
 		PropertiesLoader propLoader = new PropertiesLoader();
 		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
@@ -65,8 +69,16 @@ public class FetchJob implements Job {
 		System.out.println("fetching maps");
 		final int fetchJob = fetchJobDao.createFetchJob();
 		int offset = 0;
-		int batchSize = 100;
+		int batchSize = 10;
+		DateTime startTime = DateTime.now();
 		while(true) {
+			DateTime currentTime = DateTime.now();
+			int runtimeInMinutes = Minutes.minutesBetween(startTime, currentTime).getMinutes();
+			if(runtimeInMinutes >= MINUTES_TO_RUN) {
+				System.out.println("Time limit is up. Exiting current job");
+				break;
+			}
+			
 			List<MapRequest> requests = getNextBatchOfRequests(batchSize, offset);
 			if(requests.isEmpty()) {
 				executorService.shutdown();
