@@ -2,6 +2,7 @@ package com.gsoeller.personalization.maps.dao;
 
 import java.util.List;
 
+import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
@@ -20,4 +21,7 @@ public interface FetchJobDao {
 	
 	@SqlQuery("select id from FetchJob order by startTime desc limit 1")
 	public List<Integer> getLastFetchJob();
+	
+	@SqlUpdate("Update FetchJob set finished = true where id = :id")
+	public int finishFetchJob(@Bind("id") int id);
 }

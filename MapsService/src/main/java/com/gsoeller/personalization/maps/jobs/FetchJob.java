@@ -103,13 +103,14 @@ public class FetchJob implements Job {
 			}
 			
 			List<MapRequest> requests = getNextBatchOfRequests(batchSize, offset);
+			executorService.shutdown();
 			if(requests.isEmpty()) {
 				executorService.shutdown();
 			}
 			if(executorService.isTerminated()) {
 				System.out.println("WERE DONE");
+				fetchJobDao.finishFetchJob(fetchJob);
 				return;
-				//System.exit(0);
 			}
 			try {
 				processRequests(requests, fetchJob);
