@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
@@ -22,11 +23,10 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.RateLimiter;
+import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.StaticMapFetcher;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
@@ -49,9 +49,10 @@ public class FetchJob implements Job {
 
 	private final RateLimiter limiter = RateLimiter.create(.28);
 	private ExecutorService executorService = Executors.newCachedThreadPool();
-	private static final Logger LOG = LoggerFactory.getLogger(FetchJob.class);
 
 	private final int MINUTES_TO_RUN = 50;
+	
+	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.FetchJob");
 	
 	public FetchJob() throws IOException {
 		PropertiesLoader propLoader = new PropertiesLoader();
@@ -65,14 +66,12 @@ public class FetchJob implements Job {
 
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {
-		LOG.info("Fetching maps");
-		System.out.println("fetching maps");
-		
+		LOG.info("Fetching Maps");		
 		List<Boolean> finished = fetchJobDao.isLastJobFinished();
 		int currentFetchJob;
 		int offset;
 		if(!finished.isEmpty() && finished.get(0)) {
-			System.out.println("Starting a new fetch job");
+			LOG.info("Starting a new fetch job");
 			currentFetchJob = fetchJobDao.createFetchJob();
 			offset = 0;
 		} else {
@@ -89,7 +88,7 @@ public class FetchJob implements Job {
 					offset = lastMapFetched.get(0);
 				}
 			}
-			System.out.println("Did not finish fetch job. Picking up on fetch job id: " + currentFetchJob + " and offset: " + offset);
+			LOG.info("Did not finish fetch job. Picking up on fetch job id: " + currentFetchJob + " and offset: " + offset);
 		}
 		final int fetchJob = currentFetchJob;
 		int batchSize = 10;
@@ -98,17 +97,16 @@ public class FetchJob implements Job {
 			DateTime currentTime = DateTime.now();
 			int runtimeInMinutes = Minutes.minutesBetween(startTime, currentTime).getMinutes();
 			if(runtimeInMinutes >= MINUTES_TO_RUN) {
-				System.out.println("Time limit is up. Exiting current job");
+				LOG.info("Time limit is up. Exiting current job");
 				break;
 			}
 			
 			List<MapRequest> requests = getNextBatchOfRequests(batchSize, offset);
-			executorService.shutdown();
 			if(requests.isEmpty()) {
 				executorService.shutdown();
 			}
 			if(executorService.isTerminated()) {
-				System.out.println("WERE DONE");
+				LOG.info("WERE DONE");
 				fetchJobDao.finishFetchJob(fetchJob);
 				return;
 			}
@@ -160,14 +158,14 @@ public class FetchJob implements Job {
 								hasChanged = false;
 								imagePath = oldImage.get();
 								imageDao.removeImage(newImage);
-								System.out.println("Images are the same. Removing newest one to save space.");
+								LOG.info("Images are the same. Removing newest one to save space.");
 							} else {
 								hasChanged = true;
 								imagePath = newImage;
-								System.out.println("Images are different. Keeping both images in the filesystem");
+								LOG.info("Images are different. Keeping both images in the filesystem");
 							}
 							saveImage(hasChanged, request.getId(), imagePath, fetchJob);
-							System.out.println("Saved image");
+							LOG.info("Saved image");
 						} else {
 							saveImage(false, request.getId(), newImage, fetchJob);
 						}
@@ -202,7 +200,7 @@ public class FetchJob implements Job {
 		MessageDigest md = MessageDigest.getInstance("MD5");
 		md.update(data);
 		byte[] hash = md.digest();
-		System.out.println("Hash is\t" + returnHex(hash));
+		LOG.info("Hash is\t" + returnHex(hash));
 		return returnHex(hash);
 	}
 
@@ -243,13 +241,13 @@ public class FetchJob implements Job {
 	public Optional<String> getPathForLastMapRequest(int mapRequestId, Optional<String> existingPath) {
 		List<Map> map = mapDao.getMapMostRecentWithMapRequestId(mapRequestId);
 		if (!map.isEmpty()) {
-			System.out.println("Found an old image");
+			LOG.info("Found an old image");
 			return Optional.of(map.get(0).getPath());
 		} else if(existingPath.isPresent()) {
-			System.out.println("Found the same image on disk");
+			LOG.info("Found the same image on disk");
 			return existingPath;
 		}
-		System.out.println("Did not find an old image");
+		LOG.info("Did not find an old image");
 		return Optional.absent();
 	}
 }
