@@ -94,6 +94,7 @@ public class ComparisonJob implements Job {
 			// need to compare all tiles
 			tile.compare();
 		}
+		LOG.info("Finished running comparisons");
 	}
 	
 	public boolean canCompare(List<FetchJob> fetchJobs) {

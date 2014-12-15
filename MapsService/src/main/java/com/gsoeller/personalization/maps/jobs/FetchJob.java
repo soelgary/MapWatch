@@ -70,8 +70,9 @@ public class FetchJob implements Job {
 	}
 
 	public void execute(JobExecutionContext context)
-			throws JobExecutionException {
-		LOG.info("Fetching Maps");		
+			throws JobExecutionException {	
+		int mapNumber = (Integer)context.getJobDetail().getJobDataMap().get("mapNumber");
+		LOG.info(String.format("Fetching maps for map number: %d", mapNumber));	
 		List<Boolean> finished = fetchJobDao.isLastJobFinished();
 		int currentFetchJob;
 		int offset;

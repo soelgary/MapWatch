@@ -115,4 +115,34 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="8" author="gary">
+		<addColumn tableName="Location">
+			<column name="MapNumber" type="int" defaultValue="0">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet id="9" author="gary">
+		<addColumn tableName="MapRequest">
+			<column name="MapNumber" type="int" defaultValue="0">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+		<addColumn tableName="MapRequest">
+			<column name="latitude" type="double" defaultValue="0">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+		<addColumn tableName="MapRequest">
+			<column name="longitude" type="double" defaultValue="0">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet id="10" author="gary">
+		<dropColumn tableName="MapRequest" columnName="location" />
+	</changeSet>
 </databaseChangeLog>

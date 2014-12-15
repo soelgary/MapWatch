@@ -63,7 +63,11 @@ public enum Region {
 	dj,
 	dk,
 	dm,
-	//do, ----need a workaround here because do is a java specific keyword
+	DO {
+		public String toString() {
+			return "do";
+		}
+	}, 
 	dz,
 	ec,
 	ee,

@@ -17,9 +17,9 @@ public interface LocationDao {
 	@Mapper(LocationMapper.class)
 	public List<Location> getLocations();
 	
-	@SqlUpdate("Insert into Location (latitude, longitude) values (:latitude, :longitude)")
+	@SqlUpdate("Insert into Location (latitude, longitude, MapNumber) values (:latitude, :longitude, :mapNumber)")
 	@GetGeneratedKeys
-	public int addLocation(@Bind("latitude") double latitude, @Bind("longitude") double longitude);
+	public int addLocation(@Bind("latitude") double latitude, @Bind("longitude") double longitude, @Bind("mapNumber") int mapNumber);
 	
 	@SqlQuery("Select * from Location where id = :id")
 	@Mapper(LocationMapper.class)

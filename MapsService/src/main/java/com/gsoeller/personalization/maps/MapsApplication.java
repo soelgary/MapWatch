@@ -41,16 +41,28 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		Options options = new Options();
 		options.addOption("test", false, "Run the application/job using the maps.properties file");
 		options.addOption("s", false, "Run the dropwizard server to get REST api access");
-		options.addOption("create", false, "Create the requests to the maps api to be run every time period");
-		options.addOption("fetch", false, "Run the job to fetch requests for each map");
+		//options.addOption("create", false, "Create the requests to the maps api to be run every time period");
+		//options.addOption("fetch", false, "Run the job to fetch requests for each map");
 		//options.addOption("compare", true, "Run the job to compare the latest fetched maps for personalization");
 		Option option = new Option("h", "Help message");
+		
+		Option fetch = new Option("fetch", "Run the job to fetch requests for each map with the given map number");
+		fetch.hasArg();
+		fetch.setType(Integer.class);
+		fetch.setArgs(1);
+		options.addOption(fetch);
 		
 		Option compare = new Option("compare", "Run compare job");
 		compare.hasArg();
 		compare.setType(Integer.class);
 		compare.setArgs(1);
 		options.addOption(compare);
+		
+		Option create = new Option("create", "Create the requests to the maps api to be run every time period");
+		create.hasArg();
+		create.setType(Integer.class);
+		create.setArgs(1);
+		options.addOption(create);
 		
 		options.addOption(option);
 		CommandLineParser parser = new BasicParser();
@@ -68,10 +80,12 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			PropertiesLoader propLoader = new PropertiesLoader(configFile);
 			new MapsApplication().run(new String[] {"server", propLoader.getProperty("config")});
 		} else if(cmd.hasOption("create")) {
-			startRequestJob();
+			String mapNumber = (String) cmd.getOptionValue("create");
+			startRequestJob(Integer.parseInt(mapNumber));
 		} else if(cmd.hasOption("fetch")) {
 			System.out.println("fetching");
-			startFetchJob();
+			String mapNumber = (String) cmd.getOptionValue("fetch");
+			startFetchJob(Integer.parseInt(mapNumber));
 		} else if(cmd.hasOption("compare")) {
 			String fetchJob = (String) cmd.getOptionValue("compare");
 			startCompareJob(Integer.parseInt(fetchJob));
@@ -121,7 +135,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		sched.scheduleJob(job, trigger);
 	}
 	
-	private static void startRequestJob() throws SchedulerException {
+	private static void startRequestJob(int mapNumber) throws SchedulerException {
 		SchedulerFactory schedFact = new StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
 		sched.start();
@@ -129,6 +143,8 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		JobDetail job = JobBuilder.newJob(RequestJob.class)
 				.withIdentity("Request Job", "group1").build();
 
+		job.getJobDataMap().put("mapNumber", mapNumber);
+		
 		Trigger trigger = TriggerBuilder
 				.newTrigger()
 				.withIdentity("Request Trigger", "group1")
@@ -137,13 +153,15 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		sched.scheduleJob(job, trigger);
 	}
 
-	private static void startFetchJob() throws SchedulerException {
+	private static void startFetchJob(int mapNumber) throws SchedulerException {
 		SchedulerFactory schedFact = new StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
 		sched.start();
 
 		JobDetail job = JobBuilder.newJob(FetchJob.class)
 				.withIdentity("Fetch Job", "group1").build();
+		
+		job.getJobDataMap().put("mapNumber", mapNumber);
 		
 		Trigger trigger = TriggerBuilder
 				.newTrigger()

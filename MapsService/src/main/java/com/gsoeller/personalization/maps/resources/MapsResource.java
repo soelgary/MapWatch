@@ -48,7 +48,8 @@ public class MapsResource {
 	@POST
 	@Path("/location")
 	public Location addLocation(Location location) {
-		int id = locationDao.addLocation(location.getLatitude(), location.getLongitude());
-		return locationDao.getLocation(id).get(0);
+		//int id = locationDao.addLocation(location.getLatitude(), location.getLongitude());
+		//return locationDao.getLocation(id).get(0);
+		return null;
 	}
 }
