@@ -54,6 +54,11 @@ public class MapRequest {
 	public String buildRequestUrl() {
 		return String.format("%s?center=%s,%s&size=%sx%s&zoom=%s&language=%s&region=%s&key=%s", API_ENDPOINT, location.getLatitude(), location.getLongitude(), xDimension, yDimension, zoom, language, region, API_KEY);
 	}
+	
+	public String toString() {
+		return String.format("ID:\t%d\nZoom:\t%d\nX Dimension:\t%d\nY Dimension:\t%d\nRegion:\t%s\nLanguage:\t%s", 
+				id, zoom, xDimension, yDimension, region.toString(), language.toString());
+	}
 
 	private MapRequest(MapRequestBuilder builder) {
 		this.location = builder.location;

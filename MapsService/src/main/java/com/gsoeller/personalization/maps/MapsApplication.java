@@ -5,6 +5,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -42,8 +43,14 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		options.addOption("s", false, "Run the dropwizard server to get REST api access");
 		options.addOption("create", false, "Create the requests to the maps api to be run every time period");
 		options.addOption("fetch", false, "Run the job to fetch requests for each map");
-		options.addOption("compare", false, "Run the job to compare the latest fetched maps for personalization");
+		//options.addOption("compare", true, "Run the job to compare the latest fetched maps for personalization");
 		Option option = new Option("h", "Help message");
+		
+		Option compare = new Option("compare", "Run compare job");
+		compare.hasArg();
+		compare.setType(Integer.class);
+		compare.setArgs(1);
+		options.addOption(compare);
 		
 		options.addOption(option);
 		CommandLineParser parser = new BasicParser();
@@ -66,7 +73,8 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			System.out.println("fetching");
 			startFetchJob();
 		} else if(cmd.hasOption("compare")) {
-			startCompareJob();
+			String fetchJob = (String) cmd.getOptionValue("compare");
+			startCompareJob(Integer.parseInt(fetchJob));
 		} else {
 			new MapsApplication().run(args);
 		}
@@ -93,13 +101,16 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		environment.jersey().register(new MapsResource(mapRequestDao, locationDao));
 	}
 	
-	private static void startCompareJob() throws SchedulerException {
+	private static void startCompareJob(int fetchJob) throws SchedulerException {
 		SchedulerFactory schedFact = new StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
 		sched.start();
 		
 		JobDetail job = JobBuilder.newJob(ComparisonJob.class)
-				.withIdentity("Comparison Job", "group1").build();
+				.withIdentity("Comparison Job", "group1")
+				.build();
+		
+		job.getJobDataMap().put("fetchJob", fetchJob);
 		
 		Trigger trigger = TriggerBuilder.newTrigger()
 				.withIdentity("Comparison Trigger", "group1")

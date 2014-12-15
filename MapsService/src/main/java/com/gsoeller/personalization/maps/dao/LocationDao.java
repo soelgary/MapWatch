@@ -24,4 +24,5 @@ public interface LocationDao {
 	@SqlQuery("Select * from Location where id = :id")
 	@Mapper(LocationMapper.class)
 	public List<Location> getLocation(@Bind("id") int id);
+	
 }

@@ -6,6 +6,10 @@ import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
+
+import com.gsoeller.personalization.maps.data.FetchJob;
+import com.gsoeller.personalization.maps.mappers.FetchJobMapper;
 
 public interface FetchJobDao {
 	
@@ -13,8 +17,9 @@ public interface FetchJobDao {
 	@GetGeneratedKeys
 	public int createFetchJob();
 
-	@SqlQuery("select id from FetchJob order by id desc")
-	public List<Integer> getFetchJobs();	
+	@SqlQuery("select * from FetchJob order by id desc")
+	@Mapper(FetchJobMapper.class)
+	public List<FetchJob> getFetchJobs();	
 	
 	@SqlQuery("select finished from FetchJob order by startTime desc limit 1")
 	public List<Boolean> isLastJobFinished();

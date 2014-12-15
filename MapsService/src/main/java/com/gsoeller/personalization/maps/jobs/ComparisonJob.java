@@ -3,6 +3,7 @@ package com.gsoeller.personalization.maps.jobs;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 import io.dropwizard.jdbi.OptionalContainerFactory;
 
@@ -17,12 +18,16 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
+import com.gsoeller.personalization.maps.dao.LocationDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.data.Map;
+import com.gsoeller.personalization.maps.data.FetchJob;
 import com.gsoeller.personalization.maps.data.Region;
+import com.gsoeller.personalization.maps.data.Tile;
 import com.gsoeller.personalization.maps.smtp.MapsEmail;
 import com.gsoeller.personalization.maps.smtp.MapsEmail.MapsEmailBuilder;
 import com.gsoeller.personalization.maps.smtp.SmtpClient;
@@ -34,7 +39,10 @@ public class ComparisonJob implements Job {
 	private FetchJobDao fetchJobDao;
 	private MapDao mapDao;
 	private MapRequestDao mapRequestDao;
+	private LocationDao locationDao;
 	private SmtpClient smtpClient = new SmtpClient();
+	
+	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.ComparisonJob");
 	
 	public ComparisonJob() throws IOException {
 		PropertiesLoader propLoader = new PropertiesLoader();
@@ -44,8 +52,61 @@ public class ComparisonJob implements Job {
 		fetchJobDao = handle.attach(FetchJobDao.class);
 		mapDao = handle.attach(MapDao.class);
 		mapRequestDao = handle.attach(MapRequestDao.class);
+		locationDao = handle.attach(LocationDao.class);
 	}
 	
+	public void execute(JobExecutionContext context) throws JobExecutionException {
+		LOG.info("Running comparisons");
+		try {
+			int fetchJob = (Integer)context.getJobDetail().getJobDataMap().get("fetchJob");
+			compare(fetchJob);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void compare(int fetchJob) throws IOException {
+		// need to get # of locations
+		int numLocations = locationDao.getLocations().size();
+		
+		HashMap<Integer, List<Integer>> locationToMapRequests = Maps.newHashMap(); // key -> location id, value -> list of map requests with that location
+		// need to query map requests by location
+		for(int i = 1; i <= numLocations; i++) {
+			locationToMapRequests.put(i, mapRequestDao.getMapRequestsbyLocation(i));
+		}
+		
+		// need to query for all maps that are the same tile
+		for(Integer location: locationToMapRequests.keySet()) {
+			List<Integer> mapRequests = locationToMapRequests.get(location);
+			Tile tile = new Tile(fetchJob);
+			for(Integer mapRequest: mapRequests) {
+				// need to get map from fetch job with map request id
+				List<Map> maps = mapDao.getMapFromFetchJobByMapRequest(fetchJob, mapRequest);
+				if(maps.size() > 1) {
+					LOG.severe(String.format("An error occurred making a query for a Map with fetchJob: %d, and mapRequest: %d", fetchJob, mapRequest));
+				} else if(maps.size() == 0) {
+					LOG.severe(String.format("Could not find any maps with fetchJob: %d, and mapRequest: %d", fetchJob, mapRequest));
+				} else {
+					tile.addMap(maps.get(0));
+				}
+			}
+			// need to compare all tiles
+			tile.compare();
+		}
+	}
+	
+	public boolean canCompare(List<FetchJob> fetchJobs) {
+		if(fetchJobs.size() < 2) {
+			LOG.severe("Cannot compare because there are not 2 or more fetch jobs");
+			return false;
+		}
+		
+		return true;
+	}
+	
+	
+	/*
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		System.out.println("Running comparisons");
 		Optional<Integer> mostRecentFetchJob = getMostRecentFetchJob();
@@ -56,14 +117,12 @@ public class ComparisonJob implements Job {
 			System.out.println("No jobs have been run yet");
 			System.exit(0);
 		}
-		if(previousFetchJob.isPresent()) {
-			compareFetchJobs(mostRecentFetchJob.get(), previousFetchJob.get());
-		} else {
-			System.out.println("Only 1 job has been run, therefore cannot compare 2 jobs");
-		}
+		
 		System.exit(0);
 	}
+	*/
 	
+	/*
 	public void compareFetchJob(int fetchJob) {
 		// is there any difference between countries?
 		List<Map> maps = mapDao.getMaps();//mapDao.getMapsFromFetchJob(fetchJob);
@@ -100,7 +159,9 @@ public class ComparisonJob implements Job {
 			}
 		}
 	}
+	*/
 	
+	/*
 	public HashMap<Region, Integer> pairRegionWithMapRequest() {
 		HashMap<Region, Integer> regions = Maps.newHashMap();
 		for(Region region: Lists.newArrayList(Region.en)){//Region.values()) {
@@ -108,7 +169,9 @@ public class ComparisonJob implements Job {
 		}
 		return regions;
 	}
+	*/
 	
+	/*
 	public void compareFetchJobs(int fetchJob1, int fetchJob2) {
 		// is there any difference between the two given fetch jobs?
 		HashMap<Region, Integer> regions = pairRegionWithMapRequest();
@@ -126,7 +189,8 @@ public class ComparisonJob implements Job {
 			}
 		}
 	}
-	
+	*/
+	/*
 	public Optional<Integer> getMostRecentFetchJob() {
 		List<Integer> fetchJobs = fetchJobDao.getFetchJobs();
 		if(fetchJobs.isEmpty()) {
@@ -142,4 +206,5 @@ public class ComparisonJob implements Job {
 		}
 		return Optional.fromNullable(fetchJobs.get(1));
 	}
+	*/
 }

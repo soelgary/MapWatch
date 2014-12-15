@@ -35,6 +35,9 @@ import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapRequest;
+import com.gsoeller.personalization.maps.smtp.MapsEmail;
+import com.gsoeller.personalization.maps.smtp.SmtpClient;
+import com.gsoeller.personalization.maps.smtp.MapsEmail.MapsEmailBuilder;
 
 public class FetchJob implements Job {
 
@@ -51,6 +54,8 @@ public class FetchJob implements Job {
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 
 	private final int MINUTES_TO_RUN = 50;
+	
+	private SmtpClient smtpClient = new SmtpClient();
 	
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.FetchJob");
 	
@@ -162,6 +167,17 @@ public class FetchJob implements Job {
 							} else {
 								hasChanged = true;
 								imagePath = newImage;
+								try {
+									MapsEmail email = new MapsEmailBuilder()
+										.setSubject("Tile Has Changed")
+										.setmMessage(request.toString())
+										.addTo("mapspersonalization@gmail.com")
+										.build();
+									smtpClient.sendEmail(email);
+								} catch (IOException e) {
+									LOG.severe("Could not send email");
+									e.printStackTrace();
+								}
 								LOG.info("Images are different. Keeping both images in the filesystem");
 							}
 							saveImage(hasChanged, request.getId(), imagePath, fetchJob);

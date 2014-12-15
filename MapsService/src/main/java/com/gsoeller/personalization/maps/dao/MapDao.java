@@ -40,4 +40,8 @@ public interface MapDao {
 	
 	@SqlQuery("Select mapRequest from Map order by dateTime desc limit 1")
 	public List<Integer> getLastMap();
+	
+	@SqlQuery("select * from (select * from Map as aa where FetchJob = :fetchJob) as a where mapRequest = :mapRequest")
+	@Mapper(MapWrapper.class)
+	public List<Map> getMapFromFetchJobByMapRequest(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
 }
