@@ -1,0 +1,301 @@
+Personalization
+
+1) Bad Example - cant see any differences
+Hash db947619467679621c98640604a53655
+Path 8c382685-1941-4a15-9644-959812ab3ecc.png 
+Countries China
+
+Hash 068c01c5ba4f8103cb61556b166f1af6
+Path eef499e9-3917-497f-b66c-2bed68cdb81a.png
+Countries Everyone else
+
+
+2)
+Hash 21ee4144e52dc8c3cde1357e99545087
+Path 15f8efdd-494a-432c-a719-a19f67cd6ba6.png
+Countries China
+
+Hash cf19d54d731feaa9932a13ac0f03d1b6
+Path 7362e3aa-8103-4270-ace6-0b0f74024035.png
+Countries Everyone else
+
+
+3) Good Example
+Hash 0bcba605e19f556b143f46c5fa062c58
+Path ff5c1048-4122-4a20-81d8-435a359ed5e4.png 
+Countries China
+
+Hash 98cd6e3487deeee3eb57e02a75cc175f
+Path 371b983f-2f8c-4e26-8e5c-3c78fc1f2c3a.png
+Countries Everyone else
+
+
+4) Good Example
+Hash d651e1364899130257115a6493649cab
+Path 7f31f947-146f-4f9e-9584-7f663d04b281.png
+Countries Everyone else
+
+Hash 5a265e69d39c20402560cdc0032bd129
+Path 64fb494d-22de-41a2-9ceb-914d7fd73d33.png
+Countries China
+
+
+5) Excellent Example
+Hash 2d4b15ce01c9bdb104001c56c63768b4
+Path 708e4430-878c-4604-98cb-96a27ee3599d.png 
+Countries China
+
+Hash 194c12f9273cacc6d935ea4a67dbc091
+Path e9b44c8a-e122-4303-b2b2-de26174107d0.png
+Countries India
+
+Hash 715b6db86c521f4c2c0eb940ee3ab074
+Path 9ccbd330-2421-498e-ac0c-e4ad647fd295.png
+Countries Everyone else
+
+
+6) Excellent Example
+Hash a229e0790d25d5b68ed3a913c0a81550
+Path 6811ce29-7703-4e7b-94c7-a507489dbd3f.png
+Countries India
+
+Hash 87a2ad1a677838d019403078d1e2a7a7
+Path df8717ed-7b65-40a1-8464-04e7f1c2ffd3.png
+Countries China
+
+Hash 688dbd413e4b20db3094cf99caf2b42c
+Path fb49cd98-0759-4ffc-bc74-c0614918871a.png
+Countries Everyone Else
+
+
+7) Bad Example - difference is name of water - map of iraq/saudi arabia 
+Hash c68fc9a5ac2a6d1784eb453e6a9607bc
+Path 08a73f39-d3bf-48dd-96d5-569ab1413378.png
+Countries sa eg iq jo kw bh qa om ae lb ly dz tn 
+
+Hash e8169e6018e679f739f6d1a51bb862b5
+Path c8c79721-496a-4ce8-b5e3-f8da2946a50b.png
+Countries Everyone Else
+
+
+8) Interesting Example - Some city names are different, different borders
+Hash 7dad914211508457f9ce3add86367021
+Path fa3626bf-b070-4a85-8e6d-7de70fa43145.png
+Countries India
+
+Hash 756f13fd9e1258c1a121da10baa49bc3
+Path 69af6896-8589-4939-9044-b69000a335e7.png 
+Countries China
+
+Hash 4c529f08ffdf395e3f74260667426513
+Path 88c56b60-8376-4e4a-8eb6-a5f36573f7cf.png
+Countries Everyone else
+
+9) shows Guizhou - a province of China on some but not others
+Hash 8318ad890072d279cf00a55d1e1c0d48
+Path 277addda-9b57-43cd-9685-9d0746c936ee.png 
+Countries India
+
+Hash a117d25df5aedd525b8a3721300a10d4
+Path cf75a689-bd1a-45e0-97e3-c5ea01bd63ee.png
+Countries China
+
+Hash efab3f5ce61fe2a2805fbff2167469fc
+Path 4a44e5ea-179b-45b4-9b6e-1a96db56f724.png
+Countries Everyone else
+
+10) Body of India - Cannot notice any differences visually
+Hash ef1c5ed95edad38ef790e0d4d15cbcaa
+Path 421846b1-02b6-4547-8aa2-dda1679ef8af.png
+Countries India
+
+Hash 9d67472dce0f83924f804dd73f2ed2c6
+Path 198acc2f-d94b-4477-89f6-b8a53c6857fe.png
+Countries Everyone else
+
+11) Bangladesh - Cannot notice any differences visually
+Hash fd6979a145b16497aaa42cb2bbaa5b60
+Path 295404e6-f352-4cb5-ac82-21da566edca0.png 
+Countries China
+
+Hash 0a4fb49f294dcf25a36d447808507962
+Path 1b0e3b6d-c181-417a-be1b-3d3276e3206c.png
+Countries Everyone else
+
+12) Thailand and China - Difference is that it shows a Chinese province
+Hash 48b221d847f6501647789e9709a7fc36
+Path e1a72254-871e-4125-acf1-622fa56e5417.png
+Countries China
+
+Hash 27cd1ab3de69ae71af549d893429d530
+Path 256eeb41-955e-45ee-a9cf-fdb308bc8283.png 
+Countries India
+
+Hash 4da6d266b57ea614e7f0aac1c752fc71
+Path b003b9fa-64ec-4be8-99c6-2aff430b2cc6.png
+Countries Everyone else
+
+13) Interesting - shows Taiwan, Chinese province, and border in the ocean
+Hash 839d09473815937103d1afc899784e17
+Path 758e1332-180f-4fa6-a9ff-3985e00095c3.png
+Countries India
+
+Hash 70e3e1712fa6ee033cd6c194254a0be1
+Path a37ee7aa-469f-47d5-b1db-a476c88bce27.png
+Countries China
+
+Hash ed80ef5375ee7214c1ab35d09fa2b211
+Path 21531c33-cd8b-407f-9d34-38b135cd3da6.png
+Countries Everyone else
+
+14) Tibet - some country names are missing and shows Chinese provinces in some
+Hash fedebe1344fef59fa654ae5058b9a8c6
+Path 263907ad-454d-4013-a0a3-efe2080adfeb.png
+Countries India
+
+Hash 98d3743f27e5f29113b2453e89c36052
+Path cedb1dec-09a8-466a-9db1-8eca1e764f52.png
+Countries China
+
+Hash ed9d21b55a8ce19f5f179bd98575c542
+Path 13f190a5-a208-40f0-a7f9-4a79695935bc.png 
+Countries Everyone else
+
+15) Good example
+Hash 674ac59d07efcf9aac742432e8073102
+Path 6c25319f-5669-4ff8-a7cd-aa7c62cf8521.png
+Countries China
+
+Hash c753c09895bdeb961323997bbe999309
+Path af174ecc-fac5-449a-882d-5eff75d38aff.png
+Countries India
+
+Hash d34cdea29c6974519d267f23c98c9f52
+Path 9c839156-166c-4b69-9555-db2e2c6be707.png
+Countries by ba bo cd be am au bg cc ca aw bs bz br an aq ag ax bt ar ac bv bb as af bw bm bj bi al ae bf ao bd cf at bn ad ai bh az 
+
+Hash 8ff9f510fe41ecf86fc831933956bece
+Path 656d5053-3566-4d95-88f2-e52319050d16.png
+Countries Everyone else
+
+16) Shows Chinese provinces for some
+Hash 674ddf832b49042ac54fd5c504506f99
+Path 7377e0f6-8fa0-485f-adec-8f351d871f44.png
+Countries China
+
+Hash f617e93eaad3b43425bf248beb0c370c
+Path 235b4414-7f6e-4ea7-9d16-a3215c950258.png
+Countries India
+
+Hash 66dde863c5933ee19300071d5974238a
+Path 81ade3d1-ca48-4230-b82a-78fe919a2348.png
+Countries Everyon else
+
+17) More Chinese provinces
+Hash 478e63763c8d723088e90bbda463b63b
+Path 135202fb-fa4b-45fa-93c9-1b43a8e6a2d1.png
+Countries India
+
+Hash 6819ca58fe350e63d59a4bb021d75565
+Path 4f0ffa72-7f49-496d-8a48-b2f018c162d4.png
+Countries Everyone else
+
+18) Sea of Japan and East Sea are named differently
+Hash c41d66858dbd95dddf5ca62a19f90d3d
+Path 7eaca36b-5ef0-4d29-9cca-ae4e0a17cafd.png
+Countries Republic of Korea
+
+Hash eb7373f8026a2a4464cfe8e3aa504401
+Path fc683307-2279-4471-b690-e305579166b3.png
+Countries Everyone else
+
+19) Good Example - Border difference next to the black sea
+Hash 38ebd5935204b5c9d5e54e80264bd971
+Path 136b4f3b-491d-4b5f-906d-bec35a599cfc.png
+Countries Ukraine
+
+Hash a405cc04e59e9082e34608592127457b
+Path a9d05b81-1197-4ebc-8a00-0e9c577c5035.png
+Countries Russia
+
+Hash ea3878d533ca5b14845ec22af44a4f83
+Path b0ce3ae3-3107-4e40-89bf-58a08e022000.png
+Countries Everyone else
+
+19) More East Sea/Sea of Japan differences and province differences
+Hash a6b79d0396df46546755c7d107e58e49
+Path 7f02c6af-2d02-448c-a4b6-359d264ad2ad.png
+Countries India
+
+Hash babf8a545ef92dfc926274dc7d1a2d3e
+Path cbc4bfa1-36d3-41c3-8be6-52b45bf29e4d.png
+Countries China
+
+Hash 72e1a58c1c69876af7b6c55da23fdcc7
+Path a5e17026-1bb0-48e8-ba79-bf090627c4fc.png
+Countries Republic of Korea
+
+Hash cacb899b20887cc6a463b4c281a40055
+Path 1a1bb317-a137-4771-bbdf-e2ee1bc13e64.png
+Countries Everyone else
+
+20) More Chinese provinces
+Hash 7b4cf8233d1f4cd9c142baa9c5462e3e
+Path 080ad7ad-2137-4522-a18c-9f0e3b56a417.png
+Countries China
+
+Hash 673f6ffa450eb15492ae4e08a221e134
+Path a4bc82ee-baaa-4d44-9afb-8dd2919bdcd8.png
+Countries India
+
+Hash 7da38144b5e62099cef928c4a6379e3b
+Path e06719ba-7927-4049-b50c-edc86a92a8cd.png
+Countries Everyone else
+
+21) Even more Chinese provinces..
+Hash 04cf4942e1bd2238748ad443433d2ba0
+Path ebbacff9-0ee7-4190-90d5-7f8208ec56b9.png
+Countries China
+
+Hash 05d60b0ca05f7f5907a8ae7a40f25f13
+Path 9cec9a57-0432-4ed0-b1c5-bcd5de95c1c0.png
+Countries India
+
+Hash 3383f44a30825b4ce71a1184f2f4dc31
+Path a643329f-2d28-4744-8f4e-38fe582fd690.png 
+Countries Everyone else
+
+22) Kyrgyzstan - Cannot visually see any difference
+Hash 957b6f3318dd7ad9ded642813ca60c86
+Path 74e92d84-7f30-40a5-b60b-122467200570.png
+Countries China
+
+Hash 0288aa6f998925078c85b7f7b0f54b71
+Path cf0a472c-949d-4e6a-bbdd-949f509af4b6.png
+Countries Everyone else
+
+23) More Chinese provinces
+Hash 41c2edaa4b480a8197ce6bf7d808f894
+Path 8d4fab53-d58e-473e-92fd-ab07fa3a640a.png
+Countries India
+
+Hash 6a79f3572771b01901402bc606eb041f
+Path 95aa8f0d-618a-492a-bdeb-7b3d83240563.png
+Countries China
+
+Hash c0861f2c1dcf2eb94766980eeba1be56
+Path ab7649b4-c720-40c9-80ce-a37ef19a8bda.png
+Countries Everyone else
+
+24)  More Chinese provinces
+Hash 4034c0129e022ecd6c896c732a932295
+Path c84cdd55-f0f6-4df6-a7b8-f03cbeeaf5d3.png
+Countries India
+
+Hash 8cbaae7ac00f1db8db1a3e451393d2e5
+Path 258f6555-287c-4244-b899-aee39524a837.png
+Countries China
+
+Hash 70cf4fb7137bf3595b0388d5a3531ea8
+Path 85ec547c-4f81-4d6a-99e0-afcbb271a883.png
+Countries Everyone else
