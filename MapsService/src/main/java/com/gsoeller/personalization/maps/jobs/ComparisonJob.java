@@ -21,7 +21,6 @@ import com.google.common.collect.Multimap;
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
-import com.gsoeller.personalization.maps.dao.LocationDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.data.Map;
@@ -39,7 +38,6 @@ public class ComparisonJob implements Job {
 	private FetchJobDao fetchJobDao;
 	private MapDao mapDao;
 	private MapRequestDao mapRequestDao;
-	private LocationDao locationDao;
 	private SmtpClient smtpClient = new SmtpClient();
 	
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.ComparisonJob");
@@ -52,7 +50,6 @@ public class ComparisonJob implements Job {
 		fetchJobDao = handle.attach(FetchJobDao.class);
 		mapDao = handle.attach(MapDao.class);
 		mapRequestDao = handle.attach(MapRequestDao.class);
-		locationDao = handle.attach(LocationDao.class);
 	}
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -68,13 +65,13 @@ public class ComparisonJob implements Job {
 	
 	public void compare(int fetchJob) throws IOException {
 		// need to get # of locations
-		int numLocations = locationDao.getLocations().size();
+		//int numLocations = locationDao.getLocations().size();
 		
 		HashMap<Integer, List<Integer>> locationToMapRequests = Maps.newHashMap(); // key -> location id, value -> list of map requests with that location
 		// need to query map requests by location
-		for(int i = 1; i <= numLocations; i++) {
-			locationToMapRequests.put(i, mapRequestDao.getMapRequestsbyLocation(i));
-		}
+		//for(int i = 1; i <= numLocations; i++) {
+			//locationToMapRequests.put(i, mapRequestDao.getMapRequestsbyLocation(i));
+		//}
 		
 		// need to query for all maps that are the same tile
 		for(Integer location: locationToMapRequests.keySet()) {

@@ -5,7 +5,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
@@ -16,10 +15,7 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
-import org.skife.jdbi.v2.DBI;
 
-import com.gsoeller.personalization.maps.dao.LocationDao;
-import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.jobs.ComparisonJob;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
@@ -27,15 +23,11 @@ import com.gsoeller.personalization.maps.resources.MapsResource;
 
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
-import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 public class MapsApplication extends Application<MapsConfiguration> {
-
-	private MapRequestDao mapRequestDao;
-	private LocationDao locationDao;
 	
 	public static void main(String[] args) throws Exception {
 		Options options = new Options();
@@ -107,12 +99,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 	@Override
 	public void run(MapsConfiguration config, Environment environment)
 			throws Exception {
-		final DBIFactory factory = new DBIFactory();
-		final DBI jdbi = factory.build(environment,
-				config.getDataSourceFactory(), "mysql");
-		mapRequestDao = jdbi.onDemand(MapRequestDao.class);
-		locationDao = jdbi.onDemand(LocationDao.class);
-		environment.jersey().register(new MapsResource(mapRequestDao, locationDao));
+		environment.jersey().register(new MapsResource());
 	}
 	
 	private static void startCompareJob(int fetchJob) throws SchedulerException {

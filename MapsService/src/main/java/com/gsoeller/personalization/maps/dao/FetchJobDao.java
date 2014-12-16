@@ -13,9 +13,9 @@ import com.gsoeller.personalization.maps.mappers.FetchJobMapper;
 
 public interface FetchJobDao {
 	
-	@SqlUpdate("Insert into FetchJob (id) values (null)")
+	@SqlUpdate("Insert into FetchJob (MapNumber) values (:mapNumber)")
 	@GetGeneratedKeys
-	public int createFetchJob();
+	public int createFetchJob(@Bind("mapNumber") int mapNumber);
 
 	@SqlQuery("select * from FetchJob order by id desc")
 	@Mapper(FetchJobMapper.class)

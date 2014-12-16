@@ -17,6 +17,7 @@ public class FetchJobMapper implements ResultSetMapper<FetchJob>{
 			.setFinished(r.getBoolean("finished"))
 			.setId(r.getInt("id"))
 			.setStartTime(new DateTime(r.getTimestamp("startTime")))
+			.setMapNumber(r.getInt("MapNumber"))
 			.build();
 	}
 }

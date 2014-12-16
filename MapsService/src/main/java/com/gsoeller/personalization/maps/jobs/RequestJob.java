@@ -1,7 +1,6 @@
 package com.gsoeller.personalization.maps.jobs;
 
 import java.io.IOException;
-import java.util.List;
 
 import io.dropwizard.jdbi.OptionalContainerFactory;
 
@@ -13,11 +12,8 @@ import org.skife.jdbi.v2.Handle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
 import com.gsoeller.personalization.maps.PropertiesLoader;
-import com.gsoeller.personalization.maps.dao.LocationDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
-import com.gsoeller.personalization.maps.data.Box;
 
 public class RequestJob implements Job {
 
@@ -44,7 +40,6 @@ public class RequestJob implements Job {
 	private DBI dbi;
 	private Handle handle;
 	private MapRequestDao mapRequestDao;
-	private LocationDao locationDao;
 
 	private static final Logger LOG = LoggerFactory.getLogger(FetchJob.class);
 
@@ -54,7 +49,6 @@ public class RequestJob implements Job {
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
 		mapRequestDao = handle.attach(MapRequestDao.class);
-		locationDao = handle.attach(LocationDao.class);
 	}
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -65,7 +59,7 @@ public class RequestJob implements Job {
 				if(!inBox(lat, lon)) {
 					System.out.println(lat + "\t" + lon);
 					for(String cc: CC_TLD) {
-						mapRequestDao.addMapRequest(location, 6, 600, 600, cc, "English");
+						mapRequestDao.addMapRequest(mapNumber, lat, lon, 6, 600, 600, cc, "English");
 					}
 				}
 			}

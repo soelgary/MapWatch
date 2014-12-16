@@ -50,7 +50,7 @@ public class FetchJob implements Job {
 	private FetchJobDao fetchJobDao;
 	private MapRequestDao mapRequestDao;
 
-	private final RateLimiter limiter = RateLimiter.create(.28);
+	private final RateLimiter limiter = RateLimiter.create(.34);
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 
 	private final int MINUTES_TO_RUN = 50;
@@ -78,16 +78,16 @@ public class FetchJob implements Job {
 		int offset;
 		if(!finished.isEmpty() && finished.get(0)) {
 			LOG.info("Starting a new fetch job");
-			currentFetchJob = fetchJobDao.createFetchJob();
+			currentFetchJob = fetchJobDao.createFetchJob(mapNumber);
 			offset = 0;
 		} else {
 			List<Integer> lastFetchJob = fetchJobDao.getLastFetchJob();
 			if(lastFetchJob.isEmpty()) {
-				currentFetchJob = fetchJobDao.createFetchJob();
+				currentFetchJob = fetchJobDao.createFetchJob(mapNumber);
 				offset = 0;
 			} else {
 				currentFetchJob = lastFetchJob.get(0);
-				List<Integer> lastMapFetched = mapDao.getLastMap();
+				List<Integer> lastMapFetched = mapDao.getLastMap(currentFetchJob);
 				if(lastMapFetched.isEmpty()) {
 					offset = 0;
 				} else {
@@ -107,7 +107,7 @@ public class FetchJob implements Job {
 				break;
 			}
 			
-			List<MapRequest> requests = getNextBatchOfRequests(batchSize, offset);
+			List<MapRequest> requests = getNextBatchOfRequests(batchSize, offset, mapNumber);
 			if(requests.isEmpty()) {
 				executorService.shutdown();
 			}
@@ -193,8 +193,8 @@ public class FetchJob implements Job {
 		}
 	}
 
-	private List<MapRequest> getNextBatchOfRequests(int limit, int offset) {
-		return mapRequestDao.getRequests(limit, offset);
+	private List<MapRequest> getNextBatchOfRequests(int limit, int offset, int mapNumber) {
+		return mapRequestDao.getRequests(limit, offset, mapNumber);
 	}
 	
 	private void saveImage(boolean hasChanged, int id, String path, int fetchJob) {

@@ -143,6 +143,15 @@
 	</changeSet>
 	
 	<changeSet id="10" author="gary">
+		<dropForeignKeyConstraint baseTableName="MapRequest" constraintName="location"/>
 		<dropColumn tableName="MapRequest" columnName="location" />
+	</changeSet>
+	
+	<changeSet id="11" author="gary">
+		<addColumn tableName="FetchJob">
+			<column name="MapNumber" type="int" defaultValue="0">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
 	</changeSet>
 </databaseChangeLog>

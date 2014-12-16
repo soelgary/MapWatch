@@ -1,7 +1,9 @@
 package com.gsoeller.personalization.maps.data;
 
 public class MapRequest {
-	private Location location;
+	private double latitude;
+	private double longitude;
+	private int mapNumber;
 	private int zoom;
 	private int xDimension;
 	private int yDimension;
@@ -14,21 +16,31 @@ public class MapRequest {
 	
 	public MapRequest() {}
 	
-	public MapRequest(Location location, int zoom, int xDimension, int yDimension, Region region, Language language) {
+	public MapRequest(int mapNumber, double latitude, double longitude, int zoom, int xDimension, int yDimension, Region region, Language language) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.mapNumber = mapNumber;
 		this.language = language;
 		this.region = region;
 		this.zoom = zoom;
-		this.location = location;
 		this.xDimension = xDimension;
 		this.yDimension = yDimension;
 	}
 	
-	public int getId() {
-		return id;
+	public int getMapNumber() {
+		return mapNumber;
 	}
 	
-	public Location getLocation() {
-		return location;
+	public double getLatitude() {
+		return latitude;
+	}
+	
+	public double getLongitude() {
+		return longitude;
+	}
+	
+	public int getId() {
+		return id;
 	}
 
 	public int getZoom() {
@@ -52,7 +64,7 @@ public class MapRequest {
 	}
 	
 	public String buildRequestUrl() {
-		return String.format("%s?center=%s,%s&size=%sx%s&zoom=%s&language=%s&region=%s&key=%s", API_ENDPOINT, location.getLatitude(), location.getLongitude(), xDimension, yDimension, zoom, language, region, API_KEY);
+		return String.format("%s?center=%s,%s&size=%sx%s&zoom=%s&language=%s&region=%s&key=%s", API_ENDPOINT, latitude, longitude, xDimension, yDimension, zoom, language, region, API_KEY);
 	}
 	
 	public String toString() {
@@ -61,17 +73,21 @@ public class MapRequest {
 	}
 
 	private MapRequest(MapRequestBuilder builder) {
-		this.location = builder.location;
 		this.zoom = builder.zoom;
 		this.xDimension = builder.xDimension;
 		this.yDimension = builder.yDimension;
 		this.region = builder.region;
 		this.language = builder.language;
 		this.id = builder.id;
+		this.mapNumber = builder.mapNumber;
+		this.latitude = builder.latitude;
+		this.longitude = builder.longitude;
 	}
 	
 	public static class MapRequestBuilder {
-		private Location location;
+		private double latitude;
+		private double longitude;
+		private int mapNumber;
 		private int zoom;
 		private int xDimension;
 		private int yDimension;
@@ -79,13 +95,23 @@ public class MapRequest {
 		private Language language;
 		private int id;
 		
-		public MapRequestBuilder setId(int id) {
-			this.id = id;
+		public MapRequestBuilder setLatitude(double latitude) {
+			this.latitude = latitude;
 			return this;
 		}
 		
-		public MapRequestBuilder setLocation(Location location) {
-			this.location = location;
+		public MapRequestBuilder setLongitude(double longitude) {
+			this.longitude = longitude;
+			return this;
+		}
+		
+		public MapRequestBuilder setMapNumber(int mapNumber) {
+			this.mapNumber = mapNumber;
+			return this;
+		}
+		
+		public MapRequestBuilder setId(int id) {
+			this.id = id;
 			return this;
 		}
 		
