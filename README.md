@@ -8,13 +8,13 @@ How to Setup
 
 ##### Fill Database
 
-Initially, the database must be filled with ```MapRequests```. A ```MapRequest``` is simply a set of variables that can be converted into a request to the Google Maps Static API endpoint. Run ```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -create``` to fill the database. Only do this once as it will always add new values to the db.
+Initially, the database must be filled with ```MapRequests```. A ```MapRequest``` is simply a set of variables that can be converted into an HTTP request. Run ```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -create MapNumber -mp MapProvider``` to fill the database. ```MapNumber``` is an int where it represents an id for the set of tiles. This is mainly used if you change lat/lon intervals or zoom level. ```MapProvider``` is a String representing the map provider. Right now the only valid option is ```google```. The plan is to also add ```bing``` and ```openstreet``` in the future.
 
 ##### Fetch Maps
-Now you can run the fetch job as many times as necessary. The command to do so is ```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -fetch```. Do not run this on any machine besides achtung because the API key will only work from that IP address. Also do not run this multiple times, because the current rate limit is .28 requests/second. This equates to over 24,000 requests/day. We are only allowed 25,000/day. 
+Now you can run the fetch job as many times as necessary. The command to do so is ```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -fetch MapNumber -mp MapProvider```. ```MapNumber``` is the same as the ```MapNumber``` provided in the previous job and ```MapProvider``` is also the same.
 
 ##### Compare Maps
-Once the fetch job is done you can run the comparison job by running ```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -compare```. This will email results to mapspersonalization@gmail.com. This job does not save anything to the db, so run as often as necessary.
+Once the fetch job is done you can run the comparison job by running ```java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -compare FetchJob -mp MapProvider```. Here, ```FetchJob``` is the id of the ```FetchJob``` you are looking to compare and ```MapProvider``` is still the same. This will email results to mapspersonalization@gmail.com. This job does not save anything to the db, so run as often as necessary.
 
 
 
@@ -23,19 +23,16 @@ Database Migrations
 
 The database in use is mysql. There are a few steps needed in order to perform a migration. 
 
-Create Migration
-================
+#####Create Migration
 
 First you need to modify the ```src/main/resources/migrations.xml``` file by adding a changeSet.
 
 
-Build Fat Jar
-=============
+#####Build Fat Jar
 
 Next you need to build a new fat jar by running ```mvn clean compile assembly:single```.
 
-Check Status
-============
+#####Check Status
 
 You now need to check the status of the database. It should tell you that there is 1 changeSet that has not been applied.
 
@@ -43,8 +40,7 @@ You now need to check the status of the database. It should tell you that there 
 java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db status ../config.yaml
 ```
 
-Tag Your Schema
-================
+#####Tag Your Schema
 
 Now you need to tag your schema. Please make sure to modify the command so that the date is correct
 
@@ -52,8 +48,7 @@ Now you need to tag your schema. Please make sure to modify the command so that 
 java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db tag ../config.yaml 2014-10-03-pre-user-move
 ```
 
-Make the Migration
-==================
+#####Make the Migration
 
 We are ready to actually make the migration now.
 
@@ -61,8 +56,7 @@ We are ready to actually make the migration now.
 java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db migrate ../config.yaml
 ```
 
-Check Status
-============
+#####Check Status
 
 Check the status again. This time it should say that the database is up to date.
 
