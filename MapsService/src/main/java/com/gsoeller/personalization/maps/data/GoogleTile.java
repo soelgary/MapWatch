@@ -10,31 +10,32 @@ import java.util.logging.Logger;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
-import com.gsoeller.personalization.maps.dao.MapRequestDao;
+import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 
-public class Tile {
+public class GoogleTile {
 
 	private List<Map> maps;
 	private int fetchJob;
 	
 	private DBI dbi;
 	private Handle handle;
-	private MapRequestDao mapRequestDao;
+	private GoogleMapRequestDao mapRequestDao;
 	
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.data.Tile");
 	
-	public Tile(int fetchJob) throws IOException {
+	public GoogleTile(int fetchJob) throws IOException {
 		this.fetchJob = fetchJob;
 		PropertiesLoader propLoader = new PropertiesLoader();
 		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
-		mapRequestDao = handle.attach(MapRequestDao.class);
+		mapRequestDao = handle.attach(GoogleMapRequestDao.class);
 		maps = Lists.newArrayList();
 	}
 	
@@ -59,13 +60,11 @@ public class Tile {
 				message += String.format("Hash '%s' is associated with %d maps. The id/region pairs are...\n" , hash, sameMaps.size());
 				String pairs = "";
 				for(Map map: sameMaps) {
-					List<String> regions = mapRequestDao.getRegion(map.getMapRequest());
-					if(regions.size() > 1) {
-						LOG.severe("Query for region returned multiple regions");
-					} else if(regions.isEmpty()) {
-						LOG.severe("Query for region returned no regions");
+					Optional<Region> region = mapRequestDao.getRegion(map.getMapRequest());
+					if(region.isPresent()) {
+						pairs += String.format("%d:%s, ", map.getId(), region.get());
 					} else {
-						pairs += String.format("%d:%s, ", map.getId(), regions.get(0));
+						LOG.severe("Query for region returned no regions");
 					}
 				}
 				message += pairs + "\n";
@@ -73,4 +72,5 @@ public class Tile {
 			LOG.info(message);
 		}
 	}
+	
 }

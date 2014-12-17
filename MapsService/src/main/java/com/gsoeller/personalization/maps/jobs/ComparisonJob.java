@@ -21,12 +21,16 @@ import com.google.common.collect.Multimap;
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
+import com.gsoeller.personalization.maps.dao.GoogleFetchJobDao;
+import com.gsoeller.personalization.maps.dao.GoogleMapDao;
+import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
-import com.gsoeller.personalization.maps.data.Map;
+import com.gsoeller.personalization.maps.data.GoogleMap;
 import com.gsoeller.personalization.maps.data.FetchJob;
+import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.Region;
-import com.gsoeller.personalization.maps.data.Tile;
+import com.gsoeller.personalization.maps.data.GoogleTile;
 import com.gsoeller.personalization.maps.smtp.MapsEmail;
 import com.gsoeller.personalization.maps.smtp.MapsEmail.MapsEmailBuilder;
 import com.gsoeller.personalization.maps.smtp.SmtpClient;
@@ -47,9 +51,21 @@ public class ComparisonJob implements Job {
 		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
-		fetchJobDao = handle.attach(FetchJobDao.class);
-		mapDao = handle.attach(MapDao.class);
-		mapRequestDao = handle.attach(MapRequestDao.class);
+	}
+	
+	public boolean configure(String mapProvider) {
+		if(mapProvider.equals("google")) {
+			configureGoogle();
+		} else {
+			return false;
+		}
+		return true;
+	}
+	
+	public void configureGoogle() {
+		fetchJobDao = handle.attach(GoogleFetchJobDao.class);
+		mapDao = handle.attach(GoogleMapDao.class);
+		mapRequestDao = handle.attach(GoogleMapRequestDao.class);
 	}
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -64,6 +80,7 @@ public class ComparisonJob implements Job {
 	}
 	
 	public void compare(int fetchJob) throws IOException {
+		
 		// need to get # of locations
 		//int numLocations = locationDao.getLocations().size();
 		
@@ -76,22 +93,21 @@ public class ComparisonJob implements Job {
 		// need to query for all maps that are the same tile
 		for(Integer location: locationToMapRequests.keySet()) {
 			List<Integer> mapRequests = locationToMapRequests.get(location);
-			Tile tile = new Tile(fetchJob);
+			GoogleTile tile = new GoogleTile(fetchJob);
 			for(Integer mapRequest: mapRequests) {
 				// need to get map from fetch job with map request id
-				List<Map> maps = mapDao.getMapFromFetchJobByMapRequest(fetchJob, mapRequest);
-				if(maps.size() > 1) {
-					LOG.severe(String.format("An error occurred making a query for a Map with fetchJob: %d, and mapRequest: %d", fetchJob, mapRequest));
-				} else if(maps.size() == 0) {
-					LOG.severe(String.format("Could not find any maps with fetchJob: %d, and mapRequest: %d", fetchJob, mapRequest));
+				Optional<Map> map = mapDao.getMapFromFetchJobByMapRequest(fetchJob, mapRequest);
+				if(map.isPresent()) {
+					tile.addMap(map.get());
 				} else {
-					tile.addMap(maps.get(0));
+					LOG.severe(String.format("Could not find any maps with fetchJob: %d, and mapRequest: %d", fetchJob, mapRequest));
 				}
 			}
 			// need to compare all tiles
 			tile.compare();
 		}
 		LOG.info("Finished running comparisons");
+		
 	}
 	
 	public boolean canCompare(List<FetchJob> fetchJobs) {

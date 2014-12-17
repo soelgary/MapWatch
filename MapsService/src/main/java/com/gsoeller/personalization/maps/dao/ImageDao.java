@@ -14,8 +14,8 @@ import org.apache.http.HttpEntity;
 
 public class ImageDao {
 
-	private static final String OUTPUT_DIR = "/net/data/google-maps/img/";
-	//private static final String OUTPUT_DIR = "/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/img/";
+	//private static final String OUTPUT_DIR = "/net/data/google-maps/img/";
+	private static final String OUTPUT_DIR = "/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/img/";
 
 	public void saveImage(String filename, HttpEntity entity) {
 		File imageFile = new File(OUTPUT_DIR + filename);

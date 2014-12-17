@@ -1,6 +1,7 @@
 package com.gsoeller.personalization.maps.jobs;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import io.dropwizard.jdbi.OptionalContainerFactory;
 
@@ -9,11 +10,10 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
-import com.gsoeller.personalization.maps.dao.MapRequestDao;
+import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 
 public class RequestJob implements Job {
 
@@ -39,20 +39,31 @@ public class RequestJob implements Job {
 	
 	private DBI dbi;
 	private Handle handle;
-	private MapRequestDao mapRequestDao;
+	private GoogleMapRequestDao mapRequestDao;
 
-	private static final Logger LOG = LoggerFactory.getLogger(FetchJob.class);
+	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.FetchJob");
 
 	public RequestJob() throws IOException {
 		PropertiesLoader propLoader = new PropertiesLoader();
 		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
-		mapRequestDao = handle.attach(MapRequestDao.class);
+		mapRequestDao = handle.attach(GoogleMapRequestDao.class);
 	}
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		int mapNumber = (Integer)context.getJobDetail().getJobDataMap().get("mapNumber");
+		String mapProvider = (String)context.getJobDetail().getJobDataMap().get("mapProvider");
+		if(mapProvider.equals("google")) {
+			LOG.info("Loading requests for Google");
+			setForGoogle(mapNumber);
+		} else {
+			LOG.severe(String.format("Does not recognize map provider, '%s'", mapProvider));
+		}
+		System.exit(0);
+	}
+	
+	public void setForGoogle(int mapNumber) {
 		for(int lat = startLat; lat < maxLat; lat+=latMultiple) {
 			for(int lon = startLon; lon < maxLon; lon+= lonMultiple) {
 				//int location = locationDao.addLocation(lat, lon, mapNumber);
@@ -64,7 +75,6 @@ public class RequestJob implements Job {
 				}
 			}
 		}
-		System.exit(0);
 	}
 	
 	public boolean inBox(double lat, double lon) {

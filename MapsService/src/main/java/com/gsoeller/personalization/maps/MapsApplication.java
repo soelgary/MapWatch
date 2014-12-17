@@ -50,6 +50,12 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		compare.setArgs(1);
 		options.addOption(compare);
 		
+		Option mapProvider = new Option("mp", "Map provider to run the job for");
+		mapProvider.hasArg();
+		mapProvider.setType(String.class);
+		mapProvider.setArgs(1);
+		options.addOption(mapProvider);
+		
 		Option create = new Option("create", "Create the requests to the maps api to be run every time period");
 		create.hasArg();
 		create.setType(Integer.class);
@@ -73,14 +79,17 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			new MapsApplication().run(new String[] {"server", propLoader.getProperty("config")});
 		} else if(cmd.hasOption("create")) {
 			String mapNumber = (String) cmd.getOptionValue("create");
-			startRequestJob(Integer.parseInt(mapNumber));
+			String map = (String) cmd.getOptionValue("mp");
+			startRequestJob(Integer.parseInt(mapNumber), map);
 		} else if(cmd.hasOption("fetch")) {
 			System.out.println("fetching");
 			String mapNumber = (String) cmd.getOptionValue("fetch");
-			startFetchJob(Integer.parseInt(mapNumber));
+			String map = (String) cmd.getOptionValue("mp");
+			startFetchJob(Integer.parseInt(mapNumber), map);
 		} else if(cmd.hasOption("compare")) {
 			String fetchJob = (String) cmd.getOptionValue("compare");
-			startCompareJob(Integer.parseInt(fetchJob));
+			String map = (String) cmd.getOptionValue("mp");
+			startCompareJob(Integer.parseInt(fetchJob), map);
 		} else {
 			new MapsApplication().run(args);
 		}
@@ -102,7 +111,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		environment.jersey().register(new MapsResource());
 	}
 	
-	private static void startCompareJob(int fetchJob) throws SchedulerException {
+	private static void startCompareJob(int fetchJob, String mapProvider) throws SchedulerException {
 		SchedulerFactory schedFact = new StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
 		sched.start();
@@ -112,6 +121,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				.build();
 		
 		job.getJobDataMap().put("fetchJob", fetchJob);
+		job.getJobDataMap().put("mapProvider", mapProvider);
 		
 		Trigger trigger = TriggerBuilder.newTrigger()
 				.withIdentity("Comparison Trigger", "group1")
@@ -122,7 +132,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		sched.scheduleJob(job, trigger);
 	}
 	
-	private static void startRequestJob(int mapNumber) throws SchedulerException {
+	private static void startRequestJob(int mapNumber, String mapProvider) throws SchedulerException {
 		SchedulerFactory schedFact = new StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
 		sched.start();
@@ -131,6 +141,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				.withIdentity("Request Job", "group1").build();
 
 		job.getJobDataMap().put("mapNumber", mapNumber);
+		job.getJobDataMap().put("mapProvider", mapProvider);
 		
 		Trigger trigger = TriggerBuilder
 				.newTrigger()
@@ -140,7 +151,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		sched.scheduleJob(job, trigger);
 	}
 
-	private static void startFetchJob(int mapNumber) throws SchedulerException {
+	private static void startFetchJob(int mapNumber, String mapProvider) throws SchedulerException {
 		SchedulerFactory schedFact = new StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
 		sched.start();
@@ -149,6 +160,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				.withIdentity("Fetch Job", "group1").build();
 		
 		job.getJobDataMap().put("mapNumber", mapNumber);
+		job.getJobDataMap().put("mapProvider", mapProvider);
 		
 		Trigger trigger = TriggerBuilder
 				.newTrigger()

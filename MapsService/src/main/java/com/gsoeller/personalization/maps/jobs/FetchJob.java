@@ -1,7 +1,5 @@
 package com.gsoeller.personalization.maps.jobs;
 
-import io.dropwizard.jdbi.OptionalContainerFactory;
-
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,20 +19,20 @@ import org.joda.time.Minutes;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.skife.jdbi.v2.DBI;
-import org.skife.jdbi.v2.Handle;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.RateLimiter;
 import com.gsoeller.personalization.maps.MapsLogger;
-import com.gsoeller.personalization.maps.PropertiesLoader;
-import com.gsoeller.personalization.maps.StaticMapFetcher;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
+import com.gsoeller.personalization.maps.dao.GoogleFetchJobDao;
 import com.gsoeller.personalization.maps.dao.ImageDao;
+import com.gsoeller.personalization.maps.dao.GoogleMapDao;
+import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapRequest;
+import com.gsoeller.personalization.maps.fetchers.StaticMapFetcher;
 import com.gsoeller.personalization.maps.smtp.MapsEmail;
 import com.gsoeller.personalization.maps.smtp.SmtpClient;
 import com.gsoeller.personalization.maps.smtp.MapsEmail.MapsEmailBuilder;
@@ -42,15 +40,12 @@ import com.gsoeller.personalization.maps.smtp.MapsEmail.MapsEmailBuilder;
 public class FetchJob implements Job {
 
 	private StaticMapFetcher fetcher = new StaticMapFetcher();
-	private ImageDao imageDao = new ImageDao();
-
-	private DBI dbi;
-	private Handle handle;
+	private ImageDao imageDao = new ImageDao();	
 	private MapDao mapDao;
 	private FetchJobDao fetchJobDao;
 	private MapRequestDao mapRequestDao;
 
-	private final RateLimiter limiter = RateLimiter.create(.34);
+	private RateLimiter limiter;
 	private ExecutorService executorService = Executors.newCachedThreadPool();
 
 	private final int MINUTES_TO_RUN = 50;
@@ -59,39 +54,58 @@ public class FetchJob implements Job {
 	
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.FetchJob");
 	
-	public FetchJob() throws IOException {
-		PropertiesLoader propLoader = new PropertiesLoader();
-		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
-		dbi.registerContainerFactory(new OptionalContainerFactory());
-		handle = dbi.open();
-		mapDao = handle.attach(MapDao.class);
-		fetchJobDao = handle.attach(FetchJobDao.class);
-		mapRequestDao = handle.attach(MapRequestDao.class);
+	public boolean configure(String mapProvider) throws IOException {
+		if(mapProvider.equals("google")) {
+			setGoogleMaps();
+		} else {
+			return false;
+		}
+		return true;
 	}
-
+	
+	public void setGoogleMaps() throws IOException {
+		mapDao = new GoogleMapDao();
+		mapRequestDao = new GoogleMapRequestDao();
+		fetchJobDao = new GoogleFetchJobDao();
+		limiter = RateLimiter.create(.34);
+	}
+	
 	public void execute(JobExecutionContext context)
 			throws JobExecutionException {	
 		int mapNumber = (Integer)context.getJobDetail().getJobDataMap().get("mapNumber");
-		LOG.info(String.format("Fetching maps for map number: %d", mapNumber));	
-		List<Boolean> finished = fetchJobDao.isLastJobFinished();
+		String mapProvider = (String) context.getJobDetail().getJobDataMap().get("mapProvider");
+		boolean configured;
+		try {
+			configured = configure(mapProvider);
+		} catch (IOException e1) {
+			LOG.severe("An error occurred while configuring the fetcher...");
+			e1.printStackTrace();
+			configured = false;
+		}
+		if(!configured) {
+			LOG.severe(String.format("Cannot configure the given map provider, '%s'", mapProvider));
+			System.exit(0);
+		}
+		LOG.info(String.format("Fetching maps for map number: %d and map provider: %s", mapNumber, mapProvider));
+		boolean finished = fetchJobDao.isLastJobFinished();
 		int currentFetchJob;
 		int offset;
-		if(!finished.isEmpty() && finished.get(0)) {
+		if(finished) {
 			LOG.info("Starting a new fetch job");
 			currentFetchJob = fetchJobDao.createFetchJob(mapNumber);
 			offset = 0;
 		} else {
-			List<Integer> lastFetchJob = fetchJobDao.getLastFetchJob();
-			if(lastFetchJob.isEmpty()) {
+			Optional<Integer> lastFetchJob = fetchJobDao.getLastFetchJob();
+			if(!lastFetchJob.isPresent()) {
 				currentFetchJob = fetchJobDao.createFetchJob(mapNumber);
 				offset = 0;
 			} else {
-				currentFetchJob = lastFetchJob.get(0);
-				List<Integer> lastMapFetched = mapDao.getLastMap(currentFetchJob);
-				if(lastMapFetched.isEmpty()) {
+				currentFetchJob = lastFetchJob.get();
+				Optional<Integer> lastMapFetched = mapDao.getLastMap(currentFetchJob);
+				if(!lastMapFetched.isPresent()) {
 					offset = 0;
 				} else {
-					offset = lastMapFetched.get(0);
+					offset = lastMapFetched.get();
 				}
 			}
 			LOG.info("Did not finish fetch job. Picking up on fetch job id: " + currentFetchJob + " and offset: " + offset);
@@ -240,11 +254,7 @@ public class FetchJob implements Job {
 	public Optional<String> getExistingPath(String path) {
 		try {
 			String hash = getImageHash(path);
-			List<String> hashPath = mapDao.getPathWithHash(hash);
-			if (hashPath.isEmpty()) {
-				return Optional.absent();
-			}
-			return Optional.fromNullable(hashPath.get(0));
+			return mapDao.getPathWithHash(hash);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -256,10 +266,10 @@ public class FetchJob implements Job {
 	}
 
 	public Optional<String> getPathForLastMapRequest(int mapRequestId, Optional<String> existingPath) {
-		List<Map> map = mapDao.getMapMostRecentWithMapRequestId(mapRequestId);
-		if (!map.isEmpty()) {
+		Optional<Map> map = mapDao.getMapMostRecentWithMapRequestId(mapRequestId);
+		if (map.isPresent()) {
 			LOG.info("Found an old image");
-			return Optional.of(map.get(0).getPath());
+			return Optional.of(map.get().getPath());
 		} else if(existingPath.isPresent()) {
 			LOG.info("Found the same image on disk");
 			return existingPath;
