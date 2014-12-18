@@ -79,3 +79,4 @@ Want to add a functionality for a new map provider? Here are the steps you have 
 3. Modify ```RequestJob.java``` to handle loading ```MapRequest```s for the new map provider starting in the ```execute``` method.
 4. Modify ```FetchJob.java``` to handle configuring the fetcher to fetch your new map provider by starting in the ```execute``` method
 5. Modify ```ComparisonJob.java``` to handle configuring the comparator job to handle the new map provider by starting in the ```execute``` method
+6. Update the ```migrations.xml``` file to add tables for your new POJO's. Run the migrations according to the instructions above.
