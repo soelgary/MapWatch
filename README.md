@@ -64,8 +64,19 @@ Check the status again. This time it should say that the database is up to date.
 java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db status ../config.yaml
 ```
 
-Wishlist
-=========
-1. Set up email alerts. Whenever we detect a new form of personalization, emails should be sent out to those involved in the project with details.
-2. Set up an admin interface. Researchers involved should have an interface to see all of the personalization. We should be able to approve or disapprove it as well and approving it would make it public somehow.
-3. Add capabilities for more map providers.
+Contribution
+============
+
+Want to add a functionality for a new map provider? Here are the steps you have to take..
+
+1. Implement the following dao interfaces.
+  1. ```FetchJobDao``` - This table describes the id of the specific crawl
+  2. ```MapDao``` - This describes a tile/MapRequest that was fetched
+  3. ```MapRequestDao``` - This describes a tile to be fetched over multiple crawls
+2. Implement the following POJO's interfacess
+  1. ```Map``` - Describes a tile/MapRequest that was fetched
+  2. ```MapRequest``` - Describes a tile to be fetched over multiple crawls
+3. Modify ```RequestJob.java``` to handle loading ```MapRequest```s for the new map provider starting in the ```execute``` method.
+4. Modify ```FetchJob.java``` to handle configuring the fetcher to fetch your new map provider by starting in the ```execute``` method
+5. Modify ```ComparisonJob.java``` to handle configuring the comparator job to handle the new map provider by starting in the ```execute``` method
+6. Update the ```migrations.xml``` file to add tables for your new POJO's. Run the migrations according to the instructions above.
