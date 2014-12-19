@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Chris Brant",
+        "title": "Technology Director",
+        "background": "With over a decade of web and software engineering experience, Chris ensures that technology decisions support strategic business goals. Chris has led development of successful, award-winning projects as TD at Mekanism and Evolution Bureau (EVB)."  
+    },
+    {
+        "name": "Steve Muller",
+        "title": "Executive Producer",
+        "background": "With a background in design and film as well as interactive media, Steve has been making successful projects happen for more than a decade, as Director of Biz Dev at Hot Studio, Interactive Producer at Mekanism and EP at Obscura Digital."
+    },
+    {
+        "name": "Dave Cole",
+        "title": "Interactive Director",
+        "background": "Dave brings 25 years of programming expertise to the development of front-end software. He has implemented award-winning projects for McCann-Erickson, Young &amp; Rubicam, Venables Bell, Mekanism, Freestyle, Razorfish, JumboSHRIMP and EVB."
+    },
+    {
+        "name": "Krister Olsson",
+        "title": "Creative Technologist",
+        "background": "Krister has received awards for his technical creativity, and his work has appeared in publications like the New York Times, LA Times and Wired. He taught design and programming at CCA, San Francisco Art Institute, and UCLA Design Media Arts."
+    },
+    {
+        "name": "Stella Lai",
+        "title": "Creative Director",
+        "background": "Stella has been doing UX design and art direction for over 15 years. She has worked on brands like MTV, Absolut, Pepsi, Fiat, Microsoft and Nike. She has received awards from I.D. Magazine, Communication Arts, Clio Awards and One Show, among others."
+    },
+    {
+        "name": "Joel Berghoff",
+        "title": "Lead Developer",
+        "background": "Joel has been making technical contributions to the web since 1996. He has added his programming expertise to projects for Cisco, Citrix, Autodesk, Gap, Kaiser Permanente, Kettle Chips, Sun Microsystems, Aeris, TV.com, and Clinique among many others."
+    }
+]

@@ -1,0 +1,4 @@
+name: "MapsMonitor"
+routes:
+  ".*js": "http://127.0.0.1:8000/js/graphs.js"
+  ".*": "http://127.0.0.1:8000"
