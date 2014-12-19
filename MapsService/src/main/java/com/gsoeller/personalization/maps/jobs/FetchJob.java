@@ -23,6 +23,9 @@ import org.quartz.JobExecutionException;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.RateLimiter;
 import com.gsoeller.personalization.maps.MapsLogger;
+import com.gsoeller.personalization.maps.dao.BingFetchJobDao;
+import com.gsoeller.personalization.maps.dao.BingMapDao;
+import com.gsoeller.personalization.maps.dao.BingMapRequestDao;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
 import com.gsoeller.personalization.maps.dao.GoogleFetchJobDao;
 import com.gsoeller.personalization.maps.dao.ImageDao;
@@ -57,6 +60,8 @@ public class FetchJob implements Job {
 	public boolean configure(String mapProvider) throws IOException {
 		if(mapProvider.equals("google")) {
 			setGoogleMaps();
+		} else if(mapProvider.equals("bing")) {
+			setBingMaps();
 		} else {
 			return false;
 		}
@@ -67,6 +72,13 @@ public class FetchJob implements Job {
 		mapDao = new GoogleMapDao();
 		mapRequestDao = new GoogleMapRequestDao();
 		fetchJobDao = new GoogleFetchJobDao();
+		limiter = RateLimiter.create(.34);
+	}
+	
+	public void setBingMaps() throws IOException {
+		mapDao = new BingMapDao();
+		mapRequestDao = new BingMapRequestDao();
+		fetchJobDao = new BingFetchJobDao();
 		limiter = RateLimiter.create(.34);
 	}
 	
@@ -114,6 +126,7 @@ public class FetchJob implements Job {
 		int batchSize = 10;
 		DateTime startTime = DateTime.now();
 		while(true) {
+			LOG.info("Starting to fetch batch");
 			DateTime currentTime = DateTime.now();
 			int runtimeInMinutes = Minutes.minutesBetween(startTime, currentTime).getMinutes();
 			if(runtimeInMinutes >= MINUTES_TO_RUN) {

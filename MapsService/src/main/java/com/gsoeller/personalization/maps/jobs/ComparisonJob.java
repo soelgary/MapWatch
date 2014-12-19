@@ -27,7 +27,7 @@ import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.data.GoogleMap;
-import com.gsoeller.personalization.maps.data.FetchJob;
+import com.gsoeller.personalization.maps.data.GoogleFetchJob;
 import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.Region;
 import com.gsoeller.personalization.maps.data.GoogleTile;
@@ -110,7 +110,7 @@ public class ComparisonJob implements Job {
 		
 	}
 	
-	public boolean canCompare(List<FetchJob> fetchJobs) {
+	public boolean canCompare(List<GoogleFetchJob> fetchJobs) {
 		if(fetchJobs.size() < 2) {
 			LOG.severe("Cannot compare because there are not 2 or more fetch jobs");
 			return false;

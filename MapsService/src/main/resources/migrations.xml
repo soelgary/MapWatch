@@ -154,4 +154,58 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="12" author="gary">
+		<createTable tableName="BingFetchJob">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="startTime" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="finished" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+			<column name="MapNumber" type="int" defaultValue="0">
+				<constraints nullable="false"></constraints>
+			</column>
+		</createTable>
+		<createTable tableName="BingMapRequest">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="region" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="tileNumber" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="mapNumber" type="int">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<createTable tableName="BingMap">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="hasChanged" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="bingMapRequest" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="dateTime" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="path" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="hash" type="varchar(32)">
+				<constraints nullable="false" />
+			</column>
+			<column name="FetchJob" type="int">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
 </databaseChangeLog>

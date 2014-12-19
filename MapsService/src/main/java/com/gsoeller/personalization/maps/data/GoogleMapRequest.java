@@ -71,6 +71,18 @@ public class GoogleMapRequest implements MapRequest {
 		return String.format("ID:\t%d\nZoom:\t%d\nX Dimension:\t%d\nY Dimension:\t%d\nRegion:\t%s\nLanguage:\t%s", 
 				id, zoom, xDimension, yDimension, region.toString(), language.toString());
 	}
+	
+	public BingQuadKey getTileNumber() {
+		throw new UnsupportedOperationException("Tile number is not supported");
+	}
+
+	public int getXDimension() {
+		return xDimension;
+	}
+
+	public int getYDimension() {
+		return yDimension;
+	}
 
 	private GoogleMapRequest(MapRequestBuilder builder) {
 		this.zoom = builder.zoom;

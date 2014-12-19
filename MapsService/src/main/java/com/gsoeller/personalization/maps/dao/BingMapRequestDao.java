@@ -17,24 +17,24 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
+import com.gsoeller.personalization.maps.data.BingMapRequest;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.data.Region;
-import com.gsoeller.personalization.maps.mappers.GoogleMapRequestMapper;
+import com.gsoeller.personalization.maps.mappers.BingMapRequestMapper;
 
-public class GoogleMapRequestDao implements MapRequestDao {
-	
+public class BingMapRequestDao implements MapRequestDao {
 	private DBI dbi;
 	private Handle handle;
-	private GoogleMapRequestDaoImpl dao;
+	private BingMapRequestDaoImpl dao;
 	
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.data.GoogleMapRequestDao");
 	
-	public GoogleMapRequestDao() throws IOException {
+	public BingMapRequestDao() throws IOException {
 		PropertiesLoader propLoader = new PropertiesLoader();
 		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
-		dao = handle.attach(GoogleMapRequestDaoImpl.class);
+		dao = handle.attach(BingMapRequestDaoImpl.class);
 	}
 	
 	public List<MapRequest> getRequests(int limit, int offset, int mapNumber) {
@@ -42,14 +42,7 @@ public class GoogleMapRequestDao implements MapRequestDao {
 	}
 	
 	public void addMapRequest(MapRequest mapRequest) {
-		dao.addMapRequest(mapRequest.getMapNumber(),
-				mapRequest.getLatitude(), 
-				mapRequest.getLongitude(), 
-				mapRequest.getZoom(), 
-				mapRequest.getXDimension(), 
-				mapRequest.getYDimension(), 
-				mapRequest.getRegion().toString(), 
-				mapRequest.getLanguage().toString());
+		dao.addMapRequest(mapRequest.getMapNumber(), mapRequest.getRegion().toString(), mapRequest.getTileNumber().getKey());
 	}
 	
 	public Optional<Region> getRegion(int mapRequest) {
@@ -65,16 +58,16 @@ public class GoogleMapRequestDao implements MapRequestDao {
 	
 	}
 	
-	private interface GoogleMapRequestDaoImpl {
-		@SqlQuery("select * from MapRequest where MapNumber = :mapNumber limit :offset,:limit;")
-		@Mapper(GoogleMapRequestMapper.class)
+	private interface BingMapRequestDaoImpl {
+		@SqlQuery("select * from BingMapRequest where MapNumber = :mapNumber limit :offset,:limit;")
+		@Mapper(BingMapRequestMapper.class)
 		public List<MapRequest> getRequests(@Bind("limit") int limit, @Bind("offset") int offset, @Bind("mapNumber") int mapNumber);
 		
-		@SqlUpdate("insert into MapRequest (MapNumber, latitude, longitude, zoom, xDimension, yDimension, region, language) values (:mapNumber, :latitude, :longitude, :zoom, :xDimension, :yDimension, :region, :language)")
+		@SqlUpdate("insert into BingMapRequest (MapNumber, region, tileNumber) values (:mapNumber, :region, :tileNumber)")
 		@GetGeneratedKeys
-		public int addMapRequest(@Bind("mapNumber") int mapNumber, @Bind("latitude") double latitude, @Bind("longitude") double longitude, @Bind("zoom") int zoom, @Bind("xDimension") int xDimension, @Bind("yDimension") int yDimension, @Bind("region") String region, @Bind("language") String language);
+		public int addMapRequest(@Bind("mapNumber") int mapNumber, @Bind("region") String region, @Bind("tileNumber") String tileNumber);
 		
-		@SqlQuery("Select region from MapRequest where id = :id")
+		@SqlQuery("Select region from BingMapRequest where id = :id")
 		public List<String> getRegion(@Bind("id") int id);
 	}
 }

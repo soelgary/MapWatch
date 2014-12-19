@@ -1,19 +1,28 @@
 package com.gsoeller.personalization.maps.jobs;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
 import io.dropwizard.jdbi.OptionalContainerFactory;
 
+import org.apache.commons.io.IOUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 
+import com.google.common.base.Splitter;
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
+import com.gsoeller.personalization.maps.dao.BingMapRequestDao;
 import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
+import com.gsoeller.personalization.maps.data.BingMapRequest;
+import com.gsoeller.personalization.maps.data.BingQuadKey;
+import com.gsoeller.personalization.maps.data.GoogleMapRequest;
+import com.gsoeller.personalization.maps.data.Language;
+import com.gsoeller.personalization.maps.data.Region;
 
 public class RequestJob implements Job {
 
@@ -39,7 +48,8 @@ public class RequestJob implements Job {
 	
 	private DBI dbi;
 	private Handle handle;
-	private GoogleMapRequestDao mapRequestDao;
+	
+	private String bingTilesLocation;
 
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.FetchJob");
 
@@ -48,7 +58,8 @@ public class RequestJob implements Job {
 		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
-		mapRequestDao = handle.attach(GoogleMapRequestDao.class);
+		//mapRequestDao = handle.attach(GoogleMapRequestDao.class);
+		bingTilesLocation = propLoader.getProperty("bingtiles");
 	}
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -57,20 +68,56 @@ public class RequestJob implements Job {
 		if(mapProvider.equals("google")) {
 			LOG.info("Loading requests for Google");
 			setForGoogle(mapNumber);
+		} else if(mapProvider.equals("bing")) {
+			LOG.info("Loading requests for Bing");
+			setForBing(mapNumber);
 		} else {
 			LOG.severe(String.format("Does not recognize map provider, '%s'", mapProvider));
 		}
 		System.exit(0);
 	}
 	
+	public void setForBing(int mapNumber) {
+		BingMapRequestDao mapRequestDao = handle.attach(BingMapRequestDao.class);
+		try {
+	    	FileInputStream inputStream = new FileInputStream(bingTilesLocation);
+	        String everything = IOUtils.toString(inputStream);
+	        for(String tileNumber: Splitter.on(" ").split(everything)) {
+	        	System.out.println(tileNumber);
+	        	for(String cc: CC_TLD) {
+	        		BingMapRequest mapRequest = new BingMapRequest.BingMapRequestBuilder()
+	        			.setMapNumber(mapNumber)
+	        			.setRegion(Region.findRegion(cc))
+	        			.setTileNumber(new BingQuadKey(tileNumber))
+	        			.build();
+	        		mapRequestDao.addMapRequest(mapRequest);
+	        	}
+	        }
+	        inputStream.close();
+	    } catch(IOException e) {
+	    	LOG.severe(e.toString());
+	    }
+	}
+	
 	public void setForGoogle(int mapNumber) {
+		GoogleMapRequestDao mapRequestDao = handle.attach(GoogleMapRequestDao.class);
 		for(int lat = startLat; lat < maxLat; lat+=latMultiple) {
 			for(int lon = startLon; lon < maxLon; lon+= lonMultiple) {
 				//int location = locationDao.addLocation(lat, lon, mapNumber);
 				if(!inBox(lat, lon)) {
 					System.out.println(lat + "\t" + lon);
 					for(String cc: CC_TLD) {
-						mapRequestDao.addMapRequest(mapNumber, lat, lon, 6, 600, 600, cc, "English");
+						GoogleMapRequest mapRequest = new GoogleMapRequest.MapRequestBuilder()
+							.setLanguage(Language.English)
+							.setLatitude(lat)
+							.setLongitude(lon)
+							.setMapNumber(mapNumber)
+							.setZoom(6)
+							.setXDimension(600)
+							.setYDimension(600)
+							.setRegion(Region.findRegion(cc))
+							.build();
+						mapRequestDao.addMapRequest(mapRequest);
 					}
 				}
 			}

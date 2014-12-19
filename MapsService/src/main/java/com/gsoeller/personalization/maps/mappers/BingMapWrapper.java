@@ -6,13 +6,14 @@ import java.sql.SQLException;
 import org.joda.time.DateTime;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
-import com.gsoeller.personalization.maps.data.GoogleMap;
 
-public class GoogleMapWrapper implements ResultSetMapper<GoogleMap> {
+import com.gsoeller.personalization.maps.data.BingMap;
 
-	public GoogleMap map(int arg0, ResultSet r, StatementContext arg2)
+public class BingMapWrapper implements ResultSetMapper<BingMap> {
+
+	public BingMap map(int arg0, ResultSet r, StatementContext arg2)
 			throws SQLException {
-		return new GoogleMap.MapBuilder()
+		return new BingMap.MapBuilder()
 			.setId(r.getInt("id"))
 			.setHasChanged(r.getBoolean("hasChanged"))
 			.setMapRequest(r.getInt("mapRequest"))
