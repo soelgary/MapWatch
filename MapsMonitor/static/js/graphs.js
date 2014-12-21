@@ -66,7 +66,7 @@
     pingTime = new Date();
   }
 
-  var socket = io.connect('http://127.0.0.1:5000/test');
+  var socket = io.connect('http://monitor.gsoeller.com/test');
   var d = new Date().getTime()
   var twenty_minutes = 1000 * 60 * 20;
   var start = new Date().getTime() - twenty_minutes;
