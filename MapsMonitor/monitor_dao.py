@@ -9,16 +9,19 @@ class MonitorDAO():
 
   def insert(self, request):
     map_provider = request['mapProvider']
-    start = request['start']
-    end = request['end']
-    errors = request['errors']
-    requests = request['requests']
-    values = (map_provider, start, end, errors, requests)
-    self.cursor.execute('INSERT INTO monitor VALUES (?,?,?,?,?)', values)
+    time = request['time']
+    values = (map_provider, time)
+    self.cursor.execute('INSERT INTO monitor VALUES (?,?)', values)
     self.conn.commit()
 
-  def select(self, start):
+  def select(self, time):
     response = []
-    for row in self.cursor.execute('SELECT * FROM monitor WHERE start >= ?', (start,)):
-      response.append({"mapProvider": row[0], "start": row[1], "end": row[2], "errors": row[3], "requests": row[4]})
+    for row in self.cursor.execute('SELECT * FROM monitor WHERE time >= ?', (time,)):
+      response.append({"mapProvider": row[0], "time": row[1]})
+    return response
+
+  def select_all(self):
+    response = []
+    for row in self.cursor.execute('SELECT * FROM monitor'):
+      response.append({"mapProvider": row[0], "time": row[1]})
     return response

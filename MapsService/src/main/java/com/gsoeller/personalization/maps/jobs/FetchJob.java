@@ -3,6 +3,7 @@ package com.gsoeller.personalization.maps.jobs;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -34,8 +35,11 @@ import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.data.Map;
+import com.gsoeller.personalization.maps.data.MapProvider;
 import com.gsoeller.personalization.maps.data.MapRequest;
+import com.gsoeller.personalization.maps.data.MonitorRequest;
 import com.gsoeller.personalization.maps.fetchers.StaticMapFetcher;
+import com.gsoeller.personalization.maps.health.ReverseHealthCheck;
 import com.gsoeller.personalization.maps.smtp.MapsEmail;
 import com.gsoeller.personalization.maps.smtp.SmtpClient;
 import com.gsoeller.personalization.maps.smtp.MapsEmail.MapsEmailBuilder;
@@ -54,6 +58,8 @@ public class FetchJob implements Job {
 	private final int MINUTES_TO_RUN = 50;
 	
 	private SmtpClient smtpClient = new SmtpClient();
+	
+	private ReverseHealthCheck reverseHealthCheck;
 	
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.FetchJob");
 	
@@ -86,6 +92,12 @@ public class FetchJob implements Job {
 			throws JobExecutionException {	
 		int mapNumber = (Integer)context.getJobDetail().getJobDataMap().get("mapNumber");
 		String mapProvider = (String) context.getJobDetail().getJobDataMap().get("mapProvider");
+		try {
+			reverseHealthCheck = new ReverseHealthCheck();
+		} catch (IOException e2) {
+			e2.printStackTrace();
+			System.exit(0);
+		}
 		boolean configured;
 		try {
 			configured = configure(mapProvider);
@@ -144,7 +156,7 @@ public class FetchJob implements Job {
 				return;
 			}
 			try {
-				processRequests(requests, fetchJob);
+				processRequests(requests, fetchJob, mapProvider);
 			} catch (NoSuchAlgorithmException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -157,9 +169,12 @@ public class FetchJob implements Job {
 		//System.exit(0);
 	}
 	
-	private void processRequests(List<MapRequest> requests, final int fetchJob) throws NoSuchAlgorithmException, IOException {
+	
+	private void processRequests(List<MapRequest> requests, final int fetchJob, final String mapProvider) throws NoSuchAlgorithmException, IOException {
 		for (final MapRequest request : requests) {
+			System.out.println("TRYING TO AQCUIRE");
 			limiter.acquire();
+			System.out.println("ACQUIRED");
 			executorService.execute(new Runnable() {
 
 				public void run() {
@@ -214,7 +229,12 @@ public class FetchJob implements Job {
 							saveImage(false, request.getId(), newImage, fetchJob);
 						}
 					}
-					
+					try {
+						reverseHealthCheck.sendReverseHealthCheck(mapProvider);
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			});
 		}

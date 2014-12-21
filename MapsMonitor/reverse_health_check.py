@@ -1,73 +1,95 @@
-from flask import Flask, request, jsonify
-import sqlite3
+from gevent import monkey
+monkey.patch_all()
 from monitor_dao import MonitorDAO
-import json
-import subprocess
-from flask import make_response, request, current_app
-from functools import update_wrapper
-from datetime import timedelta
+from monitor_error_dao import MonitorErrorDAO
+import time
+from threading import Thread
+from flask import Flask, render_template, session, request, jsonify
+from flask.ext.socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__)
+app.debug = True
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app)
+
+thread = None
 
 
-
-def crossdomain(origin=None, methods=None, headers=None,
-                max_age=21600, attach_to_all=True,
-                automatic_options=True):
-    if methods is not None:
-        methods = ', '.join(sorted(x.upper() for x in methods))
-    if headers is not None and not isinstance(headers, basestring):
-        headers = ', '.join(x.upper() for x in headers)
-    if not isinstance(origin, basestring):
-        origin = ', '.join(origin)
-    if isinstance(max_age, timedelta):
-        max_age = max_age.total_seconds()
-
-    def get_methods():
-        if methods is not None:
-            return methods
-
-        options_resp = current_app.make_default_options_response()
-        return options_resp.headers['allow']
-
-    def decorator(f):
-        def wrapped_function(*args, **kwargs):
-            if automatic_options and request.method == 'OPTIONS':
-                resp = current_app.make_default_options_response()
-            else:
-                resp = make_response(f(*args, **kwargs))
-            if not attach_to_all and request.method != 'OPTIONS':
-                return resp
-
-            h = resp.headers
-
-            h['Access-Control-Allow-Origin'] = origin
-            h['Access-Control-Allow-Methods'] = get_methods()
-            h['Access-Control-Max-Age'] = str(max_age)
-            if headers is not None:
-                h['Access-Control-Allow-Headers'] = headers
-            return resp
-
-        f.provide_automatic_options = False
-        return update_wrapper(wrapped_function, f)
-    return decorator
+def background_thread():
+    """Example of how to send server generated events to clients."""
+    count = 0
+    while True:
+        time.sleep(2)
+        count += 1
+        socketio.emit('my response',
+                      {'data': 'Server generated event', 'count': count},
+                      namespace='/test')
 
 
-@app.route('/', methods=['POST'])
+@app.route('/')
+def index():
+    global thread
+    if thread is None:
+        thread = Thread(target=background_thread)
+        thread.start()
+    return render_template('index.html')
+
+@socketio.on('my event', namespace='/test')
+def test_event(message):
+  print message
+
+@socketio.on('initialize', namespace='/test')
+def test_initialize(message):
+  print 'connecting'
+  print message
+  monitor = MonitorDAO()
+  monitors = monitor.select(message['time'])
+  emit('initialize', {'data': monitors})
+
+@socketio.on('ping', namespace='/test')
+def handle_ping(message):
+  print message
+  monitor_error = MonitorErrorDAO()
+  errors = monitor_error.select(message['time'])
+  emit('ping', {'errors': errors})
+
+@socketio.on('disconnect', namespace='/test')
+def test_disconnect():
+    print('Client disconnected')
+
+@app.route('/monitor', methods=['POST'])
 def insert_monitor():
+  print 'incoming request'
+  print request
   monitor = MonitorDAO()
   incoming = request.get_json()
+  print incoming
   monitor.insert(incoming)
+  socketio.emit('monitor', incoming, namespace='/test')
   return jsonify(**incoming), 201
 
+
+@app.route('/<mapProvider>')
+def fetch_all_monitor(mapProvider):
+  monitor = MonitorDAO()
+  monitors = monitor.select_all()
+  print monitors
+  return jsonify(data=monitors), 200
+
+@app.route('/errors')
+def fetch_all_monitor_erros():
+  monitor = MonitorErrorDAO()
+  monitors = monitor.select_all()
+  print monitors
+  return jsonify(data=monitors), 200
+
 @app.route('/<mapProvider>/<int:start>')
-@crossdomain(origin='*')
 def fetch_monitor(mapProvider, start):
   monitor = MonitorDAO()
   monitors = monitor.select(start)
   print monitors
   return jsonify(data=monitors), 200
 
+
 if __name__ == '__main__':
-  app.debug = True
-  app.run()
+    socketio.run(app)

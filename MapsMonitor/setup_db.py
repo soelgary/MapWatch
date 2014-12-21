@@ -4,7 +4,11 @@ conn = sqlite3.connect('monitor.db')
 c = conn.cursor()
 
 c.execute('''CREATE TABLE monitor
-             (mapProvider text, start int, end int, errors int, requests int)''')
+             (mapProvider text, time int)''')
+
+c.execute('''CREATE TABLE monitorerror
+             (mapProvider text, time int, level text)''')
+
 
 conn.commit()
 
