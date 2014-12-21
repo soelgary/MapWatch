@@ -25,3 +25,9 @@ class MonitorDAO():
     for row in self.cursor.execute('SELECT * FROM monitor'):
       response.append({"mapProvider": row[0], "time": row[1]})
     return response
+
+  def select_map_provider(self, time, map_provider):
+    response = []
+    for row in self.cursor.execute('SELECT * FROM monitor WHERE time >= ? & mapProvider == ?', (time, map_provider,)):
+      response.append({"mapProvider": row[0], "time": row[1]})
+    return response

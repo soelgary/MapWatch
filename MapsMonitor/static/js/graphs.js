@@ -12,13 +12,25 @@
     
   var dps = []; 
   var googleDataPoints = [];
-  var indexOffset = 0;
+  var bingDataPoints = [];
   var pingTime = new Date();
   var status;
 
-  var chart = new CanvasJS.Chart("chartContainer",{
+  var bingChart = new CanvasJS.Chart("bingContainer",{
       title :{
-        text: "Live Random Data"
+        text: "Bing Monitor"
+      },
+      
+      data: [{
+        type: "line",
+        dataPoints: bingDataPoints,
+        xValueType: "dateTime"
+      }]
+    });
+
+  var googleChart = new CanvasJS.Chart("googleContainer",{
+      title :{
+        text: "Google Monitor"
       },
       
       data: [{
@@ -28,24 +40,24 @@
       }]
     });
 
-  function addDataPoint(dataPoint) {
+  function addDataPoint(dataPoint, chartDataPoints) {
     var normalizedTime = normalizeTime(dataPoint.time);
-    console.log(normalizedTime);
-    for(var i = 0; i < googleDataPoints.length; i+=1) {
-      if(googleDataPoints[i].x == normalizedTime) {
-        googleDataPoints[i].y = googleDataPoints[i].y + 1;
+    
+    for(var i = 0; i < chartDataPoints.length; i+=1) {
+      if(chartDataPoints[i].x == normalizedTime) {
+        chartDataPoints[i].y = chartDataPoints[i].y + 1;
         return;
       }
     }
-    googleDataPoints.push({x: normalizedTime, y:1});
+    chartDataPoints.push({x: normalizedTime, y:1});
   }
 
-  function addDataPointError(errorDataPoint) {
+  function addDataPointError(errorDataPoint, chartDataPoints) {
     var normalizedTime = normalizeTime(errorDataPoint.time);
     if(errorDataPoint.level = "fatal" || status == "fatal") {
-      googleDataPoints.push({x: normalizedTime, y: 0, markerColor: "red"});
+      chartDataPoints.push({x: normalizedTime, y: 0, markerColor: "red"});
     } else {
-      googleDataPoints.push({x: normalizedTime, y: 0});
+      chartDataPoints.push({x: normalizedTime, y: 0});
     }
   }
 
@@ -63,17 +75,26 @@
   socket.on('initialize', function(msg) {
     console.log(msg);
     _.each(msg.data, function(model) {
-      addDataPoint(model);
+      if(model.mapProvider == "google") {
+        addDataPoint(model, googleDataPoints);
+        googleChart.render();
+      } else {
+        addDataPoint(model, bingDataPoints);
+        bingChart.render();
+      }
     })
-    console.log(googleDataPoints);
-    chart.render();
     $("#loader").remove()
   });
 
   socket.on('monitor', function(monitor) {
     console.log(monitor);
-    addDataPoint(monitor);
-    chart.render();
+    if(monitor.mapProvider == "google") {
+      addDataPoint(monitor, googleDataPoints);
+      googleChart.render();
+    } else {
+      addDataPoint(monitor, bingDataPoints);
+      bingChart.render();
+    }
   });
 
   socket.on('ping', function(monitor_errors) {
@@ -82,15 +103,17 @@
       status = "normal";
     }
     _.each(monitor_errors.errors, function(error) {
-      addDataPointError(error);
-      chart.render();
+      if(error.mapProvider == "google") {
+        addDataPointError(error, googleDataPoints);
+        googleChart.render();  
+      } else {
+        addDataPointError(error, bingDataPoints);
+        bingChart.render();  
+      }
     });
   });
 
   var five_seconds = 5000;
   // send ping every 5 seconds
   setInterval(function(){sendPing()}, five_seconds);
-  
-
-   
 })(jQuery);
