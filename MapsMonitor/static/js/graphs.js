@@ -74,7 +74,7 @@
     path = window.location.href;
   }
   console.log(path);
-  var socket = io.connect(path + '/test');
+  var socket = io.connect(path + 'test');
   var d = new Date().getTime()
   var twenty_minutes = 1000 * 60 * 20;
   var start = new Date().getTime() - twenty_minutes;
