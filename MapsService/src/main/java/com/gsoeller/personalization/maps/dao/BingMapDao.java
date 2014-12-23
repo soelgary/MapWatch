@@ -19,7 +19,7 @@ import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.data.BingMap;
 import com.gsoeller.personalization.maps.data.Map;
-import com.gsoeller.personalization.maps.mappers.GoogleMapWrapper;
+import com.gsoeller.personalization.maps.mappers.BingMapWrapper;
 
 public class BingMapDao implements MapDao {
 	private DBI dbi;
@@ -91,11 +91,11 @@ public class BingMapDao implements MapDao {
 		public List<String> getPathWithHash(@Bind("hash") String hash);
 
 		@SqlQuery("Select * from BingMap cross join BingMapRequest where bingMapRequest = :mapRequest order by dateTime DESC limit 1")
-		@Mapper(GoogleMapWrapper.class)
+		@Mapper(BingMapWrapper.class)
 		public List<BingMap> getMapMostRecentWithMapRequestId(@Bind("mapRequest") int mapRequest);
 		
 		@SqlQuery("select * from (select * from BingMap as aa where FetchJob = :fetchJob) as a where bingMapRequest = :mapRequest")
-		@Mapper(GoogleMapWrapper.class)
+		@Mapper(BingMapWrapper.class)
 		public List<BingMap> getMapFromFetchJobByMapRequest(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
 	}
 }

@@ -20,12 +20,16 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
+import com.gsoeller.personalization.maps.dao.BingFetchJobDao;
+import com.gsoeller.personalization.maps.dao.BingMapDao;
+import com.gsoeller.personalization.maps.dao.BingMapRequestDao;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
 import com.gsoeller.personalization.maps.dao.GoogleFetchJobDao;
 import com.gsoeller.personalization.maps.dao.GoogleMapDao;
 import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
+import com.gsoeller.personalization.maps.data.BingTile;
 import com.gsoeller.personalization.maps.data.GoogleMap;
 import com.gsoeller.personalization.maps.data.GoogleFetchJob;
 import com.gsoeller.personalization.maps.data.Map;
@@ -56,10 +60,18 @@ public class ComparisonJob implements Job {
 	public boolean configure(String mapProvider) {
 		if(mapProvider.equals("google")) {
 			configureGoogle();
+		} else if(mapProvider.equals("bing")){
+			configureBing();
 		} else {
 			return false;
 		}
 		return true;
+	}
+	
+	public void configureBing() {
+		fetchJobDao = handle.attach(BingFetchJobDao.class);
+		mapDao = handle.attach(BingMapDao.class);
+		mapRequestDao = handle.attach(BingMapRequestDao.class);
 	}
 	
 	public void configureGoogle() {
@@ -70,6 +82,14 @@ public class ComparisonJob implements Job {
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		LOG.info("Running comparisons");
+		String mapProvider = (String)context.getJobDetail().getJobDataMap().get("mapProvider");
+		boolean configured = configure(mapProvider);
+		if(!configured) {
+			LOG.severe(String.format("Does not recognize configuration for map provider, '%s'", mapProvider));
+			System.exit(0);
+		} else {
+			LOG.info(String.format("Successfully configured comparison job for map provider, '%s'", mapProvider));
+		}
 		try {
 			int fetchJob = (Integer)context.getJobDetail().getJobDataMap().get("fetchJob");
 			compare(fetchJob);
@@ -80,15 +100,30 @@ public class ComparisonJob implements Job {
 	}
 	
 	public void compare(int fetchJob) throws IOException {
+		List<Integer> tileNumbers = mapRequestDao.getTileNumbers();
+		
+		for(int tileNumber: tileNumbers) {
+			List<Integer> mapRequestIds = mapRequestDao.getMapRequestsFromTileNumber(tileNumber);
+			BingTile tile = new BingTile(fetchJob);
+			tile.setTile(tileNumber);
+			for(Integer mapRequestId: mapRequestIds) {
+				tile.addMap(mapRequestDao.getMapFromFetchJobAndMapRequest(fetchJob, mapRequestId));
+			}
+			tile.compare();
+		}
+		LOG.info("Finished running comparisons");
+	}
+	/*
+	public void compare(int fetchJob) throws IOException {
 		
 		// need to get # of locations
-		//int numLocations = locationDao.getLocations().size();
+		int numLocations = mapRequestDao.countTiles();
 		
 		HashMap<Integer, List<Integer>> locationToMapRequests = Maps.newHashMap(); // key -> location id, value -> list of map requests with that location
 		// need to query map requests by location
-		//for(int i = 1; i <= numLocations; i++) {
-			//locationToMapRequests.put(i, mapRequestDao.getMapRequestsbyLocation(i));
-		//}
+		for(int i = 1; i <= numLocations; i++) {
+			locationToMapRequests.put(i, mapRequestDao.getMapRequestsbyLocation(i));
+		}
 		
 		// need to query for all maps that are the same tile
 		for(Integer location: locationToMapRequests.keySet()) {
@@ -109,7 +144,7 @@ public class ComparisonJob implements Job {
 		LOG.info("Finished running comparisons");
 		
 	}
-	
+	*/
 	public boolean canCompare(List<GoogleFetchJob> fetchJobs) {
 		if(fetchJobs.size() < 2) {
 			LOG.severe("Cannot compare because there are not 2 or more fetch jobs");

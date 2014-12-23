@@ -9,7 +9,7 @@ import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
 import com.gsoeller.personalization.maps.data.BingMap;
 
-public class BingMapWrapper implements ResultSetMapper<BingMap> {
+public class BingMapMapper implements ResultSetMapper<BingMap> {
 
 	public BingMap map(int arg0, ResultSet r, StatementContext arg2)
 			throws SQLException {

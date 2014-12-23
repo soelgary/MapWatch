@@ -17,6 +17,8 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
+import com.gsoeller.personalization.maps.data.BingMap;
+import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.data.Region;
 import com.gsoeller.personalization.maps.mappers.GoogleMapRequestMapper;
@@ -63,6 +65,22 @@ public class GoogleMapRequestDao implements MapRequestDao {
 			throw new RuntimeException("Too many regions were found");
 		}
 	
+	}
+	
+	public int countTiles() {
+		throw new UnsupportedOperationException("Google does not yet support counting the number of tiles");
+	}
+	
+	public List<Integer> getTileNumbers() {
+		throw new UnsupportedOperationException("Google does not yet support getting the tile numbers");
+	}
+	
+	public List<Integer> getMapRequestsFromTileNumber(int tileNumber) {
+		throw new UnsupportedOperationException("Google does not yet support getting id's from the tile numbers");
+	}
+	
+	public Optional<BingMap> getMapFromFetchJobAndMapRequest(int fetchJob, int mapRequestId) {
+		throw new UnsupportedOperationException("Google does not yet support getting maps fromfetch job and map request id");
 	}
 	
 	private interface GoogleMapRequestDaoImpl {
