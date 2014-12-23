@@ -12,27 +12,9 @@ app.debug = True
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-thread = None
-
-
-def background_thread():
-    """Example of how to send server generated events to clients."""
-    count = 0
-    while True:
-        time.sleep(2)
-        count += 1
-        socketio.emit('my response',
-                      {'data': 'Server generated event', 'count': count},
-                      namespace='/test')
-
-
 @app.route('/')
 def index():
-    global thread
-    if thread is None:
-        thread = Thread(target=background_thread)
-        thread.start()
-    return render_template('index.html')
+  return render_template('index.html')
 
 @socketio.on('my event', namespace='/test')
 def test_event(message):
@@ -87,9 +69,8 @@ def fetch_all_monitor_erros():
 def fetch_monitor(mapProvider, start):
   monitor = MonitorDAO()
   monitors = monitor.select(start)
-  print monitors
+  #print monitors
   return jsonify(data=monitors), 200
-
 
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0')

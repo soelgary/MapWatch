@@ -50,6 +50,7 @@
       }
     }
     chartDataPoints.push({x: normalizedTime, y:1});
+    chartDataPoints.shift()
   }
 
   function addDataPointError(errorDataPoint, chartDataPoints) {
@@ -66,7 +67,14 @@
     pingTime = new Date();
   }
 
-  var socket = io.connect('http://monitor.gsoeller.com/test');
+  var path;
+  if(window.location.href == '127.0.0.1') {
+    path = window.location.href + ':' + window.location.port;
+  } else {
+    path = window.location.href;
+  }
+  console.log(path);
+  var socket = io.connect(path + '/test');
   var d = new Date().getTime()
   var twenty_minutes = 1000 * 60 * 20;
   var start = new Date().getTime() - twenty_minutes;
