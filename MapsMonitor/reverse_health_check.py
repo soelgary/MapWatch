@@ -2,6 +2,7 @@ from gevent import monkey
 monkey.patch_all()
 from monitor_dao import MonitorDAO
 from monitor_error_dao import MonitorErrorDAO
+from monitor_change_dao import MonitorChangeDAO
 import time
 from threading import Thread
 from flask import Flask, render_template, session, request, jsonify
@@ -51,6 +52,38 @@ def insert_monitor():
   return jsonify(**incoming), 201
 
 
+@app.route('/<mapProvider>/change', methods=['GET'])
+def get_changes(mapProvider):
+  change_dao = MonitorChangeDAO()
+  changes = change_dao.select_all(mapProvider)
+  return jsonify(data=changes), 200
+
+@app.route('/change', methods=['POST'])
+def add_change():
+  incoming = request.get_json()
+  print incoming
+  change_dao = MonitorChangeDAO()
+  change_dao.insert(incoming)
+  socketio.emit('change', incoming, namespace='/test')
+  '''
+  { 
+    "mapProvider": mapProvider,
+    "country": tldcc,
+    "old": {
+      "fetchJob": fetchJob,
+      "hash": hash,
+      "path": path 
+    },
+
+    "new": {
+      "fetchJob": fetchJob,
+      "hash": hash,
+      "path": path
+    }
+  }
+  '''
+  return jsonify(**incoming), 201
+
 @app.route('/<mapProvider>')
 def fetch_all_monitor(mapProvider):
   monitor = MonitorDAO()
@@ -73,4 +106,4 @@ def fetch_monitor(mapProvider, start):
   return jsonify(data=monitors), 200
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0')
+    socketio.run(app)
