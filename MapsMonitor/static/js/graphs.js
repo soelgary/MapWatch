@@ -40,6 +40,27 @@
       }]
     });
 
+  function loadEmptyBing() {
+    loadEmpty(bingChart, bingDataPoints);
+  }
+
+  function loadEmptyGoogle() {
+    loadEmpty(googleChart, googleDataPoints);
+  }
+
+  function loadEmpty(chart, dataPoints) {
+    var startTime = new Date().getTime() - (1000 * 10 * 120);
+    var normalizedTime = normalizeTime(startTime);
+    dataPoints[0] = {x: normalizedTime, y: 0, markerColor: "red"};
+    var numDataPoints = 120;
+    var next = startTime;
+    for(var i = 1; i < numDataPoints; i+=1) {
+      next += 1000 * 10; // milliseconds * 10 seconds
+      dataPoints[i] = {x: next, y: 0, markerColor: "red"};
+    }
+    chart.options.data[0]['color'] = "red";
+  }
+
   function addDataPoint(dataPoint, chartDataPoints) {
     var normalizedTime = normalizeTime(dataPoint.time);
     
@@ -51,6 +72,23 @@
     }
     chartDataPoints.push({x: normalizedTime, y:1});
     chartDataPoints.shift()
+  }
+
+  function addEmptyDataPoints() {
+    addEmptyDataPoint(bingChart, bingDataPoints);
+    addEmptyDataPoint(googleChart, googleDataPoints);
+  }
+
+  function addEmptyDataPoint(chart, dataPoints) {
+    var now = new Date().getTime();
+    var normalizedTime = normalizeTime(now);
+    _.each(dataPoints, function(dataPoint) {
+      if(dataPoint.x == normalizedTime) {
+        return;
+      }
+    });
+    dataPoints.push({x: normalizedTime, y: 0});
+    chart.render();
   }
 
   function addDataPointError(errorDataPoint, chartDataPoints) {
@@ -82,15 +120,25 @@
   
   socket.on('initialize', function(msg) {
     console.log(msg);
+    var bingLoaded = false;
+    var googleLoaded = false;
     _.each(msg.data, function(model) {
       if(model.mapProvider == "google") {
         addDataPoint(model, googleDataPoints);
-        googleChart.render();
+        googleLoaded = true;
       } else {
         addDataPoint(model, bingDataPoints);
-        bingChart.render();
+        bingLoaded = true;
       }
     })
+    if(!bingLoaded) {
+      loadEmptyBing();
+    }
+    if(!googleLoaded) {
+      loadEmptyGoogle();
+    }
+    bingChart.render();
+    googleChart.render();
     $("#loader").remove()
   });
 
@@ -99,9 +147,11 @@
     if(monitor.mapProvider == "google") {
       addDataPoint(monitor, googleDataPoints);
       googleChart.render();
+      googleChart.options.data[0]['color'] = "blue";
     } else {
       addDataPoint(monitor, bingDataPoints);
       bingChart.render();
+      bingChart.options.data[0]['color'] = "blue";
     }
   });
 
@@ -122,6 +172,9 @@
   });
 
   var five_seconds = 5000;
+  var ten_seconds = five_seconds * 2;
   // send ping every 5 seconds
   setInterval(function(){sendPing()}, five_seconds);
+  // add empty data point every ten seconds if doesn't receive any data
+  setInterval(function(){addEmptyDataPoints()}, ten_seconds);
 })(jQuery);
