@@ -71,7 +71,6 @@
       }
     }
     chartDataPoints.push({x: normalizedTime, y:1});
-    chartDataPoints.shift()
   }
 
   function addEmptyDataPoints() {
@@ -83,7 +82,7 @@
     var now = new Date().getTime();
     var normalizedTime = normalizeTime(now);
     _.each(dataPoints, function(dataPoint) {
-      if(dataPoint.x == normalizedTime) {
+      if(dataPoint.x + (1000 * 9) <= normalizedTime) {
         return;
       }
     });
