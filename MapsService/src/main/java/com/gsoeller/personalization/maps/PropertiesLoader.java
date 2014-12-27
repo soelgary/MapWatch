@@ -15,8 +15,8 @@ public class PropertiesLoader {
 	}
 	
 	public PropertiesLoader() throws IOException {
-		input = new FileInputStream("/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/maps.properties");
-		//input = new FileInputStream("/home/soelgary/Maps/achtung.properties");
+		//input = new FileInputStream("/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/maps.properties");
+		input = new FileInputStream("/home/soelgary/Maps/achtung.properties");
 		prop.load(input);
 	}
 

@@ -4,11 +4,15 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.logging.Logger;
 
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
@@ -27,16 +31,20 @@ public class ReverseHealthCheck {
 	private ObjectMapper mapper = new ObjectMapper();
 	
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.heal.ReverseHealthCheck");
-	
+		
 	public ReverseHealthCheck() throws IOException {
 		PropertiesLoader propLoader = new PropertiesLoader();
 		host = propLoader.getProperty("healthhost");
+		CredentialsProvider provider = new BasicCredentialsProvider();
+		UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(propLoader.getProperty("healthusername"), propLoader.getProperty("healthpasswordd"));
+		provider.setCredentials(AuthScope.ANY, credentials);
 		RequestConfig config = RequestConfig.custom()
 				.setConnectTimeout(10000)
 				.setSocketTimeout(10000)
 				.build();
 		client = HttpClients.custom()
 				.setDefaultRequestConfig(config)
+				.setDefaultCredentialsProvider(provider)
 				.build();
 	}
 	

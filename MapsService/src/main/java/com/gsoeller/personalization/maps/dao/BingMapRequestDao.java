@@ -17,9 +17,11 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
-import com.gsoeller.personalization.maps.data.BingMapRequest;
+import com.gsoeller.personalization.maps.data.BingMap;
+import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.data.Region;
+import com.gsoeller.personalization.maps.mappers.BingMapMapper;
 import com.gsoeller.personalization.maps.mappers.BingMapRequestMapper;
 
 public class BingMapRequestDao implements MapRequestDao {
@@ -58,6 +60,30 @@ public class BingMapRequestDao implements MapRequestDao {
 	
 	}
 	
+	public int countTiles() {
+		return dao.countTiles();
+	}
+	
+	public List<Integer> getTileNumbers() {
+		return dao.getTileNumbers();
+	}
+	
+	public List<Integer> getMapRequestsFromTileNumber(int tileNumber) {
+		return dao.getMapRequestsFromTileNumber(tileNumber);
+	}
+	
+	public Optional<BingMap> getMapFromFetchJobAndMapRequest(int fetchJob, int mapRequestId) {
+		List<BingMap> maps = dao.getMapFromFetchJobAndMapRequest(fetchJob, mapRequestId);
+		if(maps.size() == 1) {
+			return Optional.fromNullable(maps.get(0));
+		} else if(maps.isEmpty()) {
+			return Optional.absent();
+		} else {
+			LOG.severe(String.format("Found too many maps were found for fetch job, '%d', and map request id, '%d'", fetchJob, mapRequestId));
+			throw new RuntimeException("Too many maps were found");
+		}
+	}
+	
 	private interface BingMapRequestDaoImpl {
 		@SqlQuery("select * from BingMapRequest where MapNumber = :mapNumber limit :offset,:limit;")
 		@Mapper(BingMapRequestMapper.class)
@@ -69,5 +95,18 @@ public class BingMapRequestDao implements MapRequestDao {
 		
 		@SqlQuery("Select region from BingMapRequest where id = :id")
 		public List<String> getRegion(@Bind("id") int id);
+		
+		@SqlQuery("Select count(tileNumber distinct) from BingMapRequest")
+		public int countTiles();
+		
+		@SqlQuery("Select distinct tileNumber from BingMapRequest")
+		public List<Integer> getTileNumbers();
+		
+		@SqlQuery("Select id from BingMapRequest where tileNumber = :tileNumber")
+		public List<Integer> getMapRequestsFromTileNumber(@Bind("tileNumber") int tileNumber);
+		
+		@SqlQuery("Select * from BingMap where fetchJob = :fetchJob && bingMapRequest = :mapRequest;")
+		@Mapper(BingMapMapper.class)
+		public List<BingMap> getMapFromFetchJobAndMapRequest(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
 	}
 }
