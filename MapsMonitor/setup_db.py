@@ -1,5 +1,5 @@
 import sqlite3
-conn = sqlite3.connect('monitor.db')
+conn = sqlite3.connect('/home/ubuntu/monitor.db')
 
 c = conn.cursor()
 

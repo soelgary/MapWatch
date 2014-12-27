@@ -3,7 +3,7 @@ import sqlite3
 class MonitorErrorDAO():
   def __init__(self):
     print('Connecting to database...')
-    self.conn = sqlite3.connect('monitor.db')
+    self.conn = sqlite3.connect('/home/ubuntu/monitor.db')
     print('Connected to database...')
     self.cursor = self.conn.cursor()
 

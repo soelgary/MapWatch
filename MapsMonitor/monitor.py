@@ -55,5 +55,4 @@ def run_monitor():
       }
       monitor_error.insert(data)
     
-if __name__ == '__main__':
-  run_monitor()
+run_monitor()
