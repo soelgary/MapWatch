@@ -139,7 +139,8 @@
     }
     bingChart.render();
     googleChart.render();
-    $("#loader").remove()
+    $("#bingLoader").remove()
+    $("#googleLoader").remove()
   });
 
   socket.on('monitor', function(monitor) {
@@ -169,6 +170,10 @@
         bingChart.render();  
       }
     });
+  });
+
+  socket.on('change', function(change) {
+    console.log(change);
   });
 
   var five_seconds = 5000;
