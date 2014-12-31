@@ -78,6 +78,10 @@ public class GoogleMapDao implements MapDao {
 			throw new RuntimeException("Found multiple maps");
 		}
 	}
+	
+	public List<GoogleMap> getMapsWithMapRequest(int mapRequestId) {
+		return dao.getMapWithMapRequestId(mapRequestId);
+	}
 
 	private interface GoogleMapDaoImpl {
 		
@@ -98,5 +102,9 @@ public class GoogleMapDao implements MapDao {
 		@SqlQuery("select * from (select * from Map as aa where FetchJob = :fetchJob) as a where mapRequest = :mapRequest")
 		@Mapper(GoogleMapWrapper.class)
 		public List<GoogleMap> getMapFromFetchJobByMapRequest(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
+		
+		@SqlQuery("Select * from Map where mapRequest = :mapRequest order by dateTime DESC")
+		@Mapper(GoogleMapWrapper.class)
+		public List<GoogleMap> getMapWithMapRequestId(@Bind("mapRequest") int mapRequest);
 	}
 }

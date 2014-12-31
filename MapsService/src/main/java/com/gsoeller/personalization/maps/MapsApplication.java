@@ -18,6 +18,7 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import com.gsoeller.personalization.maps.jobs.ComparisonJob;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
+import com.gsoeller.personalization.maps.jobs.GenerateGifJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
 import com.gsoeller.personalization.maps.resources.MapsResource;
 
@@ -62,6 +63,9 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		create.setArgs(1);
 		options.addOption(create);
 		
+		Option createGifs = new Option("creategifs", "Create Gifs fromt the map request id file");
+		options.addOption(createGifs);
+		
 		options.addOption(option);
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = parser.parse(options, args);
@@ -71,6 +75,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		} else {
 			configFile = "/home/soelgary/Maps/achtung.properties";
 		}
+		
 		if(cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("Maps Personalization", options);
@@ -90,7 +95,10 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			String fetchJob = (String) cmd.getOptionValue("compare");
 			String map = (String) cmd.getOptionValue("mp");
 			startCompareJob(Integer.parseInt(fetchJob), map);
-		} else {
+		} else if(cmd.hasOption("creategifs")) {
+			startGifJob();
+		}	
+		else {
 			new MapsApplication().run(args);
 		}
 	}
@@ -171,5 +179,21 @@ public class MapsApplication extends Application<MapsConfiguration> {
 						.repeatForever())
 				.build();
 		sched.scheduleJob(job, trigger);
+	}
+	
+	private static void startGifJob() throws SchedulerException {
+		SchedulerFactory schedFact = new StdSchedulerFactory();
+		Scheduler sched = schedFact.getScheduler();
+		sched.start();
+
+		JobDetail job = JobBuilder.newJob(GenerateGifJob.class)
+				.withIdentity("Gif Job", "group1").build();
+		
+		Trigger trigger = TriggerBuilder
+				.newTrigger()
+				.withIdentity("Fetch Trigger", "group1")
+				.startNow()
+				.build();
+		sched.scheduleJob(job, trigger);		
 	}
 }

@@ -12,13 +12,26 @@ import javax.imageio.ImageIO;
 
 import org.apache.http.HttpEntity;
 
+import com.gsoeller.personalization.maps.PropertiesLoader;
+
 public class ImageDao {
 
-	private static final String OUTPUT_DIR = "/net/data/google-maps/img/";
-	//private static final String OUTPUT_DIR = "/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/img/";
-
+	private String outputDir;
+	
+	public ImageDao() {
+		
+		try {
+			PropertiesLoader propLoader = new PropertiesLoader();
+			outputDir = propLoader.getProperty("imgdirectory");
+		} catch (IOException e) {
+			e.printStackTrace();
+			//outputDir = "/net/data/google-maps/img/";
+		}
+		
+	}
+	
 	public void saveImage(String filename, HttpEntity entity) {
-		File imageFile = new File(OUTPUT_DIR + filename);
+		File imageFile = new File(outputDir + filename);
 		try {
 			FileOutputStream foutStream = new FileOutputStream(imageFile);
 			entity.writeTo(foutStream);
@@ -35,16 +48,17 @@ public class ImageDao {
 	public BufferedImage getImage(String name) {
 		BufferedImage img;
 		try {
-			img = ImageIO.read(new File(OUTPUT_DIR + name));
+			img = ImageIO.read(new File(outputDir + name));
 			return img;
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new RuntimeException("An IOException occurred while reading an image");
 		}
 	}
 	
 	public void removeImage(String name) {
 		try {
-			Files.deleteIfExists(Paths.get(OUTPUT_DIR + name));
+			Files.deleteIfExists(Paths.get(outputDir + name));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
