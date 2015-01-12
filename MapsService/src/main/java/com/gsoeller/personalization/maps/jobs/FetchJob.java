@@ -35,9 +35,7 @@ import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.data.Map;
-import com.gsoeller.personalization.maps.data.MapProvider;
 import com.gsoeller.personalization.maps.data.MapRequest;
-import com.gsoeller.personalization.maps.data.MonitorRequest;
 import com.gsoeller.personalization.maps.fetchers.StaticMapFetcher;
 import com.gsoeller.personalization.maps.health.ReverseHealthCheck;
 import com.gsoeller.personalization.maps.smtp.MapsEmail;
@@ -278,10 +276,10 @@ public class FetchJob implements Job {
 	}
 
 	public boolean sameImage(String path1, String path2) throws NoSuchAlgorithmException, IOException {
-		// This is just placeholder code. The next step is to actually compare
-		// images here
-		//return true;
-		return getImageHash(path1).equals(getImageHash(path2));
+		String hash1 = getImageHash(path1);
+		String hash2 = getImageHash(path2);
+		LOG.info(String.format("Comparing hashes '%s' and '%s'", hash1, hash2));
+		return hash1.equals(hash2);
 	}
 	
 	public Optional<String> getExistingPath(String path) {
