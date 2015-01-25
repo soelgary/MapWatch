@@ -181,26 +181,14 @@ public class FetchJob implements Job {
 						String newImage = UUID.randomUUID().toString() + ".png";
 						imageDao.saveImage(newImage, response.get().getEntity());
 						Optional<String> existingPath = getExistingPath(newImage);
-						//System.exit(0);
 						Optional<String> oldImage = getPathForLastMapRequest(request.getId(), existingPath);
+						
+						boolean hashExists = hashExists(existingPath);
 
 						if (oldImage.isPresent()) {
 							boolean hasChanged;
 							String imagePath;
-							
-							boolean sameImage;
-							try {
-								sameImage = sameImage(newImage, oldImage.get());
-							} catch (NoSuchAlgorithmException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-								throw new RuntimeException("error");
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-								throw new RuntimeException("errorrrr");
-							}
-							if (sameImage) {
+							if (hashExists) {
 								hasChanged = false;
 								imagePath = oldImage.get();
 								imageDao.removeImage(newImage);
@@ -307,5 +295,21 @@ public class FetchJob implements Job {
 		}
 		LOG.info("Did not find an old image");
 		return Optional.absent();
+	}
+	
+	public boolean hashExists(Optional<String> existingPath) {
+		if(existingPath.isPresent()) {
+			try {
+				String hash = getImageHash(existingPath.get());
+				return mapDao.containsHash(hash);
+			} catch (NoSuchAlgorithmException e) {
+				LOG.severe(String.format("Could not get hash for image, '%s'", existingPath.get()));
+				e.printStackTrace();
+			} catch (IOException e) {
+				LOG.severe(String.format("Could not get hash for image, '%s'", existingPath.get()));
+				e.printStackTrace();
+			}			
+		}
+		return false;
 	}
 }

@@ -44,10 +44,9 @@ public class GenerateGifJob implements Job {
 		BufferedReader br = null;
 		try {
 			String sCurrentLine;
-			br = new BufferedReader(
-					new FileReader(
-							"/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/ids.txt"));
+			br = new BufferedReader(new FileReader("/net/data/google-maps/ids.txt"));
 			while ((sCurrentLine = br.readLine()) != null) {
+				LOG.info(String.format("Generating GIF for map request id '%s'", sCurrentLine));
 				handleId(sCurrentLine);
 			}
 		} catch (IOException e) {
