@@ -18,7 +18,6 @@ import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.data.BingMap;
-import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.data.Region;
 import com.gsoeller.personalization.maps.mappers.BingMapMapper;
@@ -82,6 +81,10 @@ public class BingMapRequestDao implements MapRequestDao {
 			LOG.severe(String.format("Found too many maps were found for fetch job, '%d', and map request id, '%d'", fetchJob, mapRequestId));
 			throw new RuntimeException("Too many maps were found");
 		}
+	}
+	
+	public List<Integer> getMapRequestsbyLocation(int location) {
+		throw new UnsupportedOperationException("Bing does not support getting map requests by location");
 	}
 	
 	private interface BingMapRequestDaoImpl {

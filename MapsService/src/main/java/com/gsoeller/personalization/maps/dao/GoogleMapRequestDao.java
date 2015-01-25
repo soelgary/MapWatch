@@ -18,7 +18,6 @@ import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.data.BingMap;
-import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.data.Region;
 import com.gsoeller.personalization.maps.mappers.GoogleMapRequestMapper;
@@ -68,7 +67,8 @@ public class GoogleMapRequestDao implements MapRequestDao {
 	}
 	
 	public int countTiles() {
-		throw new UnsupportedOperationException("Google does not yet support counting the number of tiles");
+		return 10;
+		//return dao.countTiles();
 	}
 	
 	public List<Integer> getTileNumbers() {
@@ -83,6 +83,10 @@ public class GoogleMapRequestDao implements MapRequestDao {
 		throw new UnsupportedOperationException("Google does not yet support getting maps fromfetch job and map request id");
 	}
 	
+	public List<Integer> getMapRequestsbyLocation(int location) {
+		return dao.getMapRequestsbyLocation(location);
+	}
+	
 	private interface GoogleMapRequestDaoImpl {
 		@SqlQuery("select * from MapRequest where MapNumber = :mapNumber limit :offset,:limit;")
 		@Mapper(GoogleMapRequestMapper.class)
@@ -94,5 +98,11 @@ public class GoogleMapRequestDao implements MapRequestDao {
 		
 		@SqlQuery("Select region from MapRequest where id = :id")
 		public List<String> getRegion(@Bind("id") int id);
+		
+		@SqlQuery("Select id from MapRequest where location = :location")
+		public List<Integer> getMapRequestsbyLocation(@Bind("location") int location);
+		
+		@SqlQuery("Select count(distinct latitude, longitude) from MapRequest")
+		public int countTiles();
 	}
 }

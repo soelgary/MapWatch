@@ -22,4 +22,6 @@ public interface MapRequestDao {
 	public List<Integer> getMapRequestsFromTileNumber(int tileNumber);
 	
 	public Optional<BingMap> getMapFromFetchJobAndMapRequest(int fetchJob, int mapRequestId);
+	
+	public List<Integer> getMapRequestsbyLocation(int location);
 }

@@ -82,6 +82,10 @@ public class GoogleMapDao implements MapDao {
 	public List<GoogleMap> getMapsWithMapRequest(int mapRequestId) {
 		return dao.getMapWithMapRequestId(mapRequestId);
 	}
+	
+	public boolean containsHash(String hash) {
+		return dao.countHashes(hash).size() > 0;
+	}
 
 	private interface GoogleMapDaoImpl {
 		
@@ -106,5 +110,8 @@ public class GoogleMapDao implements MapDao {
 		@SqlQuery("Select * from Map where mapRequest = :mapRequest order by dateTime DESC")
 		@Mapper(GoogleMapWrapper.class)
 		public List<GoogleMap> getMapWithMapRequestId(@Bind("mapRequest") int mapRequest);
+		
+		@SqlQuery("Select hash from Map where hash = :hash")
+		public List<String> countHashes(@Bind("hash") String hash);
 	}
 }

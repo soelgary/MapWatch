@@ -13,4 +13,6 @@ public interface MapDao {
 	public Optional<Map> getMapMostRecentWithMapRequestId(int mapRequestId);
 	
 	public Optional<Map> getMapFromFetchJobByMapRequest(int fetchJob, int mapRequest);
+	
+	public boolean containsHash(String hash);
 }

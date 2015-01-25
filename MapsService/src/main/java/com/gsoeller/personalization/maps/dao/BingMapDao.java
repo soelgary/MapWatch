@@ -77,6 +77,10 @@ public class BingMapDao implements MapDao {
 			throw new RuntimeException("Found multiple maps");
 		}
 	}
+	
+	public boolean containsHash(String hash) {
+		return dao.countHashes(hash).size() > 0;
+	}
 
 	private interface BingMapDaoImpl {
 		
@@ -97,5 +101,8 @@ public class BingMapDao implements MapDao {
 		@SqlQuery("select * from (select * from BingMap as aa where FetchJob = :fetchJob) as a where bingMapRequest = :mapRequest")
 		@Mapper(BingMapWrapper.class)
 		public List<BingMap> getMapFromFetchJobByMapRequest(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
+		
+		@SqlQuery("Select id from BingMap where hash = :hash")
+		public List<String> countHashes(@Bind("hash") String hash);
 	}
 }
