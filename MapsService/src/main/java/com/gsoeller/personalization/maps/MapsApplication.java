@@ -19,7 +19,6 @@ import org.quartz.impl.StdSchedulerFactory;
 import com.gsoeller.personalization.maps.jobs.ComparisonJob;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.GenerateGifJob;
-import com.gsoeller.personalization.maps.jobs.ReadEmailJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
 import com.gsoeller.personalization.maps.resources.MapsResource;
 
@@ -67,8 +66,8 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		Option createGifs = new Option("creategifs", "Create Gifs fromt the map request id file");
 		options.addOption(createGifs);
 		
-		Option readEmail = new Option("readEmail", "Read personalization email");
-		options.addOption(readEmail);
+		//Option readEmail = new Option("readEmail", "Read personalization email");
+		//options.addOption(readEmail);
 		
 		options.addOption(option);
 		CommandLineParser parser = new BasicParser();
@@ -102,7 +101,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		} else if(cmd.hasOption("creategifs")) {
 			startGifJob();
 		} else if(cmd.hasOption("readEmail")) {
-			readEmailJob();
+			//readEmailJob();
 		}
 		else {
 			new MapsApplication().run(args);
@@ -203,6 +202,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		sched.scheduleJob(job, trigger);		
 	}
 	
+	/*
 	private static void readEmailJob() throws SchedulerException {
 		SchedulerFactory schedFact = new StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
@@ -218,4 +218,5 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				.build();
 		sched.scheduleJob(job, trigger);
 	}
+	*/
 }
