@@ -64,4 +64,8 @@ public class ImageDao {
 			e.printStackTrace();
 		}
 	}
+	
+	public void setDir(String dir) {
+		this.outputDir = dir;
+	}
 }
