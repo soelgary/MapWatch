@@ -36,16 +36,13 @@ public class GifGenerator {
 	}
 	
 	public void createGif() throws Exception {
-		List<String> outputFiles = Lists.newArrayList();
 		BufferedImage[] bufferedImages = new BufferedImage[images.length];
 		for(int i = 0; i < images.length; i++) {
 			String output = String.format("%s-%d-%d", countries.get(i), fetchJobs[i], mapRequest);
 			String outputGif = String.format("%s%s.gif", gifDirectory, output);
 			bufferedImages[i] = ImagePaintBrush.draw(images[i], output, outputGif);
-			outputFiles.add(outputGif);
 		}
 		GIFTweaker.writeAnimatedGIF(bufferedImages, delays, fout);
-		
 	}
 	
 	public static class GifGeneratorBuilder {

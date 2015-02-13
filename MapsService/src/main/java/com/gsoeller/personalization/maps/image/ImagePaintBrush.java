@@ -2,19 +2,20 @@ package com.gsoeller.personalization.maps.image;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 
 public class ImagePaintBrush {
 	
+	private static final int CROP_AMOUNT = 40;
+	
+	/*
+	 * Takes an image, text, and filename and draws the text on the image
+	 * and outputs it to the filename provided
+	 * 
+	 */
 	public static BufferedImage draw(BufferedImage image, String text, String output) throws IOException {
 		int height = image.getHeight();
 		int width = image.getWidth();
@@ -30,7 +31,13 @@ public class ImagePaintBrush {
 		g.setFont(new Font("TimesRoman", Font.PLAIN, 20));
 		g.drawString(text, 50, 650);
 		g.dispose();
-		//ImageIO.write(bufferedImage, "png", new File(output));
 		return bufferedImage;
+	}
+	
+	/*
+	 * Takes an image and crops the bottom out and saves it to cropped.png
+	 */
+	public static BufferedImage crop(BufferedImage image) {
+		return image.getSubimage(0, 0, image.getWidth(), image.getHeight() - CROP_AMOUNT);
 	}
 }

@@ -17,6 +17,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.gsoeller.personalization.maps.jobs.ComparisonJob;
+import com.gsoeller.personalization.maps.jobs.Cropjob;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.GenerateGifJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
@@ -78,8 +79,10 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		} else {
 			configFile = "/home/soelgary/Maps/achtung.properties";
 		}
-		
-		if(cmd.hasOption("h")) {
+		if(true) {
+			startCropJob();
+		}
+		else if(cmd.hasOption("h")) {
 			HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("Maps Personalization", options);
 		} else if(cmd.hasOption("s")) {
@@ -200,6 +203,22 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				.startNow()
 				.build();
 		sched.scheduleJob(job, trigger);		
+	}
+	
+	private static void startCropJob() throws SchedulerException {
+		SchedulerFactory schedFact = new StdSchedulerFactory();
+		Scheduler sched = schedFact.getScheduler();
+		sched.start();
+
+		JobDetail job = JobBuilder.newJob(Cropjob.class)
+				.withIdentity("Crop Job", "group1").build();
+		
+		Trigger trigger = TriggerBuilder
+				.newTrigger()
+				.withIdentity("Fetch Trigger", "group1")
+				.startNow()
+				.build();
+		sched.scheduleJob(job, trigger);
 	}
 	
 	/*
