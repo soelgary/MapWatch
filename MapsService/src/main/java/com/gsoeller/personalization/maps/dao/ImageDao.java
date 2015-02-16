@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+//import java.nio.file.Files;
+//import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
@@ -57,12 +57,14 @@ public class ImageDao {
 	}
 	
 	public void removeImage(String name) {
+		/*
 		try {
 			Files.deleteIfExists(Paths.get(outputDir + name));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		*/
 	}
 	
 	public void setDir(String dir) {
