@@ -99,11 +99,11 @@ public class GoogleMapDao implements MapDao {
 		@SqlQuery("Select path from Map where hash = :hash limit 1")
 		public List<String> getPathWithHash(@Bind("hash") String hash);
 
-		@SqlQuery("Select * from Map cross join MapRequest where mapRequest = :mapRequest order by dateTime DESC limit 1")
+		@SqlQuery("Select SQL_NO_CACHE * from Map cross join MapRequest where mapRequest = :mapRequest order by dateTime DESC limit 1")
 		@Mapper(GoogleMapWrapper.class)
 		public List<GoogleMap> getMapMostRecentWithMapRequestId(@Bind("mapRequest") int mapRequest);
 		
-		@SqlQuery("select * from (select * from Map as aa where FetchJob = :fetchJob) as a where mapRequest = :mapRequest")
+		@SqlQuery("select SQL_NO_CACHE * from (select * from Map as aa where FetchJob = :fetchJob) as a where mapRequest = :mapRequest")
 		@Mapper(GoogleMapWrapper.class)
 		public List<GoogleMap> getMapFromFetchJobByMapRequest(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
 		

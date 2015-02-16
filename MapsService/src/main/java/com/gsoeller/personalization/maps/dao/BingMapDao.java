@@ -94,11 +94,11 @@ public class BingMapDao implements MapDao {
 		@SqlQuery("Select path from BingMap where hash = :hash limit 1")
 		public List<String> getPathWithHash(@Bind("hash") String hash);
 
-		@SqlQuery("Select * from BingMap cross join BingMapRequest where bingMapRequest = :mapRequest order by dateTime DESC limit 1")
+		@SqlQuery("Select SQL_NO_CACHE * from BingMap cross join BingMapRequest where bingMapRequest = :mapRequest order by dateTime DESC limit 1")
 		@Mapper(BingMapWrapper.class)
 		public List<BingMap> getMapMostRecentWithMapRequestId(@Bind("mapRequest") int mapRequest);
 		
-		@SqlQuery("select * from (select * from BingMap as aa where FetchJob = :fetchJob) as a where bingMapRequest = :mapRequest")
+		@SqlQuery("select SQL_NO_CACHE * from (select * from BingMap as aa where FetchJob = :fetchJob) as a where bingMapRequest = :mapRequest")
 		@Mapper(BingMapWrapper.class)
 		public List<BingMap> getMapFromFetchJobByMapRequest(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
 		
