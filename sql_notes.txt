@@ -1,0 +1,355 @@
+Output of script that measures query performance
+
+----------------
+Start First Test
+----------------
+Running Sql Performance Tests On 5 Queries...
+#######
+Query 1
+#######
+Running Sql Performance Test For Google GetMapMostRecentWithMapRequestId On 5 Queries...
+2/16/15 3:44:01 AM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 3888.95 milliseconds
+               max = 4793.69 milliseconds
+              mean = 4196.57 milliseconds
+            stddev = 355.94 milliseconds
+            median = 4045.42 milliseconds
+              75% <= 4514.36 milliseconds
+              95% <= 4793.69 milliseconds
+              98% <= 4793.69 milliseconds
+              99% <= 4793.69 milliseconds
+            99.9% <= 4793.69 milliseconds
+
+
+#######
+Query 2
+#######
+Running Sql Performance Test For Google GetMapFromFetchJobByMapRequest On 5 Queries...
+2/16/15 3:44:03 AM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 385.53 milliseconds
+               max = 553.00 milliseconds
+              mean = 420.14 milliseconds
+            stddev = 74.28 milliseconds
+            median = 387.83 milliseconds
+              75% <= 470.56 milliseconds
+              95% <= 553.00 milliseconds
+              98% <= 553.00 milliseconds
+              99% <= 553.00 milliseconds
+            99.9% <= 553.00 milliseconds
+
+
+#######
+Query 3
+#######
+Running Sql Performance Test For Bing GetMapMostRecentWithMapRequestId On 5 Queries...
+2/16/15 3:44:19 AM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 3131.44 milliseconds
+               max = 3443.04 milliseconds
+              mean = 3269.62 milliseconds
+            stddev = 120.47 milliseconds
+            median = 3274.95 milliseconds
+              75% <= 3377.88 milliseconds
+              95% <= 3443.04 milliseconds
+              98% <= 3443.04 milliseconds
+              99% <= 3443.04 milliseconds
+            99.9% <= 3443.04 milliseconds
+
+
+#######
+Query 4
+#######
+Running Sql Performance Test For Bing GetMapFromFetchJobByMapRequest On 5 Queries...
+2/16/15 3:44:22 AM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 576.87 milliseconds
+               max = 726.39 milliseconds
+              mean = 625.08 milliseconds
+            stddev = 65.68 milliseconds
+            median = 582.67 milliseconds
+              75% <= 691.82 milliseconds
+              95% <= 726.39 milliseconds
+              98% <= 726.39 milliseconds
+              99% <= 726.39 milliseconds
+            99.9% <= 726.39 milliseconds
+--------------
+End First Test
+--------------
+
+-----------------
+Start Second Test
+-----------------
+Running Sql Performance Tests On 5 Queries...
+#######
+Query 1
+#######
+Running Sql Performance Test For Google GetMapMostRecentWithMapRequestId On 5 Queries...
+2/16/15 4:02:22 AM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 609.89 milliseconds
+               max = 722.71 milliseconds
+              mean = 638.18 milliseconds
+            stddev = 47.52 milliseconds
+            median = 617.51 milliseconds
+              75% <= 673.37 milliseconds
+              95% <= 722.71 milliseconds
+              98% <= 722.71 milliseconds
+              99% <= 722.71 milliseconds
+            99.9% <= 722.71 milliseconds
+
+
+#######
+Query 2
+#######
+Running Sql Performance Test For Google GetMapFromFetchJobByMapRequest On 5 Queries...
+2/16/15 4:02:23 AM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 150.39 milliseconds
+               max = 196.62 milliseconds
+              mean = 159.93 milliseconds
+            stddev = 20.51 milliseconds
+            median = 150.94 milliseconds
+              75% <= 173.93 milliseconds
+              95% <= 196.62 milliseconds
+              98% <= 196.62 milliseconds
+              99% <= 196.62 milliseconds
+            99.9% <= 196.62 milliseconds
+
+
+#######
+Query 3
+#######
+Running Sql Performance Test For Bing GetMapMostRecentWithMapRequestId On 5 Queries...
+2/16/15 4:02:25 AM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 505.37 milliseconds
+               max = 613.86 milliseconds
+              mean = 528.22 milliseconds
+            stddev = 47.88 milliseconds
+            median = 507.22 milliseconds
+              75% <= 560.86 milliseconds
+              95% <= 613.86 milliseconds
+              98% <= 613.86 milliseconds
+              99% <= 613.86 milliseconds
+            99.9% <= 613.86 milliseconds
+
+
+#######
+Query 4
+#######
+Running Sql Performance Test For Bing GetMapFromFetchJobByMapRequest On 5 Queries...
+2/16/15 4:02:28 AM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 486.53 milliseconds
+               max = 487.64 milliseconds
+              mean = 487.05 milliseconds
+            stddev = 0.47 milliseconds
+            median = 487.02 milliseconds
+              75% <= 487.51 milliseconds
+              95% <= 487.64 milliseconds
+              98% <= 487.64 milliseconds
+              99% <= 487.64 milliseconds
+            99.9% <= 487.64 milliseconds
+
+------------------
+End of Second Test
+------------------
+
+--------------------------
+Test After Index Was Added
+--------------------------
+Running Sql Performance Tests On 5 Queries...
+#######
+Query 1
+#######
+Running Sql Performance Test For Google GetMapMostRecentWithMapRequestId On 5 Queries...
+2/16/15 9:43:23 PM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 1.72 milliseconds
+               max = 31.04 milliseconds
+              mean = 7.62 milliseconds
+            stddev = 13.09 milliseconds
+            median = 1.78 milliseconds
+              75% <= 16.44 milliseconds
+              95% <= 31.04 milliseconds
+              98% <= 31.04 milliseconds
+              99% <= 31.04 milliseconds
+            99.9% <= 31.04 milliseconds
+
+#######
+Query 2
+#######
+Running Sql Performance Test For Google GetMapFromFetchJobByMapRequest On 5 Queries...
+2/16/15 9:43:23 PM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 1.12 milliseconds
+               max = 1.33 milliseconds
+              mean = 1.18 milliseconds
+            stddev = 0.09 milliseconds
+            median = 1.13 milliseconds
+              75% <= 1.26 milliseconds
+              95% <= 1.33 milliseconds
+              98% <= 1.33 milliseconds
+              99% <= 1.33 milliseconds
+            99.9% <= 1.33 milliseconds
+
+#######
+Query 3
+#######
+Running Sql Performance Test For Bing GetMapMostRecentWithMapRequestId On 5 Queries...
+2/16/15 9:43:23 PM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 1.29 milliseconds
+               max = 60.10 milliseconds
+              mean = 13.50 milliseconds
+            stddev = 26.05 milliseconds
+            median = 2.08 milliseconds
+              75% <= 31.12 milliseconds
+              95% <= 60.10 milliseconds
+              98% <= 60.10 milliseconds
+              99% <= 60.10 milliseconds
+            99.9% <= 60.10 milliseconds
+
+#######
+Query 4
+#######
+Running Sql Performance Test For Bing GetMapFromFetchJobByMapRequest On 5 Queries...
+2/16/15 9:43:23 PM =============================================================
+
+-- Timers ----------------------------------------------------------------------
+responses
+             count = 5
+               min = 0.95 milliseconds
+               max = 2.05 milliseconds
+              mean = 1.20 milliseconds
+            stddev = 0.48 milliseconds
+            median = 0.99 milliseconds
+              75% <= 1.53 milliseconds
+              95% <= 2.05 milliseconds
+              98% <= 2.05 milliseconds
+              99% <= 2.05 milliseconds
+            99.9% <= 2.05 milliseconds
+------------------------------
+End Test After Index Was Added
+------------------------------
+
+Output of mysql explain
+
+#######
+Query 1
+#######
+Before
++----+-------------+------------+------+---------------+------+---------+------+---------+----------------------------------------------+
+| id | select_type | table      | type | possible_keys | key  | key_len | ref  | rows    | Extra                                        |
++----+-------------+------------+------+---------------+------+---------+------+---------+----------------------------------------------+
+|  1 | SIMPLE      | Map        | ALL  | NULL          | NULL | NULL    | NULL | 1208926 | Using where; Using temporary; Using filesort |
+|  1 | SIMPLE      | MapRequest | ALL  | NULL          | NULL | NULL    | NULL |  156377 | Using join buffer                            |
++----+-------------+------------+------+---------------+------+---------+------+---------+----------------------------------------------+
+After Query Refactor
++----+-------------+------------+-------+---------------+---------+---------+-------+---------+----------------+
+| id | select_type | table      | type  | possible_keys | key     | key_len | ref   | rows    | Extra          |
++----+-------------+------------+-------+---------------+---------+---------+-------+---------+----------------+
+|  1 | SIMPLE      | MapRequest | const | PRIMARY       | PRIMARY | 4       | const |       1 | Using filesort |
+|  1 | SIMPLE      | Map        | ALL   | NULL          | NULL    | NULL    | NULL  | 1208926 | Using where    |
++----+-------------+------------+-------+---------------+---------+---------+-------+---------+----------------+
+After Index Was Added
++----+-------------+------------+-------+---------------------+---------------------+---------+-------+------+----------------+
+| id | select_type | table      | type  | possible_keys       | key                 | key_len | ref   | rows | Extra          |
++----+-------------+------------+-------+---------------------+---------------------+---------+-------+------+----------------+
+|  1 | SIMPLE      | MapRequest | const | PRIMARY             | PRIMARY             | 4       | const |    1 | Using filesort |
+|  1 | SIMPLE      | Map        | ref   | fk_googleMapRequest | fk_googleMapRequest | 4       | const |    8 | Using where    |
++----+-------------+------------+-------+---------------------+---------------------+---------+-------+------+----------------+
+
+#######
+Query 2
+#######
+Before
++----+-------------+------------+------+---------------+------+---------+------+--------+-------------+
+| id | select_type | table      | type | possible_keys | key  | key_len | ref  | rows   | Extra       |
++----+-------------+------------+------+---------------+------+---------+------+--------+-------------+
+|  1 | PRIMARY     | <derived2> | ALL  | NULL          | NULL | NULL    | NULL | 156073 | Using where |
+|  2 | DERIVED     | aa         | ref  | job           | job  | 4       |      | 304512 |             |
++----+-------------+------------+------+---------------+------+---------+------+--------+-------------+
+After Query Refactor
++----+-------------+-------+------+---------------+------+---------+-------+--------+-------------+
+| id | select_type | table | type | possible_keys | key  | key_len | ref   | rows   | Extra       |
++----+-------------+-------+------+---------------+------+---------+-------+--------+-------------+
+|  1 | SIMPLE      | Map   | ref  | job           | job  | 4       | const | 304512 | Using where |
++----+-------------+-------+------+---------------+------+---------+-------+--------+-------------+
+
+#######
+Query 3
+#######
+Before
++----+-------------+----------------+------+---------------+------+---------+------+---------+----------------------------------------------+
+| id | select_type | table          | type | possible_keys | key  | key_len | ref  | rows    | Extra                                        |
++----+-------------+----------------+------+---------------+------+---------+------+---------+----------------------------------------------+
+|  1 | SIMPLE      | BingMap        | ALL  | NULL          | NULL | NULL    | NULL | 1129699 | Using where; Using temporary; Using filesort |
+|  1 | SIMPLE      | BingMapRequest | ALL  | NULL          | NULL | NULL    | NULL |   65711 | Using join buffer                            |
++----+-------------+----------------+------+---------------+------+---------+------+---------+----------------------------------------------+
+After Query Refactor
++----+-------------+----------------+-------+---------------+---------+---------+-------+---------+----------------+
+| id | select_type | table          | type  | possible_keys | key     | key_len | ref   | rows    | Extra          |
++----+-------------+----------------+-------+---------------+---------+---------+-------+---------+----------------+
+|  1 | SIMPLE      | BingMapRequest | const | PRIMARY       | PRIMARY | 4       | const |       1 | Using filesort |
+|  1 | SIMPLE      | BingMap        | ALL   | NULL          | NULL    | NULL    | NULL  | 1129699 | Using where    |
++----+-------------+----------------+-------+---------------+---------+---------+-------+---------+----------------+
+After Index Was Added
++----+-------------+----------------+-------+-------------------+-------------------+---------+-------+------+----------------+
+| id | select_type | table          | type  | possible_keys     | key               | key_len | ref   | rows | Extra          |
++----+-------------+----------------+-------+-------------------+-------------------+---------+-------+------+----------------+
+|  1 | SIMPLE      | BingMapRequest | const | PRIMARY           | PRIMARY           | 4       | const |    1 | Using filesort |
+|  1 | SIMPLE      | BingMap        | ref   | fk_bingMapRequest | fk_bingMapRequest | 4       | const |   17 | Using where    |
++----+-------------+----------------+-------+-------------------+-------------------+---------+-------+------+----------------+
+
+#######
+Query 4
+#######
+Before
++----+-------------+------------+------+---------------+------+---------+------+---------+-------------+
+| id | select_type | table      | type | possible_keys | key  | key_len | ref  | rows    | Extra       |
++----+-------------+------------+------+---------------+------+---------+------+---------+-------------+
+|  1 | PRIMARY     | <derived2> | ALL  | NULL          | NULL | NULL    | NULL |   65025 | Using where |
+|  2 | DERIVED     | aa         | ALL  | NULL          | NULL | NULL    | NULL | 1129699 | Using where |
++----+-------------+------------+------+---------------+------+---------+------+---------+-------------+
+After Query Refactor
++----+-------------+-------+------+---------------+------+---------+-------+--------+-------------+
+| id | select_type | table | type | possible_keys | key  | key_len | ref   | rows   | Extra       |
++----+-------------+-------+------+---------------+------+---------+-------+--------+-------------+
+|  1 | SIMPLE      | Map   | ref  | job           | job  | 4       | const | 304512 | Using where |
++----+-------------+-------+------+---------------+------+---------+-------+--------+-------------+

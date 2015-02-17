@@ -20,6 +20,7 @@ import com.gsoeller.personalization.maps.jobs.ComparisonJob;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.GenerateGifJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
+import com.gsoeller.personalization.maps.jobs.SQLStressTestJob;
 import com.gsoeller.personalization.maps.resources.MapsResource;
 
 import io.dropwizard.Application;
@@ -66,6 +67,12 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		Option createGifs = new Option("creategifs", "Create Gifs fromt the map request id file");
 		options.addOption(createGifs);
 		
+		Option testSQL = new Option("testSQL", "Run stress tests for the sql queries");
+		testSQL.hasArg();
+		testSQL.setType(Integer.class);
+		testSQL.setArgs(1);
+		options.addOption(testSQL);
+		
 		//Option readEmail = new Option("readEmail", "Read personalization email");
 		//options.addOption(readEmail);
 		
@@ -102,6 +109,9 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			startGifJob();
 		} else if(cmd.hasOption("readEmail")) {
 			//readEmailJob();
+		} else if(cmd.hasOption("testSQL")) {
+			String numQueries = (String) cmd.getOptionValue("testSQL");
+			startSQLStressTests(Integer.parseInt(numQueries));
 		}
 		else {
 			new MapsApplication().run(args);
@@ -197,6 +207,24 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		Trigger trigger = TriggerBuilder
 				.newTrigger()
 				.withIdentity("Fetch Trigger", "group1")
+				.startNow()
+				.build();
+		sched.scheduleJob(job, trigger);		
+	}
+	
+	private static void startSQLStressTests(int numQueries) throws SchedulerException {
+		SchedulerFactory schedFact = new StdSchedulerFactory();
+		Scheduler sched = schedFact.getScheduler();
+		sched.start();
+
+		JobDetail job = JobBuilder.newJob(SQLStressTestJob.class)
+				.withIdentity("Stress Test Job", "group1").build();
+		
+		job.getJobDataMap().put("numQueries", numQueries);
+		
+		Trigger trigger = TriggerBuilder
+				.newTrigger()
+				.withIdentity("Stress Trigger", "group1")
 				.startNow()
 				.build();
 		sched.scheduleJob(job, trigger);		

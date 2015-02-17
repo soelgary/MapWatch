@@ -59,6 +59,9 @@ public class FetchJob implements Job {
 	
 	private ReverseHealthCheck reverseHealthCheck;
 	
+	private static final double BING_RATE = .3;
+	private static final double GOOGLE_RATE = .3;
+	
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.FetchJob");
 	
 	public boolean configure(String mapProvider) throws IOException {
@@ -76,14 +79,14 @@ public class FetchJob implements Job {
 		mapDao = new GoogleMapDao();
 		mapRequestDao = new GoogleMapRequestDao();
 		fetchJobDao = new GoogleFetchJobDao();
-		limiter = RateLimiter.create(.34);
+		limiter = RateLimiter.create(GOOGLE_RATE);
 	}
 	
 	public void setBingMaps() throws IOException {
 		mapDao = new BingMapDao();
 		mapRequestDao = new BingMapRequestDao();
 		fetchJobDao = new BingFetchJobDao();
-		limiter = RateLimiter.create(.34);
+		limiter = RateLimiter.create(BING_RATE);
 	}
 	
 	public void execute(JobExecutionContext context)

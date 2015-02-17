@@ -64,6 +64,15 @@ Check the status again. This time it should say that the database is up to date.
 java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar db status ../config.yaml
 ```
 
+Run Sql Performance Tests
+=========================
+
+If you ever question how the sql queries are performing or are curious you can run sql performance tests with the following command.
+```
+java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -testSQL x
+```
+where ```x``` is an int representing the number of queries to run.
+
 Contribution
 ============
 

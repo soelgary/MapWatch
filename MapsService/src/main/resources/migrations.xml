@@ -94,7 +94,8 @@
 			<column name="id" type="int" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="startTime" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+			<column name="startTime" type="timestamp"
+				defaultValueComputed="LOCALTIMESTAMP">
 				<constraints nullable="false" />
 			</column>
 		</createTable>
@@ -107,7 +108,7 @@
 			referencedTableName="FetchJob" baseColumnNames="FetchJob"
 			baseTableName="Map" referencedColumnNames="id" />
 	</changeSet>
-	
+
 	<changeSet id="7" author="gary">
 		<addColumn tableName="FetchJob">
 			<column name="finished" type="boolean" defaultValueBoolean="false">
@@ -115,7 +116,7 @@
 			</column>
 		</addColumn>
 	</changeSet>
-	
+
 	<changeSet id="8" author="gary">
 		<addColumn tableName="Location">
 			<column name="MapNumber" type="int" defaultValue="0">
@@ -123,7 +124,7 @@
 			</column>
 		</addColumn>
 	</changeSet>
-	
+
 	<changeSet id="9" author="gary">
 		<addColumn tableName="MapRequest">
 			<column name="MapNumber" type="int" defaultValue="0">
@@ -141,12 +142,13 @@
 			</column>
 		</addColumn>
 	</changeSet>
-	
+
 	<changeSet id="10" author="gary">
-		<dropForeignKeyConstraint baseTableName="MapRequest" constraintName="location"/>
+		<dropForeignKeyConstraint baseTableName="MapRequest"
+			constraintName="location" />
 		<dropColumn tableName="MapRequest" columnName="location" />
 	</changeSet>
-	
+
 	<changeSet id="11" author="gary">
 		<addColumn tableName="FetchJob">
 			<column name="MapNumber" type="int" defaultValue="0">
@@ -154,13 +156,14 @@
 			</column>
 		</addColumn>
 	</changeSet>
-	
+
 	<changeSet id="12" author="gary">
 		<createTable tableName="BingFetchJob">
 			<column name="id" type="int" autoIncrement="true">
 				<constraints primaryKey="true" nullable="false" />
 			</column>
-			<column name="startTime" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+			<column name="startTime" type="timestamp"
+				defaultValueComputed="LOCALTIMESTAMP">
 				<constraints nullable="false" />
 			</column>
 			<column name="finished" type="boolean" defaultValueBoolean="false">
@@ -207,5 +210,14 @@
 				<constraints nullable="false" />
 			</column>
 		</createTable>
+	</changeSet>
+
+	<changeSet id="13" author="gary">
+		<addForeignKeyConstraint constraintName="fk_googleMapRequest"
+			referencedTableName="MapRequest" baseColumnNames="mapRequest"
+			baseTableName="Map" referencedColumnNames="id" />
+		<addForeignKeyConstraint constraintName="fk_bingMapRequest"
+			referencedTableName="BingMapRequest" baseColumnNames="bingMapRequest"
+			baseTableName="BingMap" referencedColumnNames="id" />
 	</changeSet>
 </databaseChangeLog>
