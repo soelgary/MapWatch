@@ -8,8 +8,10 @@ import java.io.IOException;
 //import java.nio.file.Files;
 //import java.nio.file.Paths;
 
+
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 
 import com.gsoeller.personalization.maps.PropertiesLoader;
@@ -25,7 +27,7 @@ public class ImageDao {
 			outputDir = propLoader.getProperty("imgdirectory");
 		} catch (IOException e) {
 			e.printStackTrace();
-			//outputDir = "/net/data/google-maps/img/";
+			outputDir = "/net/data/google-maps/img/";
 		}
 		
 	}
@@ -57,14 +59,12 @@ public class ImageDao {
 	}
 	
 	public void removeImage(String name) {
-		/*
 		try {
-			Files.deleteIfExists(Paths.get(outputDir + name));
+			FileUtils.forceDelete(new File(outputDir + name));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		*/
 	}
 	
 	public void setDir(String dir) {
