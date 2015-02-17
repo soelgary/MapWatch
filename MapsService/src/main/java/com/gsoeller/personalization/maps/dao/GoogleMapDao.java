@@ -105,7 +105,7 @@ public class GoogleMapDao implements MapDao {
 		public List<GoogleMap> getMapMostRecentWithMapRequestId(@Bind("mapRequest") int mapRequest);
 		
 		//@SqlQuery("select SQL_NO_CACHE * from (select * from Map as aa where FetchJob = :fetchJob) as a where mapRequest = :mapRequest")
-		@SqlQuery("select SQL_NO_CACHE * from Map where mapRequest = :mapRequest && FetchJob = : fetchJob;")
+		@SqlQuery("select SQL_NO_CACHE * from Map where mapRequest = :mapRequest && FetchJob = :fetchJob;")
 		@Mapper(GoogleMapWrapper.class)
 		public List<GoogleMap> getMapFromFetchJobByMapRequest(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
 		

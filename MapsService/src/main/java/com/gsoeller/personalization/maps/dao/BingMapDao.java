@@ -100,7 +100,7 @@ public class BingMapDao implements MapDao {
 		public List<BingMap> getMapMostRecentWithMapRequestId(@Bind("mapRequest") int mapRequest);
 		
 		//@SqlQuery("select SQL_NO_CACHE * from (select * from BingMap as aa where FetchJob = :fetchJob) as a where bingMapRequest = :mapRequest")
-		@SqlQuery("select SQL_NO_CACHE * from Map where mapRequest = :mapRequest && FetchJob = : fetchJob;")
+		@SqlQuery("select SQL_NO_CACHE * from Map where mapRequest = :mapRequest && FetchJob = :fetchJob;")
 		@Mapper(BingMapWrapper.class)
 		public List<BingMap> getMapFromFetchJobByMapRequest(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
 		
