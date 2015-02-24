@@ -220,4 +220,59 @@
 			referencedTableName="BingMapRequest" baseColumnNames="bingMapRequest"
 			baseTableName="BingMap" referencedColumnNames="id" />
 	</changeSet>
+	
+	<changeSet id="14" author="gary">
+		<createTable tableName="GoogleUpdate">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="oldMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_old_map" references="GoogleMap(id)"/>
+			</column>
+			<column name="newMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_old_map" references="GoogleMap(id)"/>
+			</column>
+			<column name="notes" type="text">
+				<constraints nullable="true" />
+			</column>
+			<column name="stage" type="int" defaultValue="0">
+				<constraints nullable="false" />
+			</column>
+			<column name="needsInvestigation" type="boolean" defaultValue="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="lastUpdated" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="inProgress" type="boolean" defaultValue="false">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+		<createTable tableName="BingUpdate">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="oldMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_old_map" references="GoogleMap(id)"/>
+			</column>
+			<column name="newMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_old_map" references="GoogleMap(id)"/>
+			</column>
+			<column name="notes" type="text">
+				<constraints nullable="true" />
+			</column>
+			<column name="stage" type="int" defaultValue="0">
+				<constraints nullable="false" />
+			</column>
+			<column name="needsInvestigation" type="boolean" defaultValue="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="lastUpdated" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="inProgress" type="boolean" defaultValue="false">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
 </databaseChangeLog>
