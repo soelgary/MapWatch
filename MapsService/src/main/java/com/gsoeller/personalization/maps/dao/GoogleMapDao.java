@@ -45,9 +45,9 @@ public class GoogleMapDao implements MapDao {
 		return Optional.fromNullable(maps.get(0));
 	}
 
-	public void saveMap(boolean hasChanged, int id, String path, String hash,
+	public int saveMap(boolean hasChanged, int id, String path, String hash,
 			int fetchJob) {
-		dao.saveMap(hasChanged, id, path, hash, fetchJob);
+		return dao.saveMap(hasChanged, id, path, hash, fetchJob);
 	}
 
 	public Optional<String> getPathWithHash(String hash) {

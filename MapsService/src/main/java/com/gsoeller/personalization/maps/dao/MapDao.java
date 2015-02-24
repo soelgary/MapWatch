@@ -6,7 +6,7 @@ import com.gsoeller.personalization.maps.data.Map;
 public interface MapDao {
 	public Optional<Integer> getLastMap(int currentFetchJob);
 	
-	public void saveMap(boolean hasChanged, int id, String path, String hash, int fetchJob);
+	public int saveMap(boolean hasChanged, int id, String path, String hash, int fetchJob);
 	
 	public Optional<String> getPathWithHash(String hash);
 	
