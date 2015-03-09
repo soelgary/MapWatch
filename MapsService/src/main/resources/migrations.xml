@@ -227,10 +227,10 @@
 				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="oldMap" type="int">
-				<constraints nullable="false" foreignKeyName="fk_old_map" references="GoogleMap(id)"/>
+				<constraints nullable="false" foreignKeyName="fk_old_google_map" references="Map(id)"/>
 			</column>
 			<column name="newMap" type="int">
-				<constraints nullable="false" foreignKeyName="fk_old_map" references="GoogleMap(id)"/>
+				<constraints nullable="false" foreignKeyName="fk_new_google_map" references="Map(id)"/>
 			</column>
 			<column name="notes" type="text">
 				<constraints nullable="true" />
@@ -246,6 +246,9 @@
 			</column>
 			<column name="inProgress" type="boolean" defaultValue="false">
 				<constraints nullable="false" />
+			</column>
+			<column name="gifPath" type="varchar(255)">
+				<constraints nullable="true" />
 			</column>
 		</createTable>
 		<createTable tableName="BingUpdate">
@@ -253,10 +256,10 @@
 				<constraints primaryKey="true" nullable="false" />
 			</column>
 			<column name="oldMap" type="int">
-				<constraints nullable="false" foreignKeyName="fk_old_map" references="GoogleMap(id)"/>
+				<constraints nullable="false" foreignKeyName="fk_old_bing_map" references="BingMap(id)"/>
 			</column>
 			<column name="newMap" type="int">
-				<constraints nullable="false" foreignKeyName="fk_old_map" references="GoogleMap(id)"/>
+				<constraints nullable="false" foreignKeyName="fk_new_bing_map" references="BingMap(id)"/>
 			</column>
 			<column name="notes" type="text">
 				<constraints nullable="true" />
@@ -272,6 +275,9 @@
 			</column>
 			<column name="inProgress" type="boolean" defaultValue="false">
 				<constraints nullable="false" />
+			</column>
+			<column name="gifPath" type="varchar(255)">
+				<constraints nullable="true" />
 			</column>
 		</createTable>
 	</changeSet>

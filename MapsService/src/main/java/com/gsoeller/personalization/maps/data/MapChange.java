@@ -14,8 +14,11 @@ public class MapChange {
 	private boolean needsInvestigation;
 	private DateTime lastUpdated;
 	private boolean inProgress;
+	private MapProvider mapProvider;
 	
-	public MapChange(MapChangeBuilder builder) {
+	public MapChange(){}
+	
+	private MapChange(MapChangeBuilder builder) {
 		this.id = builder.id;
 		this.oldMap = builder.oldMap;
 		this.newMap = builder.newMap;
@@ -24,8 +27,53 @@ public class MapChange {
 		this.needsInvestigation = builder.needsInvestigation;
 		this.lastUpdated = builder.lastUpdated;
 		this.inProgress = builder.inProgress;
+		this.mapProvider = builder.mapProvider;
 	}
 	
+	public DateTime getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(DateTime lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	public boolean isInProgress() {
+		return inProgress;
+	}
+
+	public void setInProgress(boolean inProgress) {
+		this.inProgress = inProgress;
+	}
+
+	public void setOldMap(Map oldMap) {
+		this.oldMap = oldMap;
+	}
+
+	public void setNewMap(Map newMap) {
+		this.newMap = newMap;
+	}
+
+	public void setId(Optional<Integer> id) {
+		this.id = id;
+	}
+
+	public void setNotes(Optional<String> notes) {
+		this.notes = notes;
+	}
+
+	public void setStage(Optional<Integer> stage) {
+		this.stage = stage;
+	}
+
+	public void setNeedsInvestigation(boolean needsInvestigation) {
+		this.needsInvestigation = needsInvestigation;
+	}
+
+	public void setMapProvider(MapProvider mapProvider) {
+		this.mapProvider = mapProvider;
+	}
+
 	public Map getOldMap() {
 		return oldMap;
 	}
@@ -58,6 +106,10 @@ public class MapChange {
 		return inProgress;
 	}
 	
+	public MapProvider getMapProvider() {
+		return mapProvider;
+	}
+	
 	public static class MapChangeBuilder {
 		private Map oldMap;
 		private Map newMap;
@@ -67,11 +119,13 @@ public class MapChange {
 		private boolean needsInvestigation = false;
 		private DateTime lastUpdated;
 		private boolean inProgress = false;
+		private MapProvider mapProvider;
 		
-		public MapChangeBuilder(Map oldMap, Map newMap) {
+		public MapChangeBuilder(Map oldMap, Map newMap, MapProvider mapProvider) {
 			this.newMap = newMap;
 			this.oldMap = oldMap;
 			lastUpdated = DateTime.now();
+			this.mapProvider = mapProvider;
 		}
 		
 		public MapChangeBuilder setId(int id) {
@@ -96,6 +150,11 @@ public class MapChange {
 		
 		public MapChangeBuilder setInProgress(boolean inProgress) {
 			this.inProgress = inProgress;
+			return this;
+		}
+		
+		public MapChangeBuilder setLastUpdate(DateTime lastUpdated) {
+			this.lastUpdated = lastUpdated;
 			return this;
 		}
 		

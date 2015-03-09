@@ -36,6 +36,14 @@ public class GoogleMapDao implements MapDao {
 		handle = dbi.open();
 		dao = handle.attach(GoogleMapDaoImpl.class);
 	}
+	
+	public Optional<Map> getMap(int id) {
+		List<Map> map = dao.getMap(id);
+		if(map.isEmpty()) {
+			return Optional.absent();
+		}
+		return Optional.fromNullable(map.get(0));
+	}
 
 	public Optional<Integer> getLastMap(int currentFetchJob) {
 		List<Integer> maps = dao.getLastMap(currentFetchJob);
@@ -88,6 +96,10 @@ public class GoogleMapDao implements MapDao {
 	}
 
 	private interface GoogleMapDaoImpl {
+		
+		@SqlQuery("Select * from Map where id = :id")
+		@Mapper(GoogleMapWrapper.class)
+		public List<Map> getMap(@Bind("id") int id);
 		
 		@SqlQuery("Select mapRequest from Map where FetchJob = :fetchJob order by dateTime desc limit 1")
 		public List<Integer> getLastMap(@Bind("fetchJob") int fetchJob);
