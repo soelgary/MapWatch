@@ -21,6 +21,7 @@ import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.GenerateGifJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
 import com.gsoeller.personalization.maps.jobs.SQLStressTestJob;
+import com.gsoeller.personalization.maps.resources.MapUpdateResource;
 import com.gsoeller.personalization.maps.resources.MapsResource;
 
 import io.dropwizard.Application;
@@ -131,7 +132,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 	@Override
 	public void run(MapsConfiguration config, Environment environment)
 			throws Exception {
-		environment.jersey().register(new MapsResource());
+		environment.jersey().register(new MapUpdateResource());
 	}
 	
 	private static void startCompareJob(int fetchJob, String mapProvider) throws SchedulerException {
