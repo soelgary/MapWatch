@@ -73,6 +73,69 @@ java -jar MapsService-0.0.1-SNAPSHOT-jar-with-dependencies.jar -testSQL x
 ```
 where ```x``` is an int representing the number of queries to run.
 
+HTTP Endpoints
+=============
+
+We have a set of HTTP endpoints that can be used to access/modify the ```*Update``` tables. 
+The ```*Update``` tables show changes between tiles for two consecutive crawls.
+
+```
+/{mapProvider}/updates
+```
+
+######Path Params
+```mapProvider```: The map provider table we are querying. Options are ```google``` or ```bing```
+
+#####GET
+Fetches updates from the table of the given ```mapProvider```
+
+######Query Params
+```count```: The number of updates you want to fetch. The default is 3
+
+```offset```: The offset in which to query. The default is 0
+
+```inProgress```: Query for updates that are in progress. The default is false
+
+```reserve```: Tells the service to reserve that update. This will make it so no one can modify the row except the requester. The default is true. Reserved rows will stay reserved for 1-2 hours. After this time they will be cleaned up so someone else can reserve it
+
+#####POST
+Creates an update. This is probably only going to be used in testing and should be removed in production for security purposes.
+
+Example payload
+```json
+{
+  "oldMap": {
+    "id": 1
+  },
+  "newMap": {
+    "id": 2 
+  },
+  "needsInvestigation": false,
+  "lastUpdated": 1425790800000,
+  "inProgress": false
+}
+```
+
+#####PUT
+Updates an existing row.
+
+Example payload
+```json
+{
+  "oldMap": {
+    "id": 1
+  },
+  "newMap": {
+    "id": 2 
+  },
+  "needsInvestigation": false,
+  "lastUpdated": 1425790800000,
+  "inProgress": false,
+  "notes": "This will get appended to any other notes in the row"
+}
+```
+
+
 Contribution
 ============
 
