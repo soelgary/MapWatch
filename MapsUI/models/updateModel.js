@@ -1,7 +1,7 @@
 define([],
   function(){
     var Update = Backbone.Model.extend({
-      url: 'http://127.0.0.1:9090/maps/google/updates',
+      url: 'http://api.test.gsoeller.com/maps/google/updates',
       defaults: {
         oldMap: null,
         newMap: null,
