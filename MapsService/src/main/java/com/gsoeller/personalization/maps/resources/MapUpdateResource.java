@@ -27,7 +27,7 @@ public class MapUpdateResource {
 	
 	private static final String GOOGLE = "google";
 	private final String DEFAULT_OFFSET = "0";
-	private final String DEFAULT_COUNT = "3";
+	private final String DEFAULT_COUNT = "10";
 	private final String DEFAULT_IN_PROGRESS = "false";
 	private final String DEFAULT_RESERVE = "true";
 	
@@ -47,7 +47,8 @@ public class MapUpdateResource {
 			@QueryParam("inProgress") @DefaultValue(DEFAULT_IN_PROGRESS) boolean inProgress,
 			@QueryParam("reserve") @DefaultValue(DEFAULT_RESERVE) boolean reserve) {
 		if(mapProvider.equals(GOOGLE)) {
-			return manager.getUpdates(offset, count, inProgress, reserve);
+			List<MapChange> changes = manager.getUpdates(offset, count, inProgress, reserve);
+			return changes;
 		}
 		throw new WebApplicationException(Status.NOT_FOUND);
 	}

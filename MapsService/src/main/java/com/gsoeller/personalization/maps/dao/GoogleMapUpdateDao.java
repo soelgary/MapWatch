@@ -97,7 +97,7 @@ public class GoogleMapUpdateDao implements MapUpdateDao {
 		@Mapper(GoogleMapUpdateMapper.class)
 		public List<MapChange> findNext();
 		
-		@SqlUpdate("Update GoogleUpdate WHERE id = :id, inProgress = false, needsInvestigation = :needsInvestigation, notes=CONCAT_WS('', notes, :notes, '\n'), lastUpdated=now()")
+		@SqlUpdate("Update GoogleUpdate SET inProgress = false, needsInvestigation = :needsInvestigation, notes=CONCAT_WS('', notes, :notes, '\n'), lastUpdated=now(), inProgress = false WHERE id = :id")
 		public void update(@Bind("id") int id, @Bind("needsInvestigation") boolean needsInvestigation, @Bind("notes") String notes);
 	}
 }
