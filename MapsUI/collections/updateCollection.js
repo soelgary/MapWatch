@@ -3,7 +3,7 @@ define(["models/updateModel.js"],
     var Updates = Backbone.Collection.extend({
       model: Update,
       async: false,
-      url: 'http://127.0.0.1:9090/maps/google/updates?reserve=false',
+      url: 'http://' + window.location.hostname + ':' + window.location.port + '/maps/google/updates?reserve=false',
       parse : function(resp) {
         return resp;
       },
