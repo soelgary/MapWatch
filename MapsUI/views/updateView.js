@@ -24,9 +24,9 @@ define([
           img2: "img/fe41928c-ab90-48c3-a6ff-725caa7ecc17.png",
           id: this.model.id
         };
-        var adjacentImageView = new AdjacentImageView(options)
-        var gifView = new GifView(options);
         var formView = new FormView({el: this.$el, model: this.model, parent: this});
+        var gifView = new GifView(options);
+        var adjacentImageView = new AdjacentImageView(options)
       },
     });
 });
