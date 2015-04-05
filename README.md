@@ -135,6 +135,39 @@ Example payload
 }
 ```
 
+```
+/{mapProvider}/updates/{id}/hits
+```
+#####GET
+Fetches all of the AMT hits for the given update
+
+######Query Params
+```count```: The number of HIT's you want to fetch. The default is 10
+
+```offset```: The offset in which to query. The default is 0
+
+#####POST
+Creates a new AMT HIT. Example payload is below
+```json
+TODO: Fill in this json
+```
+
+```
+/maps/{mapProvider}/control
+```
+#####GET
+Fetches all of the control updates
+
+#####POST
+Creates a new control
+
+```
+/maps/{mapProvider}/control/{id}
+```
+#####GET
+Fetches an individual control
+
+
 
 Contribution
 ============
