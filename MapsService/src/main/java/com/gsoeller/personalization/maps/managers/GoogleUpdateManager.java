@@ -27,6 +27,10 @@ public class GoogleUpdateManager extends UpdateManager {
 		return injectMaps(updateDao.getUpdates(offset, count, inProgress));
 	}
 	
+	public Optional<MapChange> getUpdate(int id) {
+		return  updateDao.getUpdate(id);
+	}
+	
 	public void update(MapChange change) {
 		String notes = "";
 		if(!change.getId().isPresent()) {

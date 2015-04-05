@@ -70,4 +70,11 @@ public class MapUpdateResource {
 		}
 		return Optional.absent();
 	}
+	
+	@GET
+	@Path("/{mapProvider}/updates/{id}")
+	public Optional<MapChange> getUpdate(@PathParam("mapProvider") String mapProvider,
+			@PathParam("id") int id) {
+		return manager.getUpdate(id);
+	}
 }

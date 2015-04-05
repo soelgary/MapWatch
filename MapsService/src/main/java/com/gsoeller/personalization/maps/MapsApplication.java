@@ -27,6 +27,8 @@ import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.GenerateGifJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
 import com.gsoeller.personalization.maps.jobs.SQLStressTestJob;
+import com.gsoeller.personalization.maps.resources.AMTControlResource;
+import com.gsoeller.personalization.maps.resources.AMTResource;
 import com.gsoeller.personalization.maps.resources.MapUpdateResource;
 import com.gsoeller.personalization.maps.resources.MapsResource;
 
@@ -145,6 +147,8 @@ public class MapsApplication extends Application<MapsConfiguration> {
 	    filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin");
 	    filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 		environment.jersey().register(new MapUpdateResource());
+		environment.jersey().register(new AMTResource());
+		environment.jersey().register(new AMTControlResource());
 	}
 	
 	private static void startCompareJob(int fetchJob, String mapProvider) throws SchedulerException {
