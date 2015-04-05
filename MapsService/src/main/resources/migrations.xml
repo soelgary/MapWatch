@@ -328,4 +328,12 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="17" author="gary">
+		<addColumn tableName="GoogleHIT">
+			<column name="readyForApproval" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

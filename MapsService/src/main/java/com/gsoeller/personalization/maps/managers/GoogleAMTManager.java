@@ -24,6 +24,6 @@ public class GoogleAMTManager {
 	}
 	
 	public int createHIT(GoogleHIT hit) {
-		return dao.createHIT(hit.getId(), hit.getTurkId(), hit.getControl().getId(), hit.isApproved());
+		return dao.createHIT(hit.getId(), hit.getTurkId(), hit.getControl().getId(), hit.isApproved(), hit.isReadyForApproval());
 	}
 }
