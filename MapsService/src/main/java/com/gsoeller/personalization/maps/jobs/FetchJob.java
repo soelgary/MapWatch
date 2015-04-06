@@ -24,6 +24,7 @@ import org.quartz.JobExecutionException;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.RateLimiter;
 import com.gsoeller.personalization.maps.MapsLogger;
+import com.gsoeller.personalization.maps.amt.HitGenerator;
 import com.gsoeller.personalization.maps.dao.BingFetchJobDao;
 import com.gsoeller.personalization.maps.dao.BingMapDao;
 import com.gsoeller.personalization.maps.dao.BingMapRequestDao;
@@ -37,6 +38,8 @@ import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
 import com.gsoeller.personalization.maps.dao.MapUpdateDao;
 import com.gsoeller.personalization.maps.data.Map;
+import com.gsoeller.personalization.maps.data.MapChange;
+import com.gsoeller.personalization.maps.data.MapProvider;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.fetchers.StaticMapFetcher;
 import com.gsoeller.personalization.maps.health.ReverseHealthCheck;
@@ -61,6 +64,8 @@ public class FetchJob implements Job {
 	private SmtpClient smtpClient = new SmtpClient();
 	
 	private ReverseHealthCheck reverseHealthCheck;
+	
+	private HitGenerator hitGenerator;
 	
 	private static final double BING_RATE = .3;
 	private static final double GOOGLE_RATE = .3;
@@ -106,6 +111,7 @@ public class FetchJob implements Job {
 		boolean configured;
 		try {
 			configured = configure(mapProvider);
+			hitGenerator = new HitGenerator();
 		} catch (IOException e1) {
 			LOG.severe("An error occurred while configuring the fetcher...");
 			e1.printStackTrace();
@@ -222,7 +228,15 @@ public class FetchJob implements Job {
 							if(hasChanged) {
 								LOG.info("Tile changed, saving the map update");
 								if(oldMap.isPresent()) {
-									 mapUpdateDao.save(oldMap.get().getId(), currentMapId); 
+									 int updateId = mapUpdateDao.save(oldMap.get().getId(), currentMapId); 
+									 MapChange change = mapUpdateDao.getUpdate(updateId).get();
+									 try {
+										hitGenerator.addUpdate(MapProvider.valueOf(mapProvider), change);
+									} catch (Exception e) {
+										e.printStackTrace();
+										LOG.severe("Error occurred trying to generate/update HIT's");
+										System.exit(0);
+									}
 								} else {
 									LOG.severe(String.format("Could not find an old map when the new map id is %s", currentMapId));
 								}

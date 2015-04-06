@@ -44,8 +44,20 @@ public class GoogleHITDao {
 		return dao.getHITS(offset, count);
 	}
 	
-	public int createHIT(int id, int turkId, int control, boolean approved, boolean readyForApproval) {
-		return dao.createHIT(id, turkId, control, approved, readyForApproval);
+	public int createHIT(int turkId, int control, boolean approved, boolean readyForApproval) {
+		return dao.createHIT(turkId, control, approved, readyForApproval);
+	}
+	
+	public List<GoogleHIT> getNextAvailableHITs(int offset, int count) {
+		return dao.getNextAvailableHITs(offset, count);
+	}
+	
+	public int markForApproval(int hitId) {
+		return dao.markForApproval(hitId);
+	}
+	
+	public int approve(int hitId) {
+		return dao.approve(hitId);
 	}
 	
 	private interface GoogleHITDaoImpl {
@@ -57,13 +69,22 @@ public class GoogleHITDao {
 		@Mapper(GoogleHITMapper.class)
 		public List<GoogleHIT> getHITS(@Bind("offset") int offset, @Bind("count") int count);
 		
-		@SqlUpdate("Insert into GoogleHIT (id, turkId, control, approved, readyForApproval) values (:id, :turkId, :control, :approved, :readyForApproval)")
+		@SqlUpdate("Insert into GoogleHIT (turkId, control, approved, readyForApproval) values (:turkId, :control, :approved, :readyForApproval)")
 		@GetGeneratedKeys
-		public int createHIT(@Bind("id") int id, 
-				@Bind("turkId") int turkId, 
+		public int createHIT(@Bind("turkId") int turkId, 
 				@Bind("control") int control, 
 				@Bind("approved") boolean approved,
 				@Bind("readyForApproval") boolean readyForApproval);
+		
+		@SqlQuery("Select * from GoogleHIT where readyForApproval = false LIMIT :offset, :count")
+		@Mapper(GoogleHITMapper.class)
+		public List<GoogleHIT> getNextAvailableHITs(@Bind("offset") int offset, @Bind("count") int count);
+		
+		@SqlUpdate("Update GoogleHIT SET readyForApproval=true where hitId = :hitId")
+		public int markForApproval(@Bind("hitId") int hitId);
+		
+		@SqlUpdate("Update GoogleHIT SET approved=true where id = :hitId")
+		public int approve(@Bind("hitId") int hitId);
 	}
 	
 }
