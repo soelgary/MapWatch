@@ -63,7 +63,7 @@ public class FetchJob implements Job {
 	
 	private SmtpClient smtpClient = new SmtpClient();
 	
-	private ReverseHealthCheck reverseHealthCheck;
+	//private ReverseHealthCheck reverseHealthCheck;
 	
 	private HitGenerator hitGenerator;
 	
@@ -102,12 +102,14 @@ public class FetchJob implements Job {
 			throws JobExecutionException {	
 		int mapNumber = (Integer)context.getJobDetail().getJobDataMap().get("mapNumber");
 		String mapProvider = (String) context.getJobDetail().getJobDataMap().get("mapProvider");
+		/*
 		try {
 			reverseHealthCheck = new ReverseHealthCheck();
 		} catch (IOException e2) {
 			e2.printStackTrace();
 			System.exit(0);
 		}
+		*/
 		boolean configured;
 		try {
 			configured = configure(mapProvider);
@@ -189,11 +191,15 @@ public class FetchJob implements Job {
 			executorService.execute(new Runnable() {
 
 				public void run() {
-					Optional<HttpResponse> response = fetcher.fetch(request);
-					if(response.isPresent()) {
-						String newImage = UUID.randomUUID().toString() + ".png";
-						imageDao.saveImage(newImage, response.get().getEntity());
-						Optional<String> existingPath = getExistingPath(newImage);
+					System.out.println("running");
+					//Optional<HttpResponse> response = fetcher.fetch(request);
+					Optional<String> path = fetcher.fetch(request);
+					System.out.println(path);
+					if(path.isPresent()) {
+						//String newImage = UUID.randomUUID().toString() + ".png";
+						//imageDao.saveImage(newImage, response.get().getEntity());
+						//imageDao.saveImage(newImage, response.get());
+						Optional<String> existingPath = getExistingPath(path.get());
 						Optional<String> oldImage = getPathForLastMapRequest(request.getId(), existingPath);
 						
 						boolean hashExists = hashExists(existingPath);
@@ -204,11 +210,11 @@ public class FetchJob implements Job {
 							if (hashExists) {
 								hasChanged = false;
 								imagePath = oldImage.get();
-								imageDao.removeImage(newImage);
+								imageDao.removeImage(path.get());
 								LOG.info("Images are the same. Removing newest one to save space.");
 							} else {
 								hasChanged = true;
-								imagePath = newImage;								
+								imagePath = path.get();								
 								try {
 									MapsEmail email = new MapsEmailBuilder()
 										.setSubject("Tile Has Changed")
@@ -242,15 +248,17 @@ public class FetchJob implements Job {
 								}
 							}
 						} else {
-							saveImage(false, request.getId(), newImage, fetchJob);
+							saveImage(false, request.getId(), path.get(), fetchJob);
 						}
 					}
+					/*
 					try {
 						reverseHealthCheck.sendReverseHealthCheck(mapProvider);
 					} catch (UnsupportedEncodingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					*/
 				}
 			});
 		}
