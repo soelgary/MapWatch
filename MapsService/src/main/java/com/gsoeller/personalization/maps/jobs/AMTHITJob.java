@@ -20,7 +20,7 @@ import com.gsoeller.personalization.maps.data.MapProvider;
 public class AMTHITJob implements Job {
 
 	private MapProvider mapProvider = MapProvider.google;
-	private int fetchJob = 1;
+	private int fetchJob = 10;
 	private int numMapRequests = 156060;
 	
 	private GoogleMapRequestDao googleMapRequestDao;

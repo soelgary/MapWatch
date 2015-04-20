@@ -97,10 +97,7 @@ public class GoogleMapDao implements MapDao {
 	
 	public Optional<Map> getMap(int mapRequest, int fetchJob) {
 		List<Map> maps = dao.getMap(mapRequest, fetchJob);
-		for(Map map: maps) {
-			System.out.println("DERPP: " + map.getPath());
-		}
-		if(maps.size() == 1) {
+		if(maps.size() > 0) {
 			return Optional.fromNullable(maps.get(0));
 		}
 		return Optional.absent();
