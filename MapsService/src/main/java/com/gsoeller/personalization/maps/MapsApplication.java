@@ -96,7 +96,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		if(cmd.hasOption("test")) {
 			configFile = "/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/maps.properties";
 		} else {
-			configFile = "/home/soelgary/Maps/achtung.properties";
+			configFile = "/home/soelgary/dev/src/MapsPersonalization/MapsService/src/main/resources/achtung.properties";
 		}
 		
 		if(cmd.hasOption("h")) {
