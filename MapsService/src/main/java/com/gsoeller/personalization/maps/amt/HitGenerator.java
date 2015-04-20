@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.axis.description.ParameterDesc;
+
 import com.amazonaws.mturk.addon.HITDataBuffer;
 import com.amazonaws.mturk.addon.HITDataCSVReader;
 import com.amazonaws.mturk.addon.HITDataCSVWriter;

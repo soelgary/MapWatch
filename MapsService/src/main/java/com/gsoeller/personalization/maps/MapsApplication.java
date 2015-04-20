@@ -23,6 +23,7 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
 import com.gsoeller.personalization.maps.amt.HitGenerator;
+import com.gsoeller.personalization.maps.jobs.AMTHITJob;
 import com.gsoeller.personalization.maps.jobs.ComparisonJob;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.GenerateGifJob;
@@ -127,8 +128,9 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			startSQLStressTests(Integer.parseInt(numQueries));
 		} else if(cmd.hasOption("update")) {
 			System.out.println("MEHHHHHHHHHHHHHHH");
-			HitGenerator hit = new HitGenerator();
-			hit.sendHITToTurk(0);
+			//HitGenerator hit = new HitGenerator();
+			//hit.sendHITToTurk(0);
+			startUpdateJob(1);
 		}
 		else {
 			new MapsApplication().run(args);
@@ -250,6 +252,24 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		Trigger trigger = TriggerBuilder
 				.newTrigger()
 				.withIdentity("Stress Trigger", "group1")
+				.startNow()
+				.build();
+		sched.scheduleJob(job, trigger);		
+	}
+	
+	private static void startUpdateJob(int fetchJob) throws SchedulerException {
+		SchedulerFactory schedFact = new StdSchedulerFactory();
+		Scheduler sched = schedFact.getScheduler();
+		sched.start();
+
+		JobDetail job = JobBuilder.newJob(AMTHITJob.class)
+				.withIdentity("AMT HIT Job", "group1").build();
+		
+		job.getJobDataMap().put("fetchJob", fetchJob);
+		
+		Trigger trigger = TriggerBuilder
+				.newTrigger()
+				.withIdentity("AMTHIT Trigger", "group1")
 				.startNow()
 				.build();
 		sched.scheduleJob(job, trigger);		
