@@ -22,6 +22,7 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
+import com.gsoeller.personalization.maps.amt.HitGenerator;
 import com.gsoeller.personalization.maps.jobs.ComparisonJob;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.GenerateGifJob;
@@ -82,6 +83,9 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		testSQL.setArgs(1);
 		options.addOption(testSQL);
 		
+		Option update = new Option("update", "Check for updates between jobs");
+		options.addOption(update);
+		
 		//Option readEmail = new Option("readEmail", "Read personalization email");
 		//options.addOption(readEmail);
 		
@@ -121,6 +125,10 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		} else if(cmd.hasOption("testSQL")) {
 			String numQueries = (String) cmd.getOptionValue("testSQL");
 			startSQLStressTests(Integer.parseInt(numQueries));
+		} else if(cmd.hasOption("update")) {
+			System.out.println("MEHHHHHHHHHHHHHHH");
+			HitGenerator hit = new HitGenerator();
+			hit.sendHITToTurk(0);
 		}
 		else {
 			new MapsApplication().run(args);
