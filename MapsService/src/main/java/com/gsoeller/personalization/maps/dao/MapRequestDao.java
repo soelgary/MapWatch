@@ -24,4 +24,6 @@ public interface MapRequestDao {
 	public Optional<BingMap> getMapFromFetchJobAndMapRequest(int fetchJob, int mapRequestId);
 	
 	public List<Integer> getMapRequestsbyLocation(int location);
+	
+	public int countAllTiles();
 }

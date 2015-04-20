@@ -11,7 +11,7 @@ database:
 server:
   applicationConnectors:
     - type: http
-      port: 9090
+      port: 9092
       bindHost: 127.0.0.1 # only bind to loopback
       headerCacheSize: 512 bytes
       outputBufferSize: 32KiB

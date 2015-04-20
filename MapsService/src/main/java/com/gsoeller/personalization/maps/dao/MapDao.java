@@ -1,6 +1,7 @@
 package com.gsoeller.personalization.maps.dao;
 
 import com.google.common.base.Optional;
+import com.gsoeller.personalization.maps.data.GoogleMap;
 import com.gsoeller.personalization.maps.data.Map;
 
 public interface MapDao {
@@ -15,4 +16,6 @@ public interface MapDao {
 	public Optional<Map> getMapFromFetchJobByMapRequest(int fetchJob, int mapRequest);
 	
 	public boolean containsHash(String hash);
+	
+	public Optional<Map> getMap(int mapRequest, int fetchJob);
 }

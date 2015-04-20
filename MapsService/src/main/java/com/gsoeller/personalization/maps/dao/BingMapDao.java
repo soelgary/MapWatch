@@ -81,6 +81,11 @@ public class BingMapDao implements MapDao {
 	public boolean containsHash(String hash) {
 		return dao.countHashes(hash).size() > 0;
 	}
+	
+	public Optional<Map> getMap(int mapRequest, int fetchJob) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	private interface BingMapDaoImpl {
 		
