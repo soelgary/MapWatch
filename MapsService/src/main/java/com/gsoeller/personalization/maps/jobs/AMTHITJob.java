@@ -48,6 +48,12 @@ public class AMTHITJob implements Job {
 			int requestId = i;
 			Optional<Map> baselineMap = googleMapDao.getMap(requestId, baselineFetchJob);
 			Optional<Map> updatedMap = googleMapDao.getMap(requestId, fetchJob);
+			if(!baselineMap.isPresent()) {
+				System.out.println("baseline is not present");
+			}
+			if(!updatedMap.isPresent()) {
+				System.out.println("updated is not present");
+			}
 			if(baselineMap.isPresent() && updatedMap.isPresent()) {
 				if(!baselineMap.get().getHash().equals(updatedMap.get().getHash())) {
 					LOG.info(String.format("Creating a new update for map request, `%s`, and fetch job, `%s`", requestId, fetchJob));
