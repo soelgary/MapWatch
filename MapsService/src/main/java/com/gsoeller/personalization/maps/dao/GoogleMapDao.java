@@ -97,6 +97,9 @@ public class GoogleMapDao implements MapDao {
 	
 	public Optional<Map> getMap(int mapRequest, int fetchJob) {
 		List<Map> maps = dao.getMap(mapRequest, fetchJob);
+		for(Map map: maps) {
+			System.out.println("DERPP: " + map.getPath());
+		}
 		if(maps.size() == 1) {
 			return Optional.fromNullable(maps.get(0));
 		}
@@ -134,7 +137,7 @@ public class GoogleMapDao implements MapDao {
 		@SqlQuery("Select hash from Map where hash = :hash")
 		public List<String> countHashes(@Bind("hash") String hash);
 		
-		@SqlQuery("Select * from Map where mapRequest = :mapRequest && FetchJob =: fetchJob")
+		@SqlQuery("Select * from Map where mapRequest = :mapRequest && FetchJob = :fetchJob")
 		@Mapper(GoogleMapWrapper.class)
 		public List<Map> getMap(@Bind("mapRequest") int mapRequest, @Bind("fetchJob") int fetchJob);
 	}
