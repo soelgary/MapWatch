@@ -85,6 +85,9 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		options.addOption(testSQL);
 		
 		Option update = new Option("update", "Check for updates between jobs");
+		update.hasArg();
+		update.setType(Integer.class);
+		update.setArgs(1);
 		options.addOption(update);
 		
 		//Option readEmail = new Option("readEmail", "Read personalization email");
@@ -127,10 +130,8 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			String numQueries = (String) cmd.getOptionValue("testSQL");
 			startSQLStressTests(Integer.parseInt(numQueries));
 		} else if(cmd.hasOption("update")) {
-			System.out.println("MEHHHHHHHHHHHHHHH");
-			//HitGenerator hit = new HitGenerator();
-			//hit.sendHITToTurk(0);
-			startUpdateJob(1);
+			String fetchJob = (String) cmd.getOptionValue("update");
+			startUpdateJob(fetchJob);
 		}
 		else {
 			new MapsApplication().run(args);
@@ -257,7 +258,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		sched.scheduleJob(job, trigger);		
 	}
 	
-	private static void startUpdateJob(int fetchJob) throws SchedulerException {
+	private static void startUpdateJob(String fetchJob) throws SchedulerException {
 		SchedulerFactory schedFact = new StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
 		sched.start();

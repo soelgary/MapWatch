@@ -20,7 +20,7 @@ import com.gsoeller.personalization.maps.data.MapProvider;
 public class AMTHITJob implements Job {
 
 	private MapProvider mapProvider = MapProvider.google;
-	private int fetchJob = 10;
+	private int fetchJob;
 	private int numMapRequests = 156060;
 	
 	private GoogleMapRequestDao googleMapRequestDao;
@@ -41,7 +41,8 @@ public class AMTHITJob implements Job {
 		job.execute(null);
 	}
 	
-	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+	public void execute(JobExecutionContext context) throws JobExecutionException {
+		int fetchJob = Integer.parseInt((String)(context.getJobDetail().getJobDataMap().get("fetchJob")));
 		LOG.info(String.format("%s", numMapRequests));
 		int baselineFetchJob = fetchJob - 1;
 		for(int i = 1; i <= numMapRequests; i++) {
@@ -58,9 +59,9 @@ public class AMTHITJob implements Job {
 				if(!baselineMap.get().getHash().equals(updatedMap.get().getHash())) {
 					LOG.info(String.format("Creating a new update for map request, `%s`, and fetch job, `%s`", requestId, fetchJob));
 					// need to add to a HIT
-					//MapChange change = new MapChange.MapChangeBuilder(baselineMap.get(), updatedMap.get(), MapProvider.google).build();
+					MapChange change = new MapChange.MapChangeBuilder(baselineMap.get(), updatedMap.get(), MapProvider.google).build();
 					try {
-						//hitGenerator.addUpdate(mapProvider, change);
+						hitGenerator.addUpdate(mapProvider, change);
 					} catch (Exception e) {
 						e.printStackTrace();
 						throw new JobExecutionException("Unable to add update");
