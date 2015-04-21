@@ -72,6 +72,7 @@ public class AMTHITJob implements Job {
 			}
 			
 		}
+		LOG.info("Finished amt hit job");
 	}
 
 }
