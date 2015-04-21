@@ -52,8 +52,8 @@ public class GoogleHITDao {
 		return dao.getNextAvailableHITs(offset, count);
 	}
 	
-	public int markForApproval(int hitId) {
-		return dao.markForApproval(hitId);
+	public int markForApproval(int id) {
+		return dao.markForApproval(id);
 	}
 	
 	public int approve(int hitId) {
@@ -80,8 +80,8 @@ public class GoogleHITDao {
 		@Mapper(GoogleHITMapper.class)
 		public List<GoogleHIT> getNextAvailableHITs(@Bind("offset") int offset, @Bind("count") int count);
 		
-		@SqlUpdate("Update GoogleHIT SET readyForApproval=true where hitId = :hitId")
-		public int markForApproval(@Bind("hitId") int hitId);
+		@SqlUpdate("Update GoogleHIT SET readyForApproval=true where id = :id")
+		public int markForApproval(@Bind("id") int id);
 		
 		@SqlUpdate("Update GoogleHIT SET approved=true where id = :hitId")
 		public int approve(@Bind("hitId") int hitId);
