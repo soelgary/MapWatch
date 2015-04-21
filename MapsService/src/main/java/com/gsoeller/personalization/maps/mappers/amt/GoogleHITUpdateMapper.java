@@ -16,7 +16,7 @@ public class GoogleHITUpdateMapper implements ResultSetMapper<GoogleHITUpdate> {
 		int id = r.getInt("id");
 		GoogleMap oldMap = new GoogleMap.MapBuilder().setId(r.getInt("oldMap")).build();
 		GoogleMap newMap = new GoogleMap.MapBuilder().setId(r.getInt("newMap")).build();
-		boolean hasBorderChanged = r.getBoolean("hasBorderChanged");
+		boolean hasBorderChanged = r.getBoolean("hasBorderChange");
 		String notes = r.getString("notes");
 		return new GoogleHITUpdate.GoogleHITUpdateBuilder()
 			.setId(id)
