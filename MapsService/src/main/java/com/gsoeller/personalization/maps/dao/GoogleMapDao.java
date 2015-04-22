@@ -36,6 +36,14 @@ public class GoogleMapDao implements MapDao {
 		handle = dbi.open();
 		dao = handle.attach(GoogleMapDaoImpl.class);
 	}
+	
+	public Optional<Map> getMap(int id) {
+		List<Map> map = dao.getMap(id);
+		if(map.isEmpty()) {
+			return Optional.absent();
+		}
+		return Optional.fromNullable(map.get(0));
+	}
 
 	public Optional<Integer> getLastMap(int currentFetchJob) {
 		List<Integer> maps = dao.getLastMap(currentFetchJob);
@@ -45,9 +53,9 @@ public class GoogleMapDao implements MapDao {
 		return Optional.fromNullable(maps.get(0));
 	}
 
-	public void saveMap(boolean hasChanged, int id, String path, String hash,
+	public int saveMap(boolean hasChanged, int id, String path, String hash,
 			int fetchJob) {
-		dao.saveMap(hasChanged, id, path, hash, fetchJob);
+		return dao.saveMap(hasChanged, id, path, hash, fetchJob);
 	}
 
 	public Optional<String> getPathWithHash(String hash) {
@@ -86,8 +94,20 @@ public class GoogleMapDao implements MapDao {
 	public boolean containsHash(String hash) {
 		return dao.countHashes(hash).size() > 0;
 	}
+	
+	public Optional<Map> getMap(int mapRequest, int fetchJob) {
+		List<Map> maps = dao.getMap(mapRequest, fetchJob);
+		if(maps.size() > 0) {
+			return Optional.fromNullable(maps.get(0));
+		}
+		return Optional.absent();
+	}
 
 	private interface GoogleMapDaoImpl {
+		
+		@SqlQuery("Select * from Map where id = :id")
+		@Mapper(GoogleMapWrapper.class)
+		public List<Map> getMap(@Bind("id") int id);
 		
 		@SqlQuery("Select mapRequest from Map where FetchJob = :fetchJob order by dateTime desc limit 1")
 		public List<Integer> getLastMap(@Bind("fetchJob") int fetchJob);
@@ -113,5 +133,9 @@ public class GoogleMapDao implements MapDao {
 		
 		@SqlQuery("Select hash from Map where hash = :hash")
 		public List<String> countHashes(@Bind("hash") String hash);
+		
+		@SqlQuery("Select * from Map where mapRequest = :mapRequest && FetchJob = :fetchJob")
+		@Mapper(GoogleMapWrapper.class)
+		public List<Map> getMap(@Bind("mapRequest") int mapRequest, @Bind("fetchJob") int fetchJob);
 	}
 }

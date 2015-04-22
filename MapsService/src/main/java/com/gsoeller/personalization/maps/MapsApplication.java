@@ -1,11 +1,17 @@
 package com.gsoeller.personalization.maps;
 
+import java.util.EnumSet;
+
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
@@ -16,11 +22,16 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
+import com.gsoeller.personalization.maps.amt.HitGenerator;
+import com.gsoeller.personalization.maps.jobs.AMTHITJob;
 import com.gsoeller.personalization.maps.jobs.ComparisonJob;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
 import com.gsoeller.personalization.maps.jobs.GenerateGifJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
 import com.gsoeller.personalization.maps.jobs.SQLStressTestJob;
+import com.gsoeller.personalization.maps.resources.AMTControlResource;
+import com.gsoeller.personalization.maps.resources.AMTResource;
+import com.gsoeller.personalization.maps.resources.MapUpdateResource;
 import com.gsoeller.personalization.maps.resources.MapsResource;
 
 import io.dropwizard.Application;
@@ -73,6 +84,12 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		testSQL.setArgs(1);
 		options.addOption(testSQL);
 		
+		Option update = new Option("update", "Check for updates between jobs");
+		update.hasArg();
+		update.setType(Integer.class);
+		update.setArgs(1);
+		options.addOption(update);
+		
 		//Option readEmail = new Option("readEmail", "Read personalization email");
 		//options.addOption(readEmail);
 		
@@ -83,7 +100,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		if(cmd.hasOption("test")) {
 			configFile = "/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/maps.properties";
 		} else {
-			configFile = "/home/soelgary/Maps/achtung.properties";
+			configFile = "/home/soelgary/dev/src/MapsPersonalization/MapsService/src/main/resources/achtung.properties";
 		}
 		
 		if(cmd.hasOption("h")) {
@@ -112,6 +129,9 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		} else if(cmd.hasOption("testSQL")) {
 			String numQueries = (String) cmd.getOptionValue("testSQL");
 			startSQLStressTests(Integer.parseInt(numQueries));
+		} else if(cmd.hasOption("update")) {
+			String fetchJob = (String) cmd.getOptionValue("update");
+			startUpdateJob(fetchJob);
 		}
 		else {
 			new MapsApplication().run(args);
@@ -131,7 +151,15 @@ public class MapsApplication extends Application<MapsConfiguration> {
 	@Override
 	public void run(MapsConfiguration config, Environment environment)
 			throws Exception {
-		environment.jersey().register(new MapsResource());
+		FilterRegistration.Dynamic filter = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
+	    filter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,PUT,POST,DELETE,OPTIONS");
+	    filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");
+	    filter.setInitParameter(CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
+	    filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin");
+	    filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
+		environment.jersey().register(new MapUpdateResource());
+		environment.jersey().register(new AMTResource());
+		environment.jersey().register(new AMTControlResource());
 	}
 	
 	private static void startCompareJob(int fetchJob, String mapProvider) throws SchedulerException {
@@ -225,6 +253,24 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		Trigger trigger = TriggerBuilder
 				.newTrigger()
 				.withIdentity("Stress Trigger", "group1")
+				.startNow()
+				.build();
+		sched.scheduleJob(job, trigger);		
+	}
+	
+	private static void startUpdateJob(String fetchJob) throws SchedulerException {
+		SchedulerFactory schedFact = new StdSchedulerFactory();
+		Scheduler sched = schedFact.getScheduler();
+		sched.start();
+
+		JobDetail job = JobBuilder.newJob(AMTHITJob.class)
+				.withIdentity("AMT HIT Job", "group1").build();
+		
+		job.getJobDataMap().put("fetchJob", fetchJob);
+		
+		Trigger trigger = TriggerBuilder
+				.newTrigger()
+				.withIdentity("AMTHIT Trigger", "group1")
 				.startNow()
 				.build();
 		sched.scheduleJob(job, trigger);		

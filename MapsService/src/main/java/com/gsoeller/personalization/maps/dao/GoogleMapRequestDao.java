@@ -71,6 +71,10 @@ public class GoogleMapRequestDao implements MapRequestDao {
 		//return dao.countTiles();
 	}
 	
+	public int countAllTiles() {
+		return dao.countAllTiles();
+	}
+	
 	public List<Integer> getTileNumbers() {
 		throw new UnsupportedOperationException("Google does not yet support getting the tile numbers");
 	}
@@ -104,5 +108,8 @@ public class GoogleMapRequestDao implements MapRequestDao {
 		
 		@SqlQuery("Select count(distinct latitude, longitude) from MapRequest")
 		public int countTiles();
+		
+		@SqlQuery("Select count(distinct id) from MapRequest")
+		public int countAllTiles();
 	}
 }

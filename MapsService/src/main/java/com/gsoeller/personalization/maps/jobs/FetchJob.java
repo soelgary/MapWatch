@@ -24,17 +24,22 @@ import org.quartz.JobExecutionException;
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.RateLimiter;
 import com.gsoeller.personalization.maps.MapsLogger;
+import com.gsoeller.personalization.maps.amt.HitGenerator;
 import com.gsoeller.personalization.maps.dao.BingFetchJobDao;
 import com.gsoeller.personalization.maps.dao.BingMapDao;
 import com.gsoeller.personalization.maps.dao.BingMapRequestDao;
 import com.gsoeller.personalization.maps.dao.FetchJobDao;
 import com.gsoeller.personalization.maps.dao.GoogleFetchJobDao;
+import com.gsoeller.personalization.maps.dao.GoogleMapUpdateDao;
 import com.gsoeller.personalization.maps.dao.ImageDao;
 import com.gsoeller.personalization.maps.dao.GoogleMapDao;
 import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 import com.gsoeller.personalization.maps.dao.MapDao;
 import com.gsoeller.personalization.maps.dao.MapRequestDao;
+import com.gsoeller.personalization.maps.dao.MapUpdateDao;
 import com.gsoeller.personalization.maps.data.Map;
+import com.gsoeller.personalization.maps.data.MapChange;
+import com.gsoeller.personalization.maps.data.MapProvider;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.fetchers.StaticMapFetcher;
 import com.gsoeller.personalization.maps.health.ReverseHealthCheck;
@@ -49,6 +54,7 @@ public class FetchJob implements Job {
 	private MapDao mapDao;
 	private FetchJobDao fetchJobDao;
 	private MapRequestDao mapRequestDao;
+	private MapUpdateDao mapUpdateDao;
 
 	private RateLimiter limiter;
 	private ExecutorService executorService = Executors.newCachedThreadPool();
@@ -57,7 +63,9 @@ public class FetchJob implements Job {
 	
 	private SmtpClient smtpClient = new SmtpClient();
 	
-	private ReverseHealthCheck reverseHealthCheck;
+	//private ReverseHealthCheck reverseHealthCheck;
+	
+	private HitGenerator hitGenerator;
 	
 	private static final double BING_RATE = .3;
 	private static final double GOOGLE_RATE = .3;
@@ -79,6 +87,7 @@ public class FetchJob implements Job {
 		mapDao = new GoogleMapDao();
 		mapRequestDao = new GoogleMapRequestDao();
 		fetchJobDao = new GoogleFetchJobDao();
+		mapUpdateDao = new GoogleMapUpdateDao();
 		limiter = RateLimiter.create(GOOGLE_RATE);
 	}
 	
@@ -93,15 +102,18 @@ public class FetchJob implements Job {
 			throws JobExecutionException {	
 		int mapNumber = (Integer)context.getJobDetail().getJobDataMap().get("mapNumber");
 		String mapProvider = (String) context.getJobDetail().getJobDataMap().get("mapProvider");
+		/*
 		try {
 			reverseHealthCheck = new ReverseHealthCheck();
 		} catch (IOException e2) {
 			e2.printStackTrace();
 			System.exit(0);
 		}
+		*/
 		boolean configured;
 		try {
 			configured = configure(mapProvider);
+			hitGenerator = new HitGenerator();
 		} catch (IOException e1) {
 			LOG.severe("An error occurred while configuring the fetcher...");
 			e1.printStackTrace();
@@ -179,11 +191,15 @@ public class FetchJob implements Job {
 			executorService.execute(new Runnable() {
 
 				public void run() {
-					Optional<HttpResponse> response = fetcher.fetch(request);
-					if(response.isPresent()) {
-						String newImage = UUID.randomUUID().toString() + ".png";
-						imageDao.saveImage(newImage, response.get().getEntity());
-						Optional<String> existingPath = getExistingPath(newImage);
+					System.out.println("running");
+					//Optional<HttpResponse> response = fetcher.fetch(request);
+					Optional<String> path = fetcher.fetch(request);
+					System.out.println(path);
+					if(path.isPresent()) {
+						//String newImage = UUID.randomUUID().toString() + ".png";
+						//imageDao.saveImage(newImage, response.get().getEntity());
+						//imageDao.saveImage(newImage, response.get());
+						Optional<String> existingPath = getExistingPath(path.get());
 						Optional<String> oldImage = getPathForLastMapRequest(request.getId(), existingPath);
 						
 						boolean hashExists = hashExists(existingPath);
@@ -194,11 +210,11 @@ public class FetchJob implements Job {
 							if (hashExists) {
 								hasChanged = false;
 								imagePath = oldImage.get();
-								imageDao.removeImage(newImage);
+								imageDao.removeImage(path.get());
 								LOG.info("Images are the same. Removing newest one to save space.");
 							} else {
 								hasChanged = true;
-								imagePath = newImage;
+								imagePath = path.get();								
 								try {
 									MapsEmail email = new MapsEmailBuilder()
 										.setSubject("Tile Has Changed")
@@ -212,18 +228,37 @@ public class FetchJob implements Job {
 								}
 								LOG.info("Images are different. Keeping both images in the filesystem");
 							}
-							saveImage(hasChanged, request.getId(), imagePath, fetchJob);
+							Optional<Map> oldMap = mapDao.getMapMostRecentWithMapRequestId(request.getId());
+							int currentMapId = saveImage(hasChanged, request.getId(), imagePath, fetchJob);
 							LOG.info("Saved image");
+							if(hasChanged) {
+								LOG.info("Tile changed, saving the map update");
+								if(oldMap.isPresent()) {
+									 int updateId = mapUpdateDao.save(oldMap.get().getId(), currentMapId); 
+									 MapChange change = mapUpdateDao.getUpdate(updateId).get();
+									 try {
+										hitGenerator.addUpdate(MapProvider.valueOf(mapProvider), change);
+									} catch (Exception e) {
+										e.printStackTrace();
+										LOG.severe("Error occurred trying to generate/update HIT's");
+										System.exit(0);
+									}
+								} else {
+									LOG.severe(String.format("Could not find an old map when the new map id is %s", currentMapId));
+								}
+							}
 						} else {
-							saveImage(false, request.getId(), newImage, fetchJob);
+							saveImage(false, request.getId(), path.get(), fetchJob);
 						}
 					}
+					/*
 					try {
 						reverseHealthCheck.sendReverseHealthCheck(mapProvider);
 					} catch (UnsupportedEncodingException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					*/
 				}
 			});
 		}
@@ -233,14 +268,15 @@ public class FetchJob implements Job {
 		return mapRequestDao.getRequests(limit, offset, mapNumber);
 	}
 	
-	private void saveImage(boolean hasChanged, int id, String path, int fetchJob) {
+	private int saveImage(boolean hasChanged, int id, String path, int fetchJob) {
 		try {
-			mapDao.saveMap(false, id, path, getImageHash(path), fetchJob);
+			return mapDao.saveMap(false, id, path, getImageHash(path), fetchJob);
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		return -1;
 
 	}
 

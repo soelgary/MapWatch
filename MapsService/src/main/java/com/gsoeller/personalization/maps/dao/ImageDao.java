@@ -32,11 +32,12 @@ public class ImageDao {
 		
 	}
 	
-	public void saveImage(String filename, HttpEntity entity) {
+	public void saveImage(String filename, String entity) {
 		File imageFile = new File(outputDir + filename);
 		try {
 			FileOutputStream foutStream = new FileOutputStream(imageFile);
-			entity.writeTo(foutStream);
+			//entity.writeTo(foutStream);
+			foutStream.write(entity.getBytes());
 			foutStream.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

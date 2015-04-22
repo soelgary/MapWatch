@@ -44,9 +44,9 @@ public class BingMapDao implements MapDao {
 		return Optional.fromNullable(maps.get(0));
 	}
 
-	public void saveMap(boolean hasChanged, int id, String path, String hash,
+	public int saveMap(boolean hasChanged, int id, String path, String hash,
 			int fetchJob) {
-		dao.saveMap(hasChanged, id, path, hash, fetchJob);
+		return dao.saveMap(hasChanged, id, path, hash, fetchJob);
 	}
 
 	public Optional<String> getPathWithHash(String hash) {
@@ -80,6 +80,11 @@ public class BingMapDao implements MapDao {
 	
 	public boolean containsHash(String hash) {
 		return dao.countHashes(hash).size() > 0;
+	}
+	
+	public Optional<Map> getMap(int mapRequest, int fetchJob) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private interface BingMapDaoImpl {

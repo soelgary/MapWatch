@@ -220,4 +220,134 @@
 			referencedTableName="BingMapRequest" baseColumnNames="bingMapRequest"
 			baseTableName="BingMap" referencedColumnNames="id" />
 	</changeSet>
+	
+	<changeSet id="14" author="gary">
+		<createTable tableName="GoogleUpdate">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="oldMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_old_google_map" references="Map(id)"/>
+			</column>
+			<column name="newMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_new_google_map" references="Map(id)"/>
+			</column>
+			<column name="notes" type="text">
+				<constraints nullable="true" />
+			</column>
+			<column name="stage" type="int" defaultValue="0">
+				<constraints nullable="false" />
+			</column>
+			<column name="needsInvestigation" type="boolean" defaultValue="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="lastUpdated" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="inProgress" type="boolean" defaultValue="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="gifPath" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+		<createTable tableName="BingUpdate">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="oldMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_old_bing_map" references="BingMap(id)"/>
+			</column>
+			<column name="newMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_new_bing_map" references="BingMap(id)"/>
+			</column>
+			<column name="notes" type="text">
+				<constraints nullable="true" />
+			</column>
+			<column name="stage" type="int" defaultValue="0">
+				<constraints nullable="false" />
+			</column>
+			<column name="needsInvestigation" type="boolean" defaultValue="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="lastUpdated" type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false" />
+			</column>
+			<column name="inProgress" type="boolean" defaultValue="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="gifPath" type="varchar(255)">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="15" author="gary">
+		<createTable tableName="GoogleControlUpdate">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+		</createTable>
+		<createTable tableName="GoogleHITUpdate">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="oldMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_old_google_map_for_update" references="Map(id)"/>
+			</column>
+			<column name="newMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_new_google_map_for_update" references="Map(id)"/>
+			</column>
+			<column name="hasBorderChange" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="notes" type="text">
+				<constraints nullable="true" />
+			</column>
+		</createTable>
+		<createTable tableName="GoogleHIT">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="turkId" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="approved" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="control" type="int">
+				<constraints nullable="false" foreignKeyName="fk_control_google_update" references="GoogleControlUpdate(id)" />
+			</column>
+		</createTable>
+	</changeSet>
+	
+	<changeSet id="16" author="gary">
+		<addColumn tableName="GoogleHITUpdate">
+			<column name="hitId" type="int" defaultValue="0">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet id="17" author="gary">
+		<addColumn tableName="GoogleHIT">
+			<column name="readyForApproval" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet id="18" author="gary">
+		<addColumn tableName="GoogleControlUpdate">
+			<column name="hasBorderDifference" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+			<column name="oldMap" type="int">
+				<constraints foreignKeyName="fk_old_google_map_for_control" references="Map(id)"></constraints>
+			</column>
+			<column name="newMap" type="int">
+				<constraints foreignKeyName="fk_new_google_map_for_control" references="Map(id)"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

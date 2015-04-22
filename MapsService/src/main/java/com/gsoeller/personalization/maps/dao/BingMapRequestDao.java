@@ -87,6 +87,11 @@ public class BingMapRequestDao implements MapRequestDao {
 		throw new UnsupportedOperationException("Bing does not support getting map requests by location");
 	}
 	
+	public int countAllTiles() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
 	private interface BingMapRequestDaoImpl {
 		@SqlQuery("select * from BingMapRequest where MapNumber = :mapNumber limit :offset,:limit;")
 		@Mapper(BingMapRequestMapper.class)
