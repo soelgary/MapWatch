@@ -8,6 +8,8 @@ import java.util.List;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
+import com.google.common.base.Optional;
+import com.gsoeller.personalization.maps.dao.amt.GoogleAMTControlDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
 import com.gsoeller.personalization.maps.data.amt.GoogleControlUpdate;
 import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
@@ -17,30 +19,32 @@ public class GoogleHITMapper implements ResultSetMapper<GoogleHIT> {
 
 	
 	private GoogleHITUpdateDao updateDao;
+	private GoogleAMTControlDao controlDao;
 	
 	public GoogleHITMapper() throws IOException {
 		updateDao = new GoogleHITUpdateDao();
+		controlDao = new GoogleAMTControlDao();
 	}
 	
 	public GoogleHIT map(int index, ResultSet r, StatementContext ctx)
 			throws SQLException {
 		int id = r.getInt("id");
-		GoogleControlUpdate control = getControl(r.getInt("control"));
+		Optional<GoogleControlUpdate> control = getControl(r.getInt("control"));
 		List<GoogleHITUpdate> updates = getUpdates(id);
 		boolean approved = r.getBoolean("approved");
-		return new GoogleHIT.GoogleHITBuilder()
-			.setId(id)
+		GoogleHIT.GoogleHITBuilder builder = new GoogleHIT.GoogleHITBuilder();
+		if(control.isPresent()) {
+			builder.setControl(control.get());
+		}
+		return builder.setId(id)
 			.setTurkId(r.getInt("turkId"))
-			.setControl(control)
 			.setId(updates)
 			.setApproved(approved)
 			.build();
 	}
 	
-	private GoogleControlUpdate getControl(int controlId) {
-		return new GoogleControlUpdate.GoogleControlUpdateBuilder()
-			.setId(controlId)
-			.build();
+	private Optional<GoogleControlUpdate> getControl(int controlId) {
+		return controlDao.getControl(controlId);
 	}
 	
 	private List<GoogleHITUpdate> getUpdates(int hitId) {
