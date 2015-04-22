@@ -45,14 +45,32 @@ public class AMTResource {
 	}
 	
 	@GET
-	public List<GoogleHIT> getHits(@PathParam("mapProvider") String mapProvider,
+	public GoogleHITResponse getHits(@PathParam("mapProvider") String mapProvider,
 			@QueryParam("offset") @DefaultValue(DEFAULT_OFFSET) int offset,
 			@QueryParam("count") @DefaultValue(DEFAULT_COUNT) int count) {
-		return manager.getHITS(offset, count);
+		return new GoogleHITResponse(manager.getHITS(offset, count));
 	}
 	
 	@POST
 	public int createHit(@PathParam("mapProvider") String mapProvider, GoogleHIT hit) {
 		return manager.createHIT(hit);
+	}
+	
+	private class GoogleHITResponse {
+		private int count;
+		private List<GoogleHIT> hits;
+		
+		public GoogleHITResponse(List<GoogleHIT> hits) {
+			this.hits = hits;
+			this.count = hits.size();
+		}
+
+		public int getCount() {
+			return count;
+		}
+
+		public List<GoogleHIT> getHits() {
+			return hits;
+		}
 	}
 }
