@@ -25,6 +25,8 @@ public class AMTResource {
 	
 	private final String DEFAULT_OFFSET = "0";
 	private final String DEFAULT_COUNT = "10";
+	private final String READY_FOR_APPROVAL = "true";
+	private final String APPROVED = "false";
 	
 	public AMTResource() throws Exception {
 		this.manager = new GoogleAMTManager();
@@ -47,8 +49,10 @@ public class AMTResource {
 	@GET
 	public GoogleHITResponse getHits(@PathParam("mapProvider") String mapProvider,
 			@QueryParam("offset") @DefaultValue(DEFAULT_OFFSET) int offset,
-			@QueryParam("count") @DefaultValue(DEFAULT_COUNT) int count) {
-		return new GoogleHITResponse(manager.getHITS(offset, count));
+			@QueryParam("count") @DefaultValue(DEFAULT_COUNT) int count,
+			@QueryParam("readyForApproval") @DefaultValue(READY_FOR_APPROVAL) boolean readyForApproval,
+			@QueryParam("approved") @DefaultValue(APPROVED) boolean approved) {
+		return new GoogleHITResponse(manager.getHITS(offset, count, readyForApproval, approved));
 	}
 	
 	@POST

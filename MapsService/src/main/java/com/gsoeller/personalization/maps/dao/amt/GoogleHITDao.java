@@ -40,8 +40,8 @@ public class GoogleHITDao {
 		return Optional.absent();
 	}
 	
-	public List<GoogleHIT> getHITS(int offset, int count) {
-		return dao.getHITS(offset, count);
+	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved) {
+		return dao.getHITS(offset, count, readyForApproval, approved);
 	}
 	
 	public int createHIT(int turkId, int control, boolean approved, boolean readyForApproval) {
@@ -65,9 +65,12 @@ public class GoogleHITDao {
 		@Mapper(GoogleHITMapper.class)
 		public List<GoogleHIT> getHIT(@Bind("id") int id);
 		
-		@SqlQuery("Select * from GoogleHIT LIMIT :offset, :count")
+		@SqlQuery("Select * from GoogleHIT where approved = :approved && readyForApproval = :readyForApproval LIMIT :offset, :count")
 		@Mapper(GoogleHITMapper.class)
-		public List<GoogleHIT> getHITS(@Bind("offset") int offset, @Bind("count") int count);
+		public List<GoogleHIT> getHITS(@Bind("offset") int offset, 
+				@Bind("count") int count, 
+				@Bind("readyForApproval") boolean readyForApproval, 
+				@Bind("approved") boolean approved);
 		
 		@SqlUpdate("Insert into GoogleHIT (turkId, control, approved, readyForApproval) values (:turkId, :control, :approved, :readyForApproval)")
 		@GetGeneratedKeys
