@@ -336,4 +336,18 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="18" author="gary">
+		<addColumn tableName="GoogleControlUpdate">
+			<column name="hasBorderDifference" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+			<column name="oldMap" type="int">
+				<constraints foreignKeyName="fk_old_google_map_for_control" references="Map(id)"></constraints>
+			</column>
+			<column name="newMap" type="int">
+				<constraints foreignKeyName="fk_new_google_map_for_control" references="Map(id)"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

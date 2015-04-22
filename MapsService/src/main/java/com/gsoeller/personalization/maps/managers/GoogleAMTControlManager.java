@@ -23,7 +23,7 @@ public class GoogleAMTControlManager {
 		return dao.getControl(id);
 	}
 	
-	public int createControl() {
-		return dao.createControl();
+	public int createControl(GoogleControlUpdate update) {
+		return dao.createControl(update.getOldMap().getId(), update.getNewMap().getId(), update.isHasBorderDifference());
 	}
 }

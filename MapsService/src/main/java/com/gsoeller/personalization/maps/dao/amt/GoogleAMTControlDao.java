@@ -16,9 +16,7 @@ import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.data.amt.GoogleControlUpdate;
-import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
 import com.gsoeller.personalization.maps.mappers.amt.GoogleControlMapper;
-import com.gsoeller.personalization.maps.mappers.amt.GoogleHITMapper;
 
 public class GoogleAMTControlDao {
 
@@ -46,8 +44,8 @@ public class GoogleAMTControlDao {
 		return Optional.absent();
 	}
 	
-	public int createControl() {
-		return dao.createControl();
+	public int createControl(int oldMap, int newMap, boolean hasBorderDifference) {
+		return dao.createControl(oldMap, newMap, hasBorderDifference);
 	}
 	
 	private interface GoogleAMTControlDaoImpl {
@@ -59,8 +57,8 @@ public class GoogleAMTControlDao {
 		@Mapper(GoogleControlMapper.class)
 		public List<GoogleControlUpdate> getControl(@Bind("id") int id);
 		
-		@SqlUpdate("Insert into GoogleControlUpdate () values ()")
+		@SqlUpdate("Insert into GoogleControlUpdate (oldMap, newMap, hasBorderDifference) values (:oldMap, :newMap, :hasBorderDifference)")
 		@GetGeneratedKeys
-		public int createControl();
+		public int createControl(@Bind("oldMap") int oldMap, @Bind("newMap") int newMap, @Bind("hasBorderDifference") boolean hasBorderDifference);
 	}
 }

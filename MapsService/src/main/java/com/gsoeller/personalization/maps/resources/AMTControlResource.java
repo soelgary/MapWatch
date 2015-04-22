@@ -3,6 +3,7 @@ package com.gsoeller.personalization.maps.resources;
 import java.io.IOException;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -16,7 +17,7 @@ import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.data.amt.GoogleControlUpdate;
 import com.gsoeller.personalization.maps.managers.GoogleAMTControlManager;
 
-@Path("/maps/{mapProvider}/control")
+@Path("/v1/maps")
 @Produces(MediaType.APPLICATION_JSON)
 public class AMTControlResource {
 
@@ -30,12 +31,13 @@ public class AMTControlResource {
 	}
 	
 	@GET
-	@Path("/{id}")
+	@Path("/{mapProvider}/control/{id}")
 	public Optional<GoogleControlUpdate> getControl(@PathParam("mapProvider") String mapProvider, @PathParam("id") int id) {
 		return manager.getControl(id);
 	}
 	
 	@GET
+	@Path("/{mapProvider}/control")
 	public List<GoogleControlUpdate> getControls(@PathParam("mapProvider") String mapProvider,
 			@QueryParam("offset") @DefaultValue(DEFAULT_OFFSET) int offset,
 			@QueryParam("count") @DefaultValue(DEFAULT_COUNT) int count) {
@@ -43,8 +45,10 @@ public class AMTControlResource {
 	}
 	
 	@POST
-	public int createControl(@PathParam("mapProvider") String mapProvider) {
-		return manager.createControl();
+	@Path("/{mapProvider}/control")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public int createControl(@PathParam("mapProvider") String mapProvider, GoogleControlUpdate control) {
+		return manager.createControl(control);
 	}
 }
 
