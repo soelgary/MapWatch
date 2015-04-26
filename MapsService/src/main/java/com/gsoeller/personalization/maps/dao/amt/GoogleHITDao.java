@@ -60,6 +60,17 @@ public class GoogleHITDao {
 		return dao.approve(hitId);
 	}
 	
+	public boolean approveHITS(List<GoogleHIT> hits) {
+		for(GoogleHIT hit: hits) {
+			approve(hit.getId());
+		}
+		return true;
+	}
+	
+	public int setMTurkHitId(String hitId, int id) {
+		return dao.setMTurkHitId(hitId, id);
+	}
+	
 	private interface GoogleHITDaoImpl {
 		@SqlQuery("Select * from GoogleHIT where id = :id")
 		@Mapper(GoogleHITMapper.class)
@@ -88,6 +99,9 @@ public class GoogleHITDao {
 		
 		@SqlUpdate("Update GoogleHIT SET approved=true where id = :hitId")
 		public int approve(@Bind("hitId") int hitId);
+		
+		@SqlUpdate("Update GoogleHIT SET hitId=:hitId where id = :id")
+		public int setMTurkHitId(@Bind("hitId") String hitId, @Bind("id") int id);
 	}
 	
 }

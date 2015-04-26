@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 public class GoogleHIT {
 	
 	public int id;
+	public String hitId;
 	public int turkId;
 	public List<GoogleHITUpdate> updates;
 	public GoogleControlUpdate control;
@@ -20,13 +21,23 @@ public class GoogleHIT {
 			List<GoogleHITUpdate> updates, 
 			GoogleControlUpdate control, 
 			boolean approved, 
-			boolean readyForApproval) {
+			boolean readyForApproval,
+			String hitId) {
 		this.id = id;
 		this.turkId = turkId;
 		this.updates = updates;
 		this.control = control;
 		this.approved = approved;
 		this.readyForApproval = readyForApproval;
+		this.hitId = hitId;
+	}
+	
+	public String getHitId() {
+		return hitId;
+	}
+
+	public void setHitId(String hitId) {
+		this.hitId = hitId;
 	}
 	
 	public int getId() {
@@ -86,6 +97,7 @@ public class GoogleHIT {
 		private GoogleControlUpdate control;
 		private boolean approved;
 		private boolean readyForApproval;
+		private String hitId;
 		
 		public GoogleHITBuilder setId(int id) {
 			this.id = id;
@@ -117,8 +129,13 @@ public class GoogleHIT {
 			return this;
 		}
 		
+		public GoogleHITBuilder setHitId(String hitId) {
+			this.hitId = hitId;
+			return this;
+		}
+		
 		public GoogleHIT build() {
-			return new GoogleHIT(id, turkId, updates, control, approved, readyForApproval);
+			return new GoogleHIT(id, turkId, updates, control, approved, readyForApproval, hitId);
 		}
 	}
 }

@@ -350,4 +350,12 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="19" author="gary">
+		<addColumn tableName="GoogleHIT">
+			<column name="hitId" type="varchar(255)" defaultValue="">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

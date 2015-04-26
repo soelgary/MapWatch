@@ -32,7 +32,9 @@ public class GoogleHITMapper implements ResultSetMapper<GoogleHIT> {
 		Optional<GoogleControlUpdate> control = getControl(r.getInt("control"));
 		List<GoogleHITUpdate> updates = getUpdates(id);
 		boolean approved = r.getBoolean("approved");
+		boolean readyForApproval = r.getBoolean("readyForApproval");
 		GoogleHIT.GoogleHITBuilder builder = new GoogleHIT.GoogleHITBuilder();
+		String hitId = r.getString("hitId");
 		if(control.isPresent()) {
 			builder.setControl(control.get());
 		}
@@ -40,6 +42,8 @@ public class GoogleHITMapper implements ResultSetMapper<GoogleHIT> {
 			.setTurkId(r.getInt("turkId"))
 			.setId(updates)
 			.setApproved(approved)
+			.setReadyForApproval(readyForApproval)
+			.setHitId(hitId)
 			.build();
 	}
 	

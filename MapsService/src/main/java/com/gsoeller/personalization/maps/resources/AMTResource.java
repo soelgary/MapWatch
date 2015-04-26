@@ -5,12 +5,10 @@ import java.util.List;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.Optional;
@@ -39,13 +37,6 @@ public class AMTResource {
 		return manager.getHIT(hitId);
 	}
 	
-	@PUT
-	@Path("/{hitId}")
-	public int approveHit(@PathParam("mapProvider") String mapProvider,
-			@PathParam("hitId") int hitId) throws WebApplicationException {
-		return manager.approveHIT(hitId);
-	}
-	
 	@GET
 	public GoogleHITResponse getHits(@PathParam("mapProvider") String mapProvider,
 			@QueryParam("offset") @DefaultValue(DEFAULT_OFFSET) int offset,
@@ -58,6 +49,26 @@ public class AMTResource {
 	@POST
 	public int createHit(@PathParam("mapProvider") String mapProvider, GoogleHIT hit) {
 		return manager.createHIT(hit);
+	}
+	
+	@POST
+	@Path("/approve")
+	public GoogleHITResponse approve(@PathParam("mapProvider") String mapProvider, Count count) {
+		return new GoogleHITResponse(manager.approveHITS(count.getCount()));
+	}
+	
+	public static class Count {
+		public int count;
+		
+		public Count() {}
+		
+		public void setCount(int count) {
+			this.count = count;
+		}
+		
+		public int getCount() {
+			return count;
+		}
 	}
 	
 	private class GoogleHITResponse {
