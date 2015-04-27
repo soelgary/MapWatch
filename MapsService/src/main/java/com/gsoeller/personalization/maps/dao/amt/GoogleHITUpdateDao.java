@@ -57,6 +57,11 @@ public class GoogleHITUpdateDao {
 		return getUpdate("", id);
 	}
 	
+	public Optional<GoogleHITUpdate> updateControlResponse(int id, boolean controlResponse) {
+		dao.setControlResponse(id, controlResponse);
+		return getUpdate("", id);
+	}
+	
 	private interface GoogleHITUpdateDaoImpl {
 		@SqlQuery("Select * from GoogleHITUpdate where hitId = :hitId")
 		@Mapper(GoogleHITUpdateMapper.class)
@@ -79,5 +84,8 @@ public class GoogleHITUpdateDao {
 		
 		@SqlUpdate("Update GoogleHITUpdate set hasBorderChange=:hasBorderChange, finished=true where id = :id")
 		public int update(@Bind("id") int id, @Bind("hasBorderChange") boolean hasBorderChange);
+		
+		@SqlUpdate("Update GoogleHITUpdate set controlResponse=:controlResponse where id = :id")
+		public int setControlResponse(@Bind("id") int id, @Bind("controlResponse") boolean controlResponse);
 	}
 }

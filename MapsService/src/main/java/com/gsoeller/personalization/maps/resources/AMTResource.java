@@ -63,6 +63,14 @@ public class AMTResource {
 		return manager.updateGoogleHITUpdate(updateId, update);
 	}
 	
+	@PUT
+	@Path("/mturk/{hitId}/update/{updateId}/control")
+	public Optional<GoogleHITUpdate> updateGoogleHITUpdateControl(@PathParam("mapProvider") String mapProvider,
+			@PathParam("hitId") String hitId,
+			@PathParam("updateId") int updateId,
+			GoogleHITUpdate update) {
+		return manager.updateGoogleHITUpdateControl(updateId, update);
+	}
 	
 	@GET
 	public GoogleHITResponse getHits(@PathParam("mapProvider") String mapProvider,

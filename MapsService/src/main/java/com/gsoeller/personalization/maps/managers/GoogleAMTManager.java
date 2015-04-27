@@ -94,6 +94,10 @@ public class GoogleAMTManager {
 		return updateDao.update(updateId, update.isHasBorderChange());
 	}
 	
+	public Optional<GoogleHITUpdate> updateGoogleHITUpdateControl(int updateId, GoogleHITUpdate update) {
+		return updateDao.updateControlResponse(updateId, update.isControlResponse());
+	}
+	
 	public List<GoogleHIT> getNextAvailableHits(int count) {
 		return dao.getNextAvailableHITs(DEFAULT_OFFSET, count);
 	}
