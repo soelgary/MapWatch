@@ -77,6 +77,10 @@ public class GoogleAMTManager {
 		return dao.getHIT(id);
 	}
 	
+	public Optional<GoogleHIT> getHITFromMTurkHitId(String id) {
+		return dao.getHITFromMTurkHitId(id);
+	}
+	
 	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved) {
 		return dao.getHITS(offset, count, readyForApproval, approved);
 	}

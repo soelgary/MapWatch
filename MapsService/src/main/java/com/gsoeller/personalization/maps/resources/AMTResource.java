@@ -38,6 +38,13 @@ public class AMTResource {
 	}
 	
 	@GET
+	@Path("/mturk/{hitId}")
+	public Optional<GoogleHIT> getHitFromMTurkHitId(@PathParam("mapProvider") String mapProvider,
+			@PathParam("hitId") String hitId) {
+		return manager.getHITFromMTurkHitId(hitId);
+	}
+	
+	@GET
 	public GoogleHITResponse getHits(@PathParam("mapProvider") String mapProvider,
 			@QueryParam("offset") @DefaultValue(DEFAULT_OFFSET) int offset,
 			@QueryParam("count") @DefaultValue(DEFAULT_COUNT) int count,

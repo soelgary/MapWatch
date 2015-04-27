@@ -40,6 +40,14 @@ public class GoogleHITDao {
 		return Optional.absent();
 	}
 	
+	public Optional<GoogleHIT> getHITFromMTurkHitId(String hitId) {
+		List<GoogleHIT> hits = dao.getHITFromMTurkHitId(hitId);
+		if(hits.size() == 1) {
+			return Optional.fromNullable(hits.get(0));
+		}
+		return Optional.absent();
+	}
+	
 	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved) {
 		return dao.getHITS(offset, count, readyForApproval, approved);
 	}
@@ -82,6 +90,10 @@ public class GoogleHITDao {
 				@Bind("count") int count, 
 				@Bind("readyForApproval") boolean readyForApproval, 
 				@Bind("approved") boolean approved);
+		
+		@SqlQuery("Select * from GoogleHIT where hitId = :hitId")
+		@Mapper(GoogleHITMapper.class)
+		public List<GoogleHIT> getHITFromMTurkHitId(@Bind("hitId") String hitId);
 		
 		@SqlUpdate("Insert into GoogleHIT (turkId, control, approved, readyForApproval) values (:turkId, :control, :approved, :readyForApproval)")
 		@GetGeneratedKeys
