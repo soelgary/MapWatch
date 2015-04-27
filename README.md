@@ -168,6 +168,31 @@ Creates a new control
 Fetches an individual control
 
 
+```
+/maps/{mapProvider}/hits
+```
+
+#####GET
+Fetches all of the HITs according to the query param filters. The default values are listed below
+```
+count=10
+offset=0
+readyForApproval=true
+approved=false
+```
+
+```
+/maps/{mapProvider}/hits/approve
+```
+
+#####POST
+Approves the next ```count``` HITs and sends those HITs to mturk. ```count``` is a parameter passed as a body defined below. The response is a list and count of all the HITs that were successfully approved/sent
+
+```json
+{
+  "count": 10
+}
+```
 
 Contribution
 ============
