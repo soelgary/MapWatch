@@ -77,7 +77,7 @@ public class GoogleHITUpdateDao {
 		@Mapper(GoogleHITUpdateMapper.class)
 		public List<GoogleHITUpdate> getUpdate(@Bind("hitId") String hitId, @Bind("id") int id);
 		
-		@SqlUpdate("Update GoogleHITupdate set hasBorderChange=:hasBorderChange, finished=true")
+		@SqlUpdate("Update GoogleHITUpdate set hasBorderChange=:hasBorderChange, finished=true")
 		public int update(@Bind("id") int id, @Bind("hasBorderChange") boolean hasBorderChange);
 	}
 }
