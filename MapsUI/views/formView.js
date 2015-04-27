@@ -29,9 +29,7 @@ define([
         var comments = $('#comment').val();
         var notes = "Appear different - " + appearDifferent + " | Border Change - " + borderChange + " | " + comments;
         this.update.set('notes', notes);
-        if(borderChange) {
-          this.update.set('needsInvestigation', true);
-        }
+        this.update.set('hasBorderChange', borderChange)
         this.update.save();
         this.undelegateEvents();
         this.parent.next();

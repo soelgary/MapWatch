@@ -11,6 +11,10 @@ database:
 server:
   applicationConnectors:
     - type: http
+      #keyStorePath: keystore.jks
+      #keyStorePassword: D0r1t0d1nn3r
+      #trustStorePath: selfsigned.crt
+      #certAlias: localhost
       port: 9092
       bindHost: 127.0.0.1 # only bind to loopback
       headerCacheSize: 512 bytes

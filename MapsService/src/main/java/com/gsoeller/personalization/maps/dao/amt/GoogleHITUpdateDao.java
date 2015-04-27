@@ -13,6 +13,7 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
+import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 import com.gsoeller.personalization.maps.mappers.amt.GoogleHITUpdateMapper;
@@ -43,6 +44,19 @@ public class GoogleHITUpdateDao {
 		return dao.countUpdates(hitId);
 	}
 	
+	public Optional<GoogleHITUpdate> getUpdate(String hitId, int id) {
+		List<GoogleHITUpdate> updates = dao.getUpdate(hitId, id);
+		if(updates.size() == 1) {
+			return Optional.fromNullable(updates.get(0));
+		}
+		return Optional.absent();
+	}
+	
+	public Optional<GoogleHITUpdate> update(int id, boolean hasBorderChanged) {
+		dao.update(id, hasBorderChanged);
+		return getUpdate("", id);
+	}
+	
 	private interface GoogleHITUpdateDaoImpl {
 		@SqlQuery("Select * from GoogleHITUpdate where hitId = :hitId")
 		@Mapper(GoogleHITUpdateMapper.class)
@@ -58,5 +72,12 @@ public class GoogleHITUpdateDao {
 		
 		@SqlQuery("Select count(*) from GoogleHITUpdate where hitId = :hitId")
 		public int countUpdates(@Bind("hitId") int hitId);
+		
+		@SqlQuery("Select * from GoogleHITUpdate where id = :id")
+		@Mapper(GoogleHITUpdateMapper.class)
+		public List<GoogleHITUpdate> getUpdate(@Bind("hitId") String hitId, @Bind("id") int id);
+		
+		@SqlUpdate("Update GoogleHITupdate set hasBorderChange=:hasBorderChange, finished=true")
+		public int update(@Bind("id") int id, @Bind("hasBorderChange") boolean hasBorderChange);
 	}
 }

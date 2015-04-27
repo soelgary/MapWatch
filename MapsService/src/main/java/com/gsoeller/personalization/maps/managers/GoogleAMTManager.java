@@ -23,6 +23,7 @@ import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
 import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
+import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 
 public class GoogleAMTManager {
 	
@@ -83,6 +84,14 @@ public class GoogleAMTManager {
 	
 	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved) {
 		return dao.getHITS(offset, count, readyForApproval, approved);
+	}
+	
+	public Optional<GoogleHITUpdate> getUpdate(String hitId, int updateId) {
+		return updateDao.getUpdate(hitId, updateId);
+	}
+	
+	public Optional<GoogleHITUpdate> updateGoogleHITUpdate(int updateId, GoogleHITUpdate update) {
+		return updateDao.update(updateId, update.isHasBorderChange());
 	}
 	
 	public List<GoogleHIT> getNextAvailableHits(int count) {

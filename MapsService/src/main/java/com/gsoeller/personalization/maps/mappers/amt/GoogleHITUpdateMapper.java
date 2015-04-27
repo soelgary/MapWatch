@@ -18,12 +18,14 @@ public class GoogleHITUpdateMapper implements ResultSetMapper<GoogleHITUpdate> {
 		GoogleMap newMap = new GoogleMap.MapBuilder().setId(r.getInt("newMap")).build();
 		boolean hasBorderChanged = r.getBoolean("hasBorderChange");
 		String notes = r.getString("notes");
+		boolean finished = r.getBoolean("finished");
 		return new GoogleHITUpdate.GoogleHITUpdateBuilder()
 			.setId(id)
 			.setOldMap(oldMap)
 			.setNewMap(newMap)
 			.setHasBorderChange(hasBorderChanged)
 			.setNotes(notes)
+			.setFinished(finished)
 			.build();
 	}
 }

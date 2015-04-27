@@ -5,6 +5,7 @@ import java.util.List;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
+import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 import com.gsoeller.personalization.maps.managers.GoogleAMTManager;
 
 @Path("/maps/{mapProvider}/hits")
@@ -43,6 +45,24 @@ public class AMTResource {
 			@PathParam("hitId") String hitId) {
 		return manager.getHITFromMTurkHitId(hitId);
 	}
+	
+	@GET
+	@Path("/mturk/{hitId}/update/{updateId}")
+	public Optional<GoogleHITUpdate> getUpdatesFromHIT(@PathParam("mapProvider") String mapProvider,
+			@PathParam("hitId") String hitId,
+			@PathParam("updateId") int updateId) {
+		return manager.getUpdate(hitId, updateId);
+	}
+	
+	@PUT
+	@Path("/mturk/{hitId}/update/{updateId}")
+	public Optional<GoogleHITUpdate> updateGoogleHITUpdate(@PathParam("mapProvider") String mapProvider,
+			@PathParam("hitId") String hitId,
+			@PathParam("updateId") int updateId,
+			GoogleHITUpdate update) {
+		return manager.updateGoogleHITUpdate(updateId, update);
+	}
+	
 	
 	@GET
 	public GoogleHITResponse getHits(@PathParam("mapProvider") String mapProvider,

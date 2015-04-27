@@ -10,16 +10,26 @@ public class GoogleHITUpdate {
 	public GoogleMap newMap;
 	public boolean hasBorderChange;
 	public String notes;
+	public boolean finished;
 	
 	public GoogleHITUpdate() {}
 	
-	public GoogleHITUpdate(int id, int hitId, GoogleMap oldMap, GoogleMap newMap, boolean hasBorderChange, String notes) {
+	public GoogleHITUpdate(int id, int hitId, GoogleMap oldMap, GoogleMap newMap, boolean hasBorderChange, String notes, boolean finished) {
 		this.id = id;
 		this.hitId = hitId;
 		this.oldMap = oldMap;
 		this.newMap = newMap;
 		this.hasBorderChange = hasBorderChange;
 		this.notes = notes;
+		this.finished = finished;
+	}
+
+	public boolean isFinished() {
+		return finished;
+	}
+
+	public void setFinished(boolean finished) {
+		this.finished = finished;
 	}
 
 	public int getHitId() {
@@ -77,6 +87,7 @@ public class GoogleHITUpdate {
 		private GoogleMap newMap;
 		private boolean hasBorderChange;
 		private String notes;
+		private boolean finished;
 		
 		public GoogleHITUpdateBuilder setId(int id) {
 			this.id = id;
@@ -108,8 +119,13 @@ public class GoogleHITUpdate {
 			return this;
 		}
 		
+		public GoogleHITUpdateBuilder setFinished(boolean finished) {
+			this.finished = finished;
+			return this;
+		}
+		
 		public GoogleHITUpdate build() {
-			return new GoogleHITUpdate(id, hitId, oldMap, newMap, hasBorderChange, notes);
+			return new GoogleHITUpdate(id, hitId, oldMap, newMap, hasBorderChange, notes, finished);
 		}
 	}
 }

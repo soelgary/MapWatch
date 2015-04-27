@@ -358,4 +358,12 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="20" author="gary">
+		<addColumn tableName="GoogleHITUpdate">
+			<column name="finished" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>
