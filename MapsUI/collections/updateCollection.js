@@ -3,9 +3,24 @@ define(["models/updateModel.js"],
     var Updates = Backbone.Collection.extend({
       model: Update,
       async: false,
-      url: 'http://achtung.ccs.neu.edu:9092/maps/google/hits/109',
+      url: function() {
+        return 'http://achtung.ccs.neu.edu:9092/maps/google/hits/' + this.getHITId()
+      },
       //url: 'http://' + window.location.hostname + ':' + window.location.port + '/maps/google/updates?reserve=false',
       //url: 'http://127.0.0.1:9092/maps/google/updates?reserve=false',
+
+      getHITId: function() {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i=0;i<vars.length;i++) {
+          var pair = vars[i].split("=");
+          if(pair[0] == 'hitId'){
+            return pair[1];
+          }
+       }
+       return(false);
+      },
+
       parse : function(resp) {
         return resp;
       },
