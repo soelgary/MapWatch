@@ -153,7 +153,7 @@ public class GoogleAMTManager {
 	private String generateQuestionXML() {
 		return "<?xml version=\"1.0\"?>"
 				+ "<ExternalQuestion xmlns=\"http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2006-07-14/ExternalQuestion.xsd\">"
-				+ "<ExternalURL>http://achtung.ccs.neu.edu/~soelgary/maps/</ExternalURL>"
+				+ "<ExternalURL>https://achtung.ccs.neu.edu/~soelgary/maps/</ExternalURL>"
 				+ "<FrameHeight>800</FrameHeight>"
 				+ "</ExternalQuestion>";
 	}
