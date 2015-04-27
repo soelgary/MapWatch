@@ -14,23 +14,33 @@ define([
         this.collection = new UpdateCollection();
         var self = this;
         this.currentModel = 0;
+        this.currentPage = 1;
         this.collection.fetch().complete(function(){
           self.render();
         });
       },
 
       next: function() {
-        this.currentModel += 1;
-        this.render();
+        this.currentPage += 1;
+        if(this.currentPage >= this.numPages) {
+          this.render(true)
+        } else {
+          this.render(false);
+        }
+      },
+
+      renderControl: function() {
+        console.log('controlllllll');
       },
       
-      render: function() {
-        var currentPage = this.currentModel + 1;
-        var numPages = this.collection.models.length;
-        this.$el.html(this.header({numPages: numPages, currentPage: currentPage}));
-        var updateView = new UpdateView({model: this.collection.models[this.currentModel], parent: this});
-        //this.$el.append(this.cta({count: this.currentModel}));
-        //var footerView = new FooterView();
+      render: function(renderControl) {
+        if(renderControl) {
+          this.$el.html(this.header({numPages: this.numPages, currentPage: this.currentPage}));
+        } else {
+          this.numPages = this.collection.models.length + 1;
+          this.$el.html(this.header({numPages: this.numPages, currentPage: this.currentPage}));
+          var updateView = new UpdateView({model: this.collection.models[this.currentModel], parent: this});
+        }
       },
     });
 });

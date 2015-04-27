@@ -4,7 +4,7 @@ define(["models/updateModel.js"],
       model: Update,
       async: false,
       url: function() {
-        return 'http://achtung.ccs.neu.edu:9092/maps/google/hits/mturk/' + this.getHITId()
+        return 'http://127.0.0.1:9092/maps/google/hits/mturk/' + this.getHITId()
       },
       //url: 'http://' + window.location.hostname + ':' + window.location.port + '/maps/google/updates?reserve=false',
       //url: 'http://127.0.0.1:9092/maps/google/updates?reserve=false',
@@ -21,9 +21,6 @@ define(["models/updateModel.js"],
        return(false);
       },
 
-      parse : function(resp) {
-        return resp;
-      },
       initialize: function(){
         this.fetch({
             success: this.fetchSuccess,
@@ -41,6 +38,7 @@ define(["models/updateModel.js"],
       },
 
       parse: function(response) {
+        this.control = response.control;
         return response.updates;
       }
     });
