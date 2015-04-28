@@ -33,6 +33,7 @@ import com.gsoeller.personalization.maps.resources.AMTControlResource;
 import com.gsoeller.personalization.maps.resources.AMTResource;
 import com.gsoeller.personalization.maps.resources.MapUpdateResource;
 import com.gsoeller.personalization.maps.resources.MapsResource;
+import com.gsoeller.personalization.maps.resources.TestResource;
 
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
@@ -160,6 +161,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		environment.jersey().register(new MapUpdateResource());
 		environment.jersey().register(new AMTResource());
 		environment.jersey().register(new AMTControlResource());
+		environment.jersey().register(new TestResource());
 	}
 	
 	private static void startCompareJob(int fetchJob, String mapProvider) throws SchedulerException {
