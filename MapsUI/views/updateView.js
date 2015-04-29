@@ -20,8 +20,8 @@ define([
       render: function() {
         var options = {
           el: this.$el,
-          img1: "img/a9302e0a-cbf7-48e5-a150-9acc247c3eb9.png", 
-          img2: "img/fe41928c-ab90-48c3-a6ff-725caa7ecc17.png",
+          img1: "https://achtung.ccs.neu.edu/~soelgary/img/" + this.model.get('newMap').path, 
+          img2: "https://achtung.ccs.neu.edu/~soelgary/img/" + this.model.get('oldMap').path,
           id: this.model.id
         };
         var formView = new FormView({el: this.$el, model: this.model, parent: this});
