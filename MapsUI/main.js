@@ -3,6 +3,6 @@ require([
   ], function(AppView) {
     //loads resources and starts the app
     app = new AppView({
-      "el": $("#maps"),
+      "el": $("#left-col"),
     });
 });

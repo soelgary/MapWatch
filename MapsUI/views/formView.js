@@ -5,6 +5,7 @@ define([
     return Backbone.View.extend({
       template: Handlebars.compile(template),
       nextButton: Handlebars.compile(NextButton),
+      el: '#left-col',
 
       initialize: function(options) {
         this.update = options.model;
@@ -34,11 +35,11 @@ define([
       },
       
       render: function() {
-        this.$el.append(this.template());
+        this.$el.html(this.template());
       },
 
       renderNextButton: function() {
-        this.$el.append(this.nextButton());
+        this.$el.html(this.nextButton());
       }
     });
 });

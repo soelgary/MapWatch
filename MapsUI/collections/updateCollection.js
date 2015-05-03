@@ -6,8 +6,6 @@ define(["models/updateModel.js"],
       url: function() {
         return 'https://achtung.ccs.neu.edu/maps/maps/google/hits/mturk/' + this.getHITId()
       },
-      //url: 'http://' + window.location.hostname + ':' + window.location.port + '/maps/google/updates?reserve=false',
-      //url: 'http://127.0.0.1:9092/maps/google/updates?reserve=false',
 
       getHITId: function() {
         var query = window.location.search.substring(1);

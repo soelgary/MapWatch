@@ -1,13 +1,12 @@
 define([
   "collections/updateCollection.js",
   "views/updateView.js",
-  "text!templates/header.html",
   "views/footerView",
-  "text!templates/cta.html"
-  ], function(UpdateCollection, UpdateView, header, FooterView, cta){
+  "text!templates/cta.html",
+  "views/headerView"
+  ], function(UpdateCollection, UpdateView, FooterView, cta, HeaderView){
     return Backbone.View.extend({
       tagName: "div",
-      header: Handlebars.compile(header),
       cta: Handlebars.compile(cta),
       
       initialize: function() {
@@ -22,6 +21,7 @@ define([
 
       next: function() {
         this.currentPage += 1;
+        this.currentModel += 1;
         if(this.currentPage >= this.numPages) {
           this.render(true)
         } else {
@@ -34,11 +34,11 @@ define([
       },
       
       render: function(renderControl) {
+        this.numPages = this.collection.models.length + 1;
+        var headerView = new HeaderView({currentPage: this.currentPage, numPages: this.numPages});
         if(renderControl) {
-          this.$el.html(this.header({numPages: this.numPages, currentPage: this.currentPage}));
         } else {
           this.numPages = this.collection.models.length + 1;
-          this.$el.html(this.header({numPages: this.numPages, currentPage: this.currentPage}));
           var updateView = new UpdateView({model: this.collection.models[this.currentModel], parent: this});
         }
       },
