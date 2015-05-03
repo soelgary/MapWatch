@@ -18,8 +18,8 @@ define([
           gifshot.createGIF({
             'images': [this.img1, this.img2],
             'interval': 1,
-            'gifWidth': 600,
-            'gifHeight': 600
+            'gifWidth': 450,
+            'gifHeight': 450
           },function(obj) {
               if(!obj.error) {
                   var image = obj.image;
