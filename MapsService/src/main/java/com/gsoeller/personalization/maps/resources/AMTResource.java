@@ -66,9 +66,9 @@ public class AMTResource {
 	@PUT
 	@Path("/{hitId}/control")
 	public Optional<GoogleHIT> updateGoogleHITControlResponse(@PathParam("mapProvider") String mapProvider,
-			@PathParam("hitId") int id,
+			@PathParam("hitId") String hitId,
 			GoogleHIT hit) {
-		return manager.updateGoogleHITControlResponse(id, hit);
+		return manager.updateGoogleHITControlResponse(hitId, hit);
 	}
 	
 	@GET

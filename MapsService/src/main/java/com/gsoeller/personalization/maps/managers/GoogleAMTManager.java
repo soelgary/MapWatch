@@ -94,9 +94,9 @@ public class GoogleAMTManager {
 		return updateDao.update(updateId, update.isHasBorderChange());
 	}
 	
-	public Optional<GoogleHIT> updateGoogleHITControlResponse(int id, GoogleHIT hit) {
-		dao.updateControlResponse(id, hit.isControlResponse());
-		return dao.getHIT(id);
+	public Optional<GoogleHIT> updateGoogleHITControlResponse(String hitId, GoogleHIT hit) {
+		dao.updateControlResponse(hitId, hit.isControlResponse());
+		return dao.getHITFromMTurkHitId(hitId);
 	}
 	
 	public List<GoogleHIT> getNextAvailableHits(int count) {

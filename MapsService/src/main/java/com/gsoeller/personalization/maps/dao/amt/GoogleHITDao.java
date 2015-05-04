@@ -79,8 +79,8 @@ public class GoogleHITDao {
 		return dao.setMTurkHitId(hitId, id);
 	}
 	
-	public boolean updateControlResponse(int id, boolean response) {
-		dao.updateControlResponse(id, response);
+	public boolean updateControlResponse(String hitId, boolean response) {
+		dao.updateControlResponse(hitId, response);
 		return true;
 	}
 	
@@ -120,8 +120,8 @@ public class GoogleHITDao {
 		@SqlUpdate("Update GoogleHIT SET hitId=:hitId where id = :id")
 		public int setMTurkHitId(@Bind("hitId") String hitId, @Bind("id") int id);
 		
-		@SqlUpdate("Update GoogleHIT SET controlResponse=:response, finished=true where id = :id")
-		public int updateControlResponse(@Bind("id") int id, @Bind("response") boolean response);
+		@SqlUpdate("Update GoogleHIT SET controlResponse=:response, finished=true where hitId = :hitId")
+		public int updateControlResponse(@Bind("hitId") String hitId, @Bind("response") boolean response);
 	}
 	
 }
