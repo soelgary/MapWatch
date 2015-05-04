@@ -12,6 +12,7 @@ define([
         this.borderDifference = false;
         this.checkedAnswer = false;
         this.parent = options.parent;
+        this.buttonText = options.buttonText;
         this.render();
       },
 
@@ -35,7 +36,7 @@ define([
       },
       
       render: function() {
-        this.$el.html(this.template());
+        this.$el.html(this.template({buttonText: this.buttonText}));
       },
 
       renderNextButton: function() {

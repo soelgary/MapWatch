@@ -3,8 +3,10 @@ define([
   "views/updateView.js",
   "views/footerView",
   "text!templates/cta.html",
-  "views/headerView"
-  ], function(UpdateCollection, UpdateView, FooterView, cta, HeaderView){
+  "views/headerView",
+  "views/controlView",
+  "models/updateModel"
+  ], function(UpdateCollection, UpdateView, FooterView, cta, HeaderView, ControlView, UpdateModel){
     return Backbone.View.extend({
       tagName: "div",
       cta: Handlebars.compile(cta),
@@ -15,7 +17,7 @@ define([
         this.currentModel = 0;
         this.currentPage = 1;
         this.collection.fetch().complete(function(){
-          self.render();
+          self.render(true);
         });
       },
 
@@ -23,20 +25,17 @@ define([
         this.currentPage += 1;
         this.currentModel += 1;
         if(this.currentPage >= this.numPages) {
-          this.render(true)
+          //this.render(true)
         } else {
-          this.render(false);
+          //this.render(false);
         }
-      },
-
-      renderControl: function() {
-        console.log('controlllllll');
       },
       
       render: function(renderControl) {
         this.numPages = this.collection.models.length + 1;
         var headerView = new HeaderView({currentPage: this.currentPage, numPages: this.numPages});
         if(renderControl) {
+          var controlView = new ControlView({control: this.collection.control});
         } else {
           this.numPages = this.collection.models.length + 1;
           var updateView = new UpdateView({model: this.collection.models[this.currentModel], parent: this});

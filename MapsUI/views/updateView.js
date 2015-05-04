@@ -23,9 +23,8 @@ define([
         var options = {
           img1: "https://achtung.ccs.neu.edu/~soelgary/img/" + this.model.get('newMap').path, 
           img2: "https://achtung.ccs.neu.edu/~soelgary/img/" + this.model.get('oldMap').path,
-          id: this.model.id
         };
-        var formView = new FormView({model: this.model, parent: this});
+        var formView = new FormView({model: this.model, parent: this, buttonText: 'Next'});
         var gifView = new GifView(options);
         var adjacentImageView = new AdjacentImageView(options)
       },
