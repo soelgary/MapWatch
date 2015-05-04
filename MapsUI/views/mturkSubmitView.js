@@ -8,7 +8,7 @@ define([
 
 
       submit: function() {
-        //$('#mturk_form').submit();
+        $('#mturk_form').submit();
       },
 
       render: function() {
