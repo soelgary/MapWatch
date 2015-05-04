@@ -64,12 +64,11 @@ public class AMTResource {
 	}
 	
 	@PUT
-	@Path("/mturk/{hitId}/update/{updateId}/control")
-	public Optional<GoogleHITUpdate> updateGoogleHITUpdateControl(@PathParam("mapProvider") String mapProvider,
-			@PathParam("hitId") String hitId,
-			@PathParam("updateId") int updateId,
-			GoogleHITUpdate update) {
-		return manager.updateGoogleHITUpdateControl(updateId, update);
+	@Path("/{hitId}/control")
+	public Optional<GoogleHIT> updateGoogleHITControlResponse(@PathParam("mapProvider") String mapProvider,
+			@PathParam("hitId") int id,
+			GoogleHIT hit) {
+		return manager.updateGoogleHITControlResponse(id, hit);
 	}
 	
 	@GET

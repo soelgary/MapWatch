@@ -79,6 +79,11 @@ public class GoogleHITDao {
 		return dao.setMTurkHitId(hitId, id);
 	}
 	
+	public boolean updateControlResponse(int id, boolean response) {
+		dao.updateControlResponse(id, response);
+		return true;
+	}
+	
 	private interface GoogleHITDaoImpl {
 		@SqlQuery("Select * from GoogleHIT where id = :id")
 		@Mapper(GoogleHITMapper.class)
@@ -114,6 +119,9 @@ public class GoogleHITDao {
 		
 		@SqlUpdate("Update GoogleHIT SET hitId=:hitId where id = :id")
 		public int setMTurkHitId(@Bind("hitId") String hitId, @Bind("id") int id);
+		
+		@SqlUpdate("Update GoogleHIT SET controlResponse=:response, finished=true where id = :id")
+		public int updateControlResponse(@Bind("id") int id, @Bind("response") boolean response);
 	}
 	
 }

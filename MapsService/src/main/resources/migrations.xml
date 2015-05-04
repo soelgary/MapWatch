@@ -366,4 +366,15 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="21" author="gary">
+		<addColumn tableName="GoogleHIT">
+			<column name="controlResponse" type="boolean"></column>
+		</addColumn>
+		<addColumn tableName="GoogleHIT">
+			<column name="finished" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

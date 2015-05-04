@@ -13,7 +13,9 @@ public class GoogleHIT {
 	public GoogleControlUpdate control;
 	public boolean approved;
 	public boolean readyForApproval;
-	
+	public boolean controlResponse;
+	public boolean finished;
+
 	public GoogleHIT() {};
 	
 	private GoogleHIT(int id, 
@@ -22,7 +24,9 @@ public class GoogleHIT {
 			GoogleControlUpdate control, 
 			boolean approved, 
 			boolean readyForApproval,
-			String hitId) {
+			String hitId,
+			boolean controlResponse,
+			boolean finished) {
 		this.id = id;
 		this.turkId = turkId;
 		this.updates = updates;
@@ -30,6 +34,24 @@ public class GoogleHIT {
 		this.approved = approved;
 		this.readyForApproval = readyForApproval;
 		this.hitId = hitId;
+		this.controlResponse = controlResponse;
+		this.finished = finished;
+	}
+	
+	public boolean isFinished() {
+		return finished;
+	}
+
+	public void setFinished(boolean finished) {
+		this.finished = finished;
+	}
+
+	public boolean isControlResponse() {
+		return controlResponse;
+	}
+
+	public void setControlResponse(boolean controlResponse) {
+		this.controlResponse = controlResponse;
 	}
 	
 	public String getHitId() {
@@ -98,6 +120,8 @@ public class GoogleHIT {
 		private boolean approved;
 		private boolean readyForApproval;
 		private String hitId;
+		private boolean controlResponse;
+		private boolean finished;
 		
 		public GoogleHITBuilder setId(int id) {
 			this.id = id;
@@ -134,8 +158,18 @@ public class GoogleHIT {
 			return this;
 		}
 		
+		public GoogleHITBuilder setControlResponse(boolean controlResponse) {
+			this.controlResponse = controlResponse;
+			return this;
+		}
+		
+		public GoogleHITBuilder setFinished(boolean finished) {
+			this.finished = finished;
+			return this;
+		}
+		
 		public GoogleHIT build() {
-			return new GoogleHIT(id, turkId, updates, control, approved, readyForApproval, hitId);
+			return new GoogleHIT(id, turkId, updates, control, approved, readyForApproval, hitId, controlResponse, finished);
 		}
 	}
 }

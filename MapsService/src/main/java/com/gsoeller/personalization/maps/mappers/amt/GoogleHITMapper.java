@@ -35,6 +35,8 @@ public class GoogleHITMapper implements ResultSetMapper<GoogleHIT> {
 		boolean readyForApproval = r.getBoolean("readyForApproval");
 		GoogleHIT.GoogleHITBuilder builder = new GoogleHIT.GoogleHITBuilder();
 		String hitId = r.getString("hitId");
+		boolean controlResponse = r.getBoolean("controlResponse");
+		boolean finished = r.getBoolean("finished");
 		if(control.isPresent()) {
 			builder.setControl(control.get());
 		}
@@ -44,6 +46,8 @@ public class GoogleHITMapper implements ResultSetMapper<GoogleHIT> {
 			.setApproved(approved)
 			.setReadyForApproval(readyForApproval)
 			.setHitId(hitId)
+			.setControlResponse(controlResponse)
+			.setFinished(finished)
 			.build();
 	}
 	

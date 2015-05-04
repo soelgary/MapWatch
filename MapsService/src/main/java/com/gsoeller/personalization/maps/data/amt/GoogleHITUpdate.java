@@ -11,11 +11,10 @@ public class GoogleHITUpdate {
 	public boolean hasBorderChange;
 	public String notes;
 	public boolean finished;
-	public boolean controlResponse;
 	
 	public GoogleHITUpdate() {}
 	
-	public GoogleHITUpdate(int id, int hitId, GoogleMap oldMap, GoogleMap newMap, boolean hasBorderChange, String notes, boolean finished, boolean controlResponse) {
+	public GoogleHITUpdate(int id, int hitId, GoogleMap oldMap, GoogleMap newMap, boolean hasBorderChange, String notes, boolean finished) {
 		this.id = id;
 		this.hitId = hitId;
 		this.oldMap = oldMap;
@@ -23,15 +22,6 @@ public class GoogleHITUpdate {
 		this.hasBorderChange = hasBorderChange;
 		this.notes = notes;
 		this.finished = finished;
-		this.controlResponse = controlResponse;
-	}
-
-	public boolean isControlResponse() {
-		return controlResponse;
-	}
-
-	public void setControlResponse(boolean controlResponse) {
-		this.controlResponse = controlResponse;
 	}
 
 	public boolean isFinished() {
@@ -98,7 +88,6 @@ public class GoogleHITUpdate {
 		private boolean hasBorderChange;
 		private String notes;
 		private boolean finished;
-		private boolean controlResponse;
 		
 		public GoogleHITUpdateBuilder setId(int id) {
 			this.id = id;
@@ -135,13 +124,8 @@ public class GoogleHITUpdate {
 			return this;
 		}
 		
-		public GoogleHITUpdateBuilder setControlResponse(boolean controlResponse) {
-			this.controlResponse = controlResponse;
-			return this;
-		}
-		
 		public GoogleHITUpdate build() {
-			return new GoogleHITUpdate(id, hitId, oldMap, newMap, hasBorderChange, notes, finished, controlResponse);
+			return new GoogleHITUpdate(id, hitId, oldMap, newMap, hasBorderChange, notes, finished);
 		}
 	}
 }
