@@ -17,7 +17,7 @@ define([
         this.currentModel = 0;
         this.currentPage = 1;
         this.collection.fetch().complete(function(){
-          self.render(true);
+          self.render(false);
         });
       },
 
@@ -25,9 +25,9 @@ define([
         this.currentPage += 1;
         this.currentModel += 1;
         if(this.currentPage >= this.numPages) {
-          //this.render(true)
+          this.render(true)
         } else {
-          //this.render(false);
+          this.render(false);
         }
       },
       
