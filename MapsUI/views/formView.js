@@ -1,7 +1,8 @@
 define([
     "text!templates/form.html",
-    "text!templates/nextButton.html"
-  ], function(template, NextButton){
+    "text!templates/nextButton.html",
+    "util/queryParameters.js"
+  ], function(template, NextButton, QueryParameters){
     return Backbone.View.extend({
       template: Handlebars.compile(template),
       nextButton: Handlebars.compile(NextButton),
@@ -27,7 +28,8 @@ define([
       },
 
       submit: function() {
-        if(this.checkedAnswer) {
+        var queryParameters = new QueryParameters();
+        if(this.checkedAnswer && queryParameters.getAssignmentId()) {
           this.update.set('hasBorderChange', this.borderDifference);
           this.update.save();
           this.undelegateEvents();
