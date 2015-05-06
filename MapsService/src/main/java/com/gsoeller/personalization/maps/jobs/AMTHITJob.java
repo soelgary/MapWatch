@@ -12,6 +12,7 @@ import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.amt.HitGenerator;
 import com.gsoeller.personalization.maps.dao.GoogleMapDao;
 import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
+import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
 import com.gsoeller.personalization.maps.data.GoogleMap;
 import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapChange;
@@ -25,6 +26,7 @@ public class AMTHITJob implements Job {
 	
 	private GoogleMapRequestDao googleMapRequestDao;
 	private GoogleMapDao googleMapDao;
+	private GoogleHITUpdateDao googleUpdateDao;
 	
 	private HitGenerator hitGenerator;
 	
@@ -34,6 +36,7 @@ public class AMTHITJob implements Job {
 		googleMapRequestDao = new GoogleMapRequestDao();
 		googleMapDao = new GoogleMapDao();
 		hitGenerator = new HitGenerator();
+		googleUpdateDao = new GoogleHITUpdateDao();
 	}
 	
 	public static void main(String[] args) throws IOException, JobExecutionException {
@@ -57,15 +60,22 @@ public class AMTHITJob implements Job {
 			}
 			if(baselineMap.isPresent() && updatedMap.isPresent()) {
 				if(!baselineMap.get().getHash().equals(updatedMap.get().getHash())) {
-					LOG.info(String.format("Creating a new update for map request, `%s`, and fetch job, `%s`", requestId, fetchJob));
-					// need to add to a HIT
-					MapChange change = new MapChange.MapChangeBuilder(baselineMap.get(), updatedMap.get(), MapProvider.google).build();
-					try {
-						hitGenerator.addUpdate(mapProvider, change);
-					} catch (Exception e) {
-						e.printStackTrace();
-						throw new JobExecutionException("Unable to add update");
+					// need to also check that a similar update doesnt already exist
+					int similarUpdatesCount = googleUpdateDao.countUpdatesWithHashSets(baselineMap.get().getHash(), updatedMap.get().getHash());
+					if(similarUpdatesCount < 3) {
+						LOG.info(String.format("Creating a new update for map request, `%s`, and fetch job, `%s`", requestId, fetchJob));
+						// need to add to a HIT
+						MapChange change = new MapChange.MapChangeBuilder(baselineMap.get(), updatedMap.get(), MapProvider.google).build();
+						try {
+							hitGenerator.addUpdate(mapProvider, change);
+						} catch (Exception e) {
+							e.printStackTrace();
+							throw new JobExecutionException("Unable to add update");
+						}
+					} else {
+						LOG.info(String.format("Too many updates created with hashes, `%s`, and `%s`", baselineMap.get().getHash(), updatedMap.get().getHash()));
 					}
+					
 				}
 			} else {
 				throw new RuntimeException(String.format("Both maps arent available for fetch job %s and map request %s", fetchJob, requestId));

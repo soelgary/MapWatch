@@ -62,6 +62,10 @@ public class GoogleHITUpdateDao {
 		return getUpdate("", id);
 	}
 	
+	public int countUpdatesWithHashSets(String firstHash, String secondHash) {
+		return dao.countUpdatesWithTiles(firstHash, secondHash);
+	}
+	
 	private interface GoogleHITUpdateDaoImpl {
 		@SqlQuery("Select * from GoogleHITUpdate where hitId = :hitId")
 		@Mapper(GoogleHITUpdateMapper.class)
@@ -87,5 +91,8 @@ public class GoogleHITUpdateDao {
 		
 		@SqlUpdate("Update GoogleHITUpdate set controlResponse=:controlResponse where id = :id")
 		public int setControlResponse(@Bind("id") int id, @Bind("controlResponse") boolean controlResponse);
+		
+		@SqlQuery("select count(*) from GoogleHITUpdate hit inner join Map o on hit.oldMap = o.id inner join Map n on hit.newMap = n.id where (o.hash = :firstHash && n.hash = :secondHash) || (n.hash = :firstHash && o.hash = :secondHash);")
+		public int countUpdatesWithTiles(@Bind("firstHash") String firstHash, @Bind("secondHash") String secondHash);
 	}
 }
