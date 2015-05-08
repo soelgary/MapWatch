@@ -28,7 +28,7 @@ define([
         if(this.checkedAnswer) {
           var controlUpdateModel = new ControlUpdateModel({id: 1, controlResponse: this.borderDifference});
           controlUpdateModel.save();
-          var passedControl = this.control.hasBorderChange.toString() == this.borderDifference;
+          var passedControl = this.control.hasBorderDifference.toString() == this.borderDifference;
           var mturkSubmitForm = new MTurkSubmitForm({passedControl: passedControl});
           mturkSubmitForm.render();
           mturkSubmitForm.submit();
