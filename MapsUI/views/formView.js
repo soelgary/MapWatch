@@ -29,7 +29,9 @@ define([
 
       submit: function() {
         var queryParameters = new QueryParameters();
-        if(this.checkedAnswer && queryParameters.getAssignmentId()) {
+        if(this.checkedAnswer 
+          && queryParameters.getAssignmentId()
+          && queryParameters.getAssignmentId() != 'ASSIGNMENT_ID_NOT_AVAILABLE') {
           this.update.set('hasBorderChange', this.borderDifference);
           this.update.save();
           this.undelegateEvents();
