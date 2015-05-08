@@ -13,7 +13,7 @@ define([
 
       render: function() {
         var queryParams = new QueryParameters();
-        this.$el.append(this.template({assignmentId: queryParams.getAssignmentId()}))
+        this.$el.append(this.template({assignmentId: queryParams.getAssignmentId(), hitId: queryParams.getHITId()}))
       }
     });
 });
