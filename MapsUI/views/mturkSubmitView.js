@@ -6,6 +6,9 @@ define([
       template: Handlebars.compile(template),
       el: '#header',
 
+      initialize: function(options) {
+        this.passedControl = options.passedControl;
+      },
 
       submit: function() {
         $('#mturk_form').submit();
@@ -13,7 +16,12 @@ define([
 
       render: function() {
         var queryParams = new QueryParameters();
-        this.$el.append(this.template({assignmentId: queryParams.getAssignmentId(), hitId: queryParams.getHITId()}))
+        var params = {
+          assignmentId: queryParams.getAssignmentId(),
+          hitId: queryParams.getHITId(),
+          passedControl: this.passedControl
+        }
+        this.$el.append(this.template(params))
       }
     });
 });
