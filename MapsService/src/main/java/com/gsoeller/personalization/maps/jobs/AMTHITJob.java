@@ -78,7 +78,7 @@ public class AMTHITJob implements Job {
 					
 				}
 			} else {
-				throw new RuntimeException(String.format("Both maps arent available for fetch job %s and map request %s", fetchJob, requestId));
+				LOG.info(String.format("Both maps arent available for fetch job %s and map request %s", fetchJob, requestId));
 			}
 			
 		}
