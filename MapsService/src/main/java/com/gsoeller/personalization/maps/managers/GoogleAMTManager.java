@@ -1,6 +1,10 @@
 package com.gsoeller.personalization.maps.managers;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +12,8 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import org.joda.time.DateTime;
 
 import com.amazonaws.mturk.addon.HITDataCSVReader;
 import com.amazonaws.mturk.addon.HITDataCSVWriter;
@@ -32,6 +38,8 @@ public class GoogleAMTManager {
 	
 	private final int DEFAULT_OFFSET = 0;
 	private final int DEFAULT_HIT_COUNT = 10;
+	
+	private static final DateTime START_OF_TIME = new DateTime(0);
 		
 	public GoogleAMTManager() throws IOException {
 		this.dao = new GoogleHITDao();
@@ -39,7 +47,7 @@ public class GoogleAMTManager {
 	}
 	
 	public List<GoogleHIT> approveHITS(int count) {
-		List<GoogleHIT> hitsToApprove = dao.getHITS(0, count, true, false);
+		List<GoogleHIT> hitsToApprove = dao.getHITS(0, count, true, false, START_OF_TIME);
 		System.out.println("START OF HITS");
 		for(GoogleHIT hit: hitsToApprove) {
 			System.out.println("HIT -> " + hit.getId());
@@ -62,7 +70,7 @@ public class GoogleAMTManager {
 					.build());
 		}
 		try {
-			Optional<String> hitId = sendHITToTurk(hit.getId());
+			Optional<String> hitId = sendHITsToTurk(5);
 			if(hitId.isPresent()) {
 				dao.approve(hit.getId());
 				dao.setMTurkHitId(hitId.get(), hit.getId());
@@ -82,8 +90,8 @@ public class GoogleAMTManager {
 		return dao.getHITFromMTurkHitId(id);
 	}
 	
-	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved) {
-		return dao.getHITS(offset, count, readyForApproval, approved);
+	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved, DateTime createdAfter) {
+		return dao.getHITS(offset, count, readyForApproval, approved, createdAfter);
 	}
 	
 	public Optional<GoogleHITUpdate> getUpdate(String hitId, int updateId) {
@@ -120,7 +128,7 @@ public class GoogleAMTManager {
 		}
 	}
 	
-	public Optional<String> sendHITToTurk(int hitId) throws Exception {
+	public Optional<String> sendHITsToTurk(int numHits) throws Exception {
 		System.out.println("Creating test HIT");
 
 		PropertiesLoader prop = new PropertiesLoader();

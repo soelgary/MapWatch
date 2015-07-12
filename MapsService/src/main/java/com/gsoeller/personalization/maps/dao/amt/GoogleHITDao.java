@@ -5,6 +5,7 @@ import io.dropwizard.jdbi.OptionalContainerFactory;
 import java.io.IOException;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.sqlobject.Bind;
@@ -48,8 +49,8 @@ public class GoogleHITDao {
 		return Optional.absent();
 	}
 	
-	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved) {
-		return dao.getHITS(offset, count, readyForApproval, approved);
+	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved, DateTime createdAfter) {
+		return dao.getHITS(offset, count, readyForApproval, approved, createdAfter.toString());
 	}
 	
 	public int createHIT(int turkId, int control, boolean approved, boolean readyForApproval) {
@@ -89,12 +90,13 @@ public class GoogleHITDao {
 		@Mapper(GoogleHITMapper.class)
 		public List<GoogleHIT> getHIT(@Bind("id") int id);
 		
-		@SqlQuery("Select * from GoogleHIT where approved = :approved && readyForApproval = :readyForApproval LIMIT :offset, :count")
+		@SqlQuery("Select * from GoogleHIT where approved = :approved && readyForApproval = :readyForApproval && created >= :createdAfter LIMIT :offset, :count")
 		@Mapper(GoogleHITMapper.class)
 		public List<GoogleHIT> getHITS(@Bind("offset") int offset, 
 				@Bind("count") int count, 
 				@Bind("readyForApproval") boolean readyForApproval, 
-				@Bind("approved") boolean approved);
+				@Bind("approved") boolean approved,
+				@Bind("createdAfter") String createdAfter);
 		
 		@SqlQuery("Select * from GoogleHIT where hitId = :hitId")
 		@Mapper(GoogleHITMapper.class)
