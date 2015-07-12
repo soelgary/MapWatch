@@ -377,4 +377,12 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="22" author="gary">
+		<addColumn tableName="GoogleHIT">
+			<column name="created"  type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

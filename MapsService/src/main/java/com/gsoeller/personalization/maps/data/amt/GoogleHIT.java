@@ -2,6 +2,9 @@ package com.gsoeller.personalization.maps.data.amt;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
+
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 public class GoogleHIT {
@@ -15,6 +18,7 @@ public class GoogleHIT {
 	public boolean readyForApproval;
 	public boolean controlResponse;
 	public boolean finished;
+	public Optional<DateTime> created;
 
 	public GoogleHIT() {};
 	
@@ -26,7 +30,8 @@ public class GoogleHIT {
 			boolean readyForApproval,
 			String hitId,
 			boolean controlResponse,
-			boolean finished) {
+			boolean finished,
+			Optional<DateTime> created) {
 		this.id = id;
 		this.turkId = turkId;
 		this.updates = updates;
@@ -36,6 +41,15 @@ public class GoogleHIT {
 		this.hitId = hitId;
 		this.controlResponse = controlResponse;
 		this.finished = finished;
+		this.created = created;
+	}
+	
+	public Optional<DateTime> getCreated() {
+		return created;
+	}
+	
+	public void setCreated(DateTime created) {
+		this.created = Optional.of(created);
 	}
 	
 	public boolean isFinished() {
@@ -122,6 +136,7 @@ public class GoogleHIT {
 		private String hitId;
 		private boolean controlResponse;
 		private boolean finished;
+		private Optional<DateTime> created = Optional.absent();
 		
 		public GoogleHITBuilder setId(int id) {
 			this.id = id;
@@ -168,8 +183,13 @@ public class GoogleHIT {
 			return this;
 		}
 		
+		public GoogleHITBuilder setCreated(DateTime created) {
+			this.created = Optional.of(created);
+			return this;
+		}
+		
 		public GoogleHIT build() {
-			return new GoogleHIT(id, turkId, updates, control, approved, readyForApproval, hitId, controlResponse, finished);
+			return new GoogleHIT(id, turkId, updates, control, approved, readyForApproval, hitId, controlResponse, finished, created);
 		}
 	}
 }
