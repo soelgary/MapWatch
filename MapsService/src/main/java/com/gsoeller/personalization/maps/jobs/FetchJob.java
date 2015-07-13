@@ -3,18 +3,15 @@ package com.gsoeller.personalization.maps.jobs;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import org.apache.http.HttpResponse;
 import org.joda.time.DateTime;
 import org.joda.time.Minutes;
 import org.quartz.Job;
@@ -42,7 +39,6 @@ import com.gsoeller.personalization.maps.data.MapChange;
 import com.gsoeller.personalization.maps.data.MapProvider;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.fetchers.StaticMapFetcher;
-import com.gsoeller.personalization.maps.health.ReverseHealthCheck;
 import com.gsoeller.personalization.maps.smtp.MapsEmail;
 import com.gsoeller.personalization.maps.smtp.SmtpClient;
 import com.gsoeller.personalization.maps.smtp.MapsEmail.MapsEmailBuilder;
@@ -102,14 +98,6 @@ public class FetchJob implements Job {
 			throws JobExecutionException {	
 		int mapNumber = (Integer)context.getJobDetail().getJobDataMap().get("mapNumber");
 		String mapProvider = (String) context.getJobDetail().getJobDataMap().get("mapProvider");
-		/*
-		try {
-			reverseHealthCheck = new ReverseHealthCheck();
-		} catch (IOException e2) {
-			e2.printStackTrace();
-			System.exit(0);
-		}
-		*/
 		boolean configured;
 		try {
 			configured = configure(mapProvider);
@@ -251,14 +239,6 @@ public class FetchJob implements Job {
 							saveImage(false, request.getId(), path.get(), fetchJob);
 						}
 					}
-					/*
-					try {
-						reverseHealthCheck.sendReverseHealthCheck(mapProvider);
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					*/
 				}
 			});
 		}
