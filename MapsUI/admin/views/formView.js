@@ -26,12 +26,17 @@ define([
         $('#status').text('');
         if(this.checkedAnswer) {
           this.update.set('hasBorderChange', this.borderDifference);
+          var self = this;
           this.update.save([], {
-            success: function() {
+            success: function(model, response, options) {
               $('#status').text('Successfully saved results..');
+              var id = '#icon-' + model.id;
+              $(id).html('<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>');
             },
-            error: function() {
-              $('#status').text('An error occurred..')
+            error: function(model, response, options) {
+              $('#status').text('An error occurred..');
+              var id = '#icon-' + model.id;
+              $(id).html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
             }
           });
           this.undelegateEvents();

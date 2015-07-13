@@ -31,6 +31,7 @@ define([
               out = out + "<th>" + items[i].get('hasBorderChange') + "</th>";
               out = out + "<th>" + items[i].get('finished') + "</th>";
               out = out + "<th><button data-update='" + items[i].get('id') + "' class='analyze-button'>Analyze</button><th>";
+              out = out + "<th id='icon-" + items[i].get('id') + "'></th>"
               out = out + "</tr>";
             }
             return out;
