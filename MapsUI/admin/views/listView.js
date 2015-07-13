@@ -51,6 +51,34 @@ define([
 
       render: function() {
         this.$el.html(this.template({updates: this.updates.models}));
+        console.log(JSON.stringify(this.updates.models));
+        console.log(this.updates.models);
+        $('#example').dataTable( {
+          "aaData": this.updates.models,
+          "aoColumns": [
+            {
+              "mDataProp": "attributes.id",
+              "title": "Id"
+            },
+            {
+              "mDataProp": "attributes.hasBorderChange",
+              "title": "Has Border Difference?"
+            },
+            {
+              "mDataProp": "attributes.finished",
+              "title": "Finished?"
+            },
+            {
+                "title": "analyze"
+            }],
+            "columnDefs": [ {
+              "targets": -1,
+              "data": null,
+              "render": function(data, type, row) {
+                  return "<button data-update='" + data.get('id') + "' class='analyze-button'>Analyze</button>"
+              }
+            }]
+        });
       }
     });
 });
