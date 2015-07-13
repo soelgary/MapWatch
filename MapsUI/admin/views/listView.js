@@ -70,14 +70,26 @@ define([
             },
             {
                 "title": "analyze"
-            }],
-            "columnDefs": [ {
-              "targets": -1,
+            },
+            {
+              "title": "status"
+            }
+          ],
+            "columnDefs": [{
+              "targets": -2,
               "data": null,
               "render": function(data, type, row) {
                   return "<button data-update='" + data.get('id') + "' class='analyze-button'>Analyze</button>"
               }
-            }]
+            },
+            {
+              "targets": -1,
+              "data": null,
+              "render": function(data, type, row) {
+                return "<div id='icon-" + data.get('id') + "'></div>"
+              }
+            }
+          ]
         });
       }
     });
