@@ -36,6 +36,18 @@ public class GoogleHITUpdateDao {
 		return dao.getHITUpdates(hitId);
 	}
 	
+	public List<GoogleHITUpdate> getUpdates(int count, int offset, boolean finished) {
+		return dao.getHITUpdates(finished, count, offset);
+	}
+	
+	public Optional<GoogleHITUpdate> getUpdate(int id) {
+		List<GoogleHITUpdate> updates =  dao.getHITUpdate(id);
+		if(updates.size() == 1) {
+			return Optional.of(updates.get(0));
+		}
+		return Optional.absent();
+	}
+	
 	public int createUpdate(int hitId, int oldMap, int newMap, boolean hasBorderChange, String notes) {
 		return dao.createUpdate(hitId, oldMap, newMap, hasBorderChange, notes);
 	}
@@ -70,6 +82,16 @@ public class GoogleHITUpdateDao {
 		@SqlQuery("Select * from GoogleHITUpdate where hitId = :hitId")
 		@Mapper(GoogleHITUpdateMapper.class)
 		public List<GoogleHITUpdate> getHITUpdates(@Bind("hitId") int hitId);
+		
+		@SqlQuery("Select * from GoogleHITUpdate where id = :id")
+		@Mapper(GoogleHITUpdateMapper.class)
+		public List<GoogleHITUpdate> getHITUpdate(@Bind("id") int id);
+		
+		@SqlQuery("Select * from GoogleHITUpdate where finished = :finished LIMIT :offset, :count")
+		@Mapper(GoogleHITUpdateMapper.class)
+		public List<GoogleHITUpdate> getHITUpdates(@Bind("finished") boolean finished,
+				@Bind("count") int count,
+				@Bind("offset") int offset);
 		
 		@SqlUpdate("Insert into GoogleHITUpdate (hitId, oldMap, newMap, hasBorderChange, notes) values (:hitId, :oldMap, :newMap, :hasBorderChange, :notes)")
 		@GetGeneratedKeys

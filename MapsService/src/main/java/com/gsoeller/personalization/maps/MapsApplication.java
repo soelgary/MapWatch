@@ -29,6 +29,7 @@ import com.gsoeller.personalization.maps.jobs.RequestJob;
 import com.gsoeller.personalization.maps.jobs.SQLStressTestJob;
 import com.gsoeller.personalization.maps.resources.AMTControlResource;
 import com.gsoeller.personalization.maps.resources.AMTResource;
+import com.gsoeller.personalization.maps.resources.GoogleHITUpdateResource;
 
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
@@ -146,6 +147,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 	    filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 		environment.jersey().register(new AMTResource());
 		environment.jersey().register(new AMTControlResource());
+		environment.jersey().register(new GoogleHITUpdateResource());
 	}
 	
 	private static void startCompareJob(int fetchJob, String mapProvider) throws SchedulerException {

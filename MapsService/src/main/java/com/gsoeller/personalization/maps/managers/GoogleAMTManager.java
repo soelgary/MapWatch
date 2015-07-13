@@ -25,9 +25,11 @@ import com.amazonaws.mturk.requester.HIT;
 import com.amazonaws.mturk.service.axis.RequesterService;
 import com.amazonaws.mturk.util.PropertiesClientConfig;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
+import com.gsoeller.personalization.maps.data.GoogleHITResult;
 import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 
@@ -41,9 +43,18 @@ public class GoogleAMTManager {
 	
 	private static final DateTime START_OF_TIME = new DateTime(0);
 		
+	private static final int DEFAULT_ANALYZE_COUNT = 1000;
+	private static final boolean DEFAULT_ANALYZE_READY_FOR_APPROVAL = true;
+	private static final boolean DEFAULT_ANALYZE_APPROVED = true;
+	
 	public GoogleAMTManager() throws IOException {
 		this.dao = new GoogleHITDao();
 		this.updateDao = new GoogleHITUpdateDao();
+	}
+	
+	public List<GoogleHITResult> analyzeHITS(DateTime createdAfter) {
+		List<GoogleHIT> hits = dao.getHITS(DEFAULT_OFFSET, DEFAULT_ANALYZE_COUNT, DEFAULT_ANALYZE_READY_FOR_APPROVAL, DEFAULT_ANALYZE_APPROVED, createdAfter);
+		return Lists.newArrayList();
 	}
 	
 	public List<GoogleHIT> approveHITS(int count) {
@@ -70,7 +81,7 @@ public class GoogleAMTManager {
 					.build());
 		}
 		try {
-			Optional<String> hitId = sendHITsToTurk(5);
+			Optional<String> hitId = sendHITsToTurk();
 			if(hitId.isPresent()) {
 				dao.approve(hit.getId());
 				dao.setMTurkHitId(hitId.get(), hit.getId());
@@ -128,7 +139,12 @@ public class GoogleAMTManager {
 		}
 	}
 	
-	public Optional<String> sendHITsToTurk(int numHits) throws Exception {
+	public static void main(String[] args) throws Exception {
+		GoogleAMTManager manager = new GoogleAMTManager();
+		manager.sendHITsToTurk();
+	}
+	
+	public Optional<String> sendHITsToTurk() throws Exception {
 		System.out.println("Creating test HIT");
 
 		PropertiesLoader prop = new PropertiesLoader();
