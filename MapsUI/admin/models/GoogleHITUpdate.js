@@ -12,7 +12,7 @@ define([],
       },
 
       setUrl: function(id) {
-          this.url = 'https://achtung.ccs.neu.edu/~soelgary/maps/google/updates/' + id;
+          this.url = 'https://achtung.ccs.neu.edu/maps/google/updates/' + id;
       }
     });
   return GoogleHITUpdate;

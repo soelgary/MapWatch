@@ -6,7 +6,7 @@ define([
       async: false,
       url: function() {
         //return 'http://127.0.0.1:9092/google/updates';
-        return 'https://achtung.ccs.neu.edu/~soelgary/maps/google/updates'
+        return 'https://achtung.ccs.neu.edu/maps/google/updates'
       },
 
       initialize: function(finished, count, offset){
