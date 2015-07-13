@@ -62,7 +62,7 @@ public class AMTHITJob implements Job {
 				if(!baselineMap.get().getHash().equals(updatedMap.get().getHash())) {
 					// need to also check that a similar update doesnt already exist
 					int similarUpdatesCount = googleUpdateDao.countUpdatesWithHashSets(baselineMap.get().getHash(), updatedMap.get().getHash());
-					if(similarUpdatesCount < 3) {
+					if(similarUpdatesCount < 1) {
 						LOG.info(String.format("Creating a new update for map request, `%s`, and fetch job, `%s`", requestId, fetchJob));
 						// need to add to a HIT
 						MapChange change = new MapChange.MapChangeBuilder(baselineMap.get(), updatedMap.get(), MapProvider.google).build();
