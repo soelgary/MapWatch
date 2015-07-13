@@ -23,9 +23,17 @@ define([
       },
 
       submit: function() {
+        $('#status').text('');
         if(this.checkedAnswer) {
           this.update.set('hasBorderChange', this.borderDifference);
-          this.update.save();
+          this.update.save([], {
+            success: function() {
+              $('#status').text('Successfully saved results..');
+            },
+            error: function() {
+              $('#status').text('An error occurred..')
+            }
+          });
           this.undelegateEvents();
         }
       },
