@@ -3,7 +3,7 @@ define([
   ], function(template){
     return Backbone.View.extend({
       template: Handlebars.compile(template),
-      el: '#gif',
+      el: '#giff',
 
       initialize: function(options) {
         this.img1 = options.img1;
