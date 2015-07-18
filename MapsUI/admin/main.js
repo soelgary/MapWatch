@@ -4,7 +4,7 @@ requirejs.config({
     }
 });
 require([
-  "views/listView",
+  "views/adminView",
   "datatables"
   ], function(AppView) {
     //loads resources and starts the app

@@ -5,12 +5,12 @@ define([
   ], function(template, GoogleHITUpdates, AnalyzeView){
     return Backbone.View.extend({
       template: Handlebars.compile(template),
-      el: '#left-col',
+      el: '#table',
 
       initialize: function(options) {
-        finished = true,
-        count = 20,
-        offset = 0;
+        finished = options.finished,
+        count = options.count,
+        offset = options.offset;
         this.updates = new GoogleHITUpdates(finished, count, offset);
         var self = this;
         this.updates.fetch(
