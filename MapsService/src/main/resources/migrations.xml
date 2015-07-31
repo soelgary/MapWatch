@@ -350,4 +350,39 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="19" author="gary">
+		<addColumn tableName="GoogleHIT">
+			<column name="hitId" type="varchar(255)" defaultValue="">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet id="20" author="gary">
+		<addColumn tableName="GoogleHITUpdate">
+			<column name="finished" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet id="21" author="gary">
+		<addColumn tableName="GoogleHIT">
+			<column name="controlResponse" type="boolean"></column>
+		</addColumn>
+		<addColumn tableName="GoogleHIT">
+			<column name="finished" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
+	
+	<changeSet id="22" author="gary">
+		<addColumn tableName="GoogleHIT">
+			<column name="created"  type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false"></constraints>
+			</column>
+		</addColumn>
+	</changeSet>
 </databaseChangeLog>

@@ -1,27 +1,16 @@
 <form>
-  <div class="row">
-    <div class="col-md-6">
-      <div class="form-group">
-        <h3>Check all that apply</h3>
-        <div class="checkbox" id="q1-checkbox-div">
-          <label>
-            <input type="checkbox" id="q1-checkbox"> Do the two images above look different?
-          </label>
-        </div>
-        <div class='dependent-checkboxes'>
-          <div class="checkbox" id="q2-checkbox-div">
-            <label>
-              <input type="checkbox" id="q2-checkbox" disabled> Is there a difference in any of the countries borders?
-            </label>
-          </div>
-          <div class="checkbox" id="q3-checkbox-div">
-            <label for="comment">Are there any other differences? If so briefly explain..</label>
-            <textarea class="form-control" rows="5" id="comment"></textarea>
-          </div>
-        </div>
-        <button id="submit-button" type="button" class="btn btn-default">Submit</button>
+  <div class="form-group">
+    <h3>Is there a border difference between the two images?</h3>
+      <div>
+        <label>
+          <input type="radio" name="borderDifference" value="true">Yes 
+        </label>
       </div>
-    </div>
-    <div class="col-md-6">
+      <div>
+        <label>
+          <input type="radio" name="borderDifference" value="false">No 
+        </label>
+      </div>
+    <button id="submit-button" type="button" class="btn btn-default">{{ buttonText }}</button>
   </div>
 </form>

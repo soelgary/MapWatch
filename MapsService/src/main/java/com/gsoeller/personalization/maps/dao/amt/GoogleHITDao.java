@@ -5,6 +5,7 @@ import io.dropwizard.jdbi.OptionalContainerFactory;
 import java.io.IOException;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.Handle;
 import org.skife.jdbi.v2.sqlobject.Bind;
@@ -25,8 +26,7 @@ public class GoogleHITDao {
 	private GoogleHITDaoImpl dao;
 
 	public GoogleHITDao() throws IOException {
-		PropertiesLoader propLoader = new PropertiesLoader();
-		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
+		dbi = new DBI(PropertiesLoader.getProperty("db"), PropertiesLoader.getProperty("dbuser"), PropertiesLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
 		dao = handle.attach(GoogleHITDaoImpl.class);
@@ -40,8 +40,16 @@ public class GoogleHITDao {
 		return Optional.absent();
 	}
 	
-	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved) {
-		return dao.getHITS(offset, count, readyForApproval, approved);
+	public Optional<GoogleHIT> getHITFromMTurkHitId(String hitId) {
+		List<GoogleHIT> hits = dao.getHITFromMTurkHitId(hitId);
+		if(hits.size() == 1) {
+			return Optional.fromNullable(hits.get(0));
+		}
+		return Optional.absent();
+	}
+	
+	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved, DateTime createdAfter) {
+		return dao.getHITS(offset, count, readyForApproval, approved, createdAfter.toString());
 	}
 	
 	public int createHIT(int turkId, int control, boolean approved, boolean readyForApproval) {
@@ -60,17 +68,38 @@ public class GoogleHITDao {
 		return dao.approve(hitId);
 	}
 	
+	public boolean approveHITS(List<GoogleHIT> hits) {
+		for(GoogleHIT hit: hits) {
+			approve(hit.getId());
+		}
+		return true;
+	}
+	
+	public int setMTurkHitId(String hitId, int id) {
+		return dao.setMTurkHitId(hitId, id);
+	}
+	
+	public boolean updateControlResponse(String hitId, boolean response) {
+		dao.updateControlResponse(hitId, response);
+		return true;
+	}
+	
 	private interface GoogleHITDaoImpl {
 		@SqlQuery("Select * from GoogleHIT where id = :id")
 		@Mapper(GoogleHITMapper.class)
 		public List<GoogleHIT> getHIT(@Bind("id") int id);
 		
-		@SqlQuery("Select * from GoogleHIT where approved = :approved && readyForApproval = :readyForApproval LIMIT :offset, :count")
+		@SqlQuery("Select * from GoogleHIT where approved = :approved && readyForApproval = :readyForApproval && created >= :createdAfter LIMIT :offset, :count")
 		@Mapper(GoogleHITMapper.class)
 		public List<GoogleHIT> getHITS(@Bind("offset") int offset, 
 				@Bind("count") int count, 
 				@Bind("readyForApproval") boolean readyForApproval, 
-				@Bind("approved") boolean approved);
+				@Bind("approved") boolean approved,
+				@Bind("createdAfter") String createdAfter);
+		
+		@SqlQuery("Select * from GoogleHIT where hitId = :hitId")
+		@Mapper(GoogleHITMapper.class)
+		public List<GoogleHIT> getHITFromMTurkHitId(@Bind("hitId") String hitId);
 		
 		@SqlUpdate("Insert into GoogleHIT (turkId, control, approved, readyForApproval) values (:turkId, :control, :approved, :readyForApproval)")
 		@GetGeneratedKeys
@@ -88,6 +117,12 @@ public class GoogleHITDao {
 		
 		@SqlUpdate("Update GoogleHIT SET approved=true where id = :hitId")
 		public int approve(@Bind("hitId") int hitId);
+		
+		@SqlUpdate("Update GoogleHIT SET hitId=:hitId where id = :id")
+		public int setMTurkHitId(@Bind("hitId") String hitId, @Bind("id") int id);
+		
+		@SqlUpdate("Update GoogleHIT SET controlResponse=:response, finished=true where hitId = :hitId")
+		public int updateControlResponse(@Bind("hitId") String hitId, @Bind("response") boolean response);
 	}
 	
 }

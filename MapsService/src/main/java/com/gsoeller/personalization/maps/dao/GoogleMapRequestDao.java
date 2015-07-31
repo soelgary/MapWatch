@@ -31,8 +31,7 @@ public class GoogleMapRequestDao implements MapRequestDao {
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.data.GoogleMapRequestDao");
 	
 	public GoogleMapRequestDao() throws IOException {
-		PropertiesLoader propLoader = new PropertiesLoader();
-		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
+		dbi = new DBI(PropertiesLoader.getProperty("db"), PropertiesLoader.getProperty("dbuser"), PropertiesLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
 		dao = handle.attach(GoogleMapRequestDaoImpl.class);

@@ -2,17 +2,24 @@ package com.gsoeller.personalization.maps.data.amt;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
+
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 public class GoogleHIT {
 	
 	public int id;
+	public String hitId;
 	public int turkId;
 	public List<GoogleHITUpdate> updates;
 	public GoogleControlUpdate control;
 	public boolean approved;
 	public boolean readyForApproval;
-	
+	public boolean controlResponse;
+	public boolean finished;
+	public Optional<DateTime> created;
+
 	public GoogleHIT() {};
 	
 	private GoogleHIT(int id, 
@@ -20,13 +27,53 @@ public class GoogleHIT {
 			List<GoogleHITUpdate> updates, 
 			GoogleControlUpdate control, 
 			boolean approved, 
-			boolean readyForApproval) {
+			boolean readyForApproval,
+			String hitId,
+			boolean controlResponse,
+			boolean finished,
+			Optional<DateTime> created) {
 		this.id = id;
 		this.turkId = turkId;
 		this.updates = updates;
 		this.control = control;
 		this.approved = approved;
 		this.readyForApproval = readyForApproval;
+		this.hitId = hitId;
+		this.controlResponse = controlResponse;
+		this.finished = finished;
+		this.created = created;
+	}
+	
+	public Optional<DateTime> getCreated() {
+		return created;
+	}
+	
+	public void setCreated(DateTime created) {
+		this.created = Optional.of(created);
+	}
+	
+	public boolean isFinished() {
+		return finished;
+	}
+
+	public void setFinished(boolean finished) {
+		this.finished = finished;
+	}
+
+	public boolean isControlResponse() {
+		return controlResponse;
+	}
+
+	public void setControlResponse(boolean controlResponse) {
+		this.controlResponse = controlResponse;
+	}
+	
+	public String getHitId() {
+		return hitId;
+	}
+
+	public void setHitId(String hitId) {
+		this.hitId = hitId;
 	}
 	
 	public int getId() {
@@ -86,6 +133,10 @@ public class GoogleHIT {
 		private GoogleControlUpdate control;
 		private boolean approved;
 		private boolean readyForApproval;
+		private String hitId;
+		private boolean controlResponse;
+		private boolean finished;
+		private Optional<DateTime> created = Optional.absent();
 		
 		public GoogleHITBuilder setId(int id) {
 			this.id = id;
@@ -117,8 +168,28 @@ public class GoogleHIT {
 			return this;
 		}
 		
+		public GoogleHITBuilder setHitId(String hitId) {
+			this.hitId = hitId;
+			return this;
+		}
+		
+		public GoogleHITBuilder setControlResponse(boolean controlResponse) {
+			this.controlResponse = controlResponse;
+			return this;
+		}
+		
+		public GoogleHITBuilder setFinished(boolean finished) {
+			this.finished = finished;
+			return this;
+		}
+		
+		public GoogleHITBuilder setCreated(DateTime created) {
+			this.created = Optional.of(created);
+			return this;
+		}
+		
 		public GoogleHIT build() {
-			return new GoogleHIT(id, turkId, updates, control, approved, readyForApproval);
+			return new GoogleHIT(id, turkId, updates, control, approved, readyForApproval, hitId, controlResponse, finished, created);
 		}
 	}
 }

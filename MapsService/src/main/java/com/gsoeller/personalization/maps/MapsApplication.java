@@ -22,17 +22,14 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 
-import com.gsoeller.personalization.maps.amt.HitGenerator;
 import com.gsoeller.personalization.maps.jobs.AMTHITJob;
 import com.gsoeller.personalization.maps.jobs.ComparisonJob;
 import com.gsoeller.personalization.maps.jobs.FetchJob;
-import com.gsoeller.personalization.maps.jobs.GenerateGifJob;
 import com.gsoeller.personalization.maps.jobs.RequestJob;
 import com.gsoeller.personalization.maps.jobs.SQLStressTestJob;
 import com.gsoeller.personalization.maps.resources.AMTControlResource;
 import com.gsoeller.personalization.maps.resources.AMTResource;
-import com.gsoeller.personalization.maps.resources.MapUpdateResource;
-import com.gsoeller.personalization.maps.resources.MapsResource;
+import com.gsoeller.personalization.maps.resources.GoogleHITUpdateResource;
 
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
@@ -46,9 +43,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		Options options = new Options();
 		options.addOption("test", false, "Run the application/job using the maps.properties file");
 		options.addOption("s", false, "Run the dropwizard server to get REST api access");
-		//options.addOption("create", false, "Create the requests to the maps api to be run every time period");
-		//options.addOption("fetch", false, "Run the job to fetch requests for each map");
-		//options.addOption("compare", true, "Run the job to compare the latest fetched maps for personalization");
+
 		Option option = new Option("h", "Help message");
 		
 		Option fetch = new Option("fetch", "Run the job to fetch requests for each map with the given map number");
@@ -74,9 +69,6 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		create.setType(Integer.class);
 		create.setArgs(1);
 		options.addOption(create);
-		
-		Option createGifs = new Option("creategifs", "Create Gifs fromt the map request id file");
-		options.addOption(createGifs);
 		
 		Option testSQL = new Option("testSQL", "Run stress tests for the sql queries");
 		testSQL.hasArg();
@@ -107,8 +99,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("Maps Personalization", options);
 		} else if(cmd.hasOption("s")) {
-			PropertiesLoader propLoader = new PropertiesLoader(configFile);
-			new MapsApplication().run(new String[] {"server", propLoader.getProperty("config")});
+			new MapsApplication().run(new String[] {"server", PropertiesLoader.getProperty("config")});
 		} else if(cmd.hasOption("create")) {
 			String mapNumber = (String) cmd.getOptionValue("create");
 			String map = (String) cmd.getOptionValue("mp");
@@ -122,10 +113,6 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			String fetchJob = (String) cmd.getOptionValue("compare");
 			String map = (String) cmd.getOptionValue("mp");
 			startCompareJob(Integer.parseInt(fetchJob), map);
-		} else if(cmd.hasOption("creategifs")) {
-			startGifJob();
-		} else if(cmd.hasOption("readEmail")) {
-			//readEmailJob();
 		} else if(cmd.hasOption("testSQL")) {
 			String numQueries = (String) cmd.getOptionValue("testSQL");
 			startSQLStressTests(Integer.parseInt(numQueries));
@@ -157,9 +144,9 @@ public class MapsApplication extends Application<MapsConfiguration> {
 	    filter.setInitParameter(CrossOriginFilter.ACCESS_CONTROL_ALLOW_ORIGIN_HEADER, "*");
 	    filter.setInitParameter(CrossOriginFilter.ALLOWED_HEADERS_PARAM, "Content-Type,Authorization,X-Requested-With,Content-Length,Accept,Origin");
 	    filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
-		environment.jersey().register(new MapUpdateResource());
 		environment.jersey().register(new AMTResource());
 		environment.jersey().register(new AMTControlResource());
+		environment.jersey().register(new GoogleHITUpdateResource());
 	}
 	
 	private static void startCompareJob(int fetchJob, String mapProvider) throws SchedulerException {
@@ -224,22 +211,6 @@ public class MapsApplication extends Application<MapsConfiguration> {
 		sched.scheduleJob(job, trigger);
 	}
 	
-	private static void startGifJob() throws SchedulerException {
-		SchedulerFactory schedFact = new StdSchedulerFactory();
-		Scheduler sched = schedFact.getScheduler();
-		sched.start();
-
-		JobDetail job = JobBuilder.newJob(GenerateGifJob.class)
-				.withIdentity("Gif Job", "group1").build();
-		
-		Trigger trigger = TriggerBuilder
-				.newTrigger()
-				.withIdentity("Fetch Trigger", "group1")
-				.startNow()
-				.build();
-		sched.scheduleJob(job, trigger);		
-	}
-	
 	private static void startSQLStressTests(int numQueries) throws SchedulerException {
 		SchedulerFactory schedFact = new StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
@@ -275,22 +246,4 @@ public class MapsApplication extends Application<MapsConfiguration> {
 				.build();
 		sched.scheduleJob(job, trigger);		
 	}
-	
-	/*
-	private static void readEmailJob() throws SchedulerException {
-		SchedulerFactory schedFact = new StdSchedulerFactory();
-		Scheduler sched = schedFact.getScheduler();
-		sched.start();
-
-		JobDetail job = JobBuilder.newJob(ReadEmailJob.class)
-				.withIdentity("Read Email Job", "group1").build();
-		
-		Trigger trigger = TriggerBuilder
-				.newTrigger()
-				.withIdentity("Fetch Trigger", "group1")
-				.startNow()
-				.build();
-		sched.scheduleJob(job, trigger);
-	}
-	*/
 }

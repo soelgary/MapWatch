@@ -1,14 +1,19 @@
-define(["models/updateModel.js"],
-  function(Update){
+define([
+  "models/updateModel.js",
+  "util/queryParameters.js"
+  ], function(Update, QueryParameters){
     var Updates = Backbone.Collection.extend({
       model: Update,
       async: false,
-      url: 'http://achtung.ccs.neu.edu:9092/maps/google/hits/109',
-      //url: 'http://' + window.location.hostname + ':' + window.location.port + '/maps/google/updates?reserve=false',
-      //url: 'http://127.0.0.1:9092/maps/google/updates?reserve=false',
-      parse : function(resp) {
-        return resp;
+      url: function() {
+        return 'https://achtung.ccs.neu.edu/maps/maps/google/hits/mturk/' + this.getHITId()
       },
+
+      getHITId: function() {
+        var queryParams = new QueryParameters();
+        return queryParams.getHITId();
+      },
+
       initialize: function(){
         this.fetch({
             success: this.fetchSuccess,
@@ -26,6 +31,7 @@ define(["models/updateModel.js"],
       },
 
       parse: function(response) {
+        this.control = response.control;
         return response.updates;
       }
     });

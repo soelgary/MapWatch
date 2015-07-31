@@ -22,8 +22,7 @@ public class BingFetchJobDao implements FetchJobDao {
 	private BingFetchJobDaoImpl dao;
 	
 	public BingFetchJobDao() throws IOException {
-		PropertiesLoader propLoader = new PropertiesLoader();
-		dbi = new DBI(propLoader.getProperty("db"), propLoader.getProperty("dbuser"), propLoader.getProperty("dbpwd"));
+		dbi = new DBI(PropertiesLoader.getProperty("db"), PropertiesLoader.getProperty("dbuser"), PropertiesLoader.getProperty("dbpwd"));
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
 		dao = handle.attach(BingFetchJobDaoImpl.class);

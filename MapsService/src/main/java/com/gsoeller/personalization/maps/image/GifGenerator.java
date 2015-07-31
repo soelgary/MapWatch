@@ -62,8 +62,7 @@ public class GifGenerator {
 		private ImageDao imageDao = new ImageDao();
 		
 		public GifGeneratorBuilder() throws IOException {
-			PropertiesLoader propLoader = new PropertiesLoader();
-			gifDirectory = propLoader.getProperty("gifdirectory");
+			gifDirectory = PropertiesLoader.getProperty("gifdirectory");
 			gifName = UUID.randomUUID().toString() + "gif";
 		}
 		

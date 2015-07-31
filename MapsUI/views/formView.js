@@ -1,85 +1,50 @@
 define([
     "text!templates/form.html",
-    "text!templates/nextButton.html"
-  ], function(template, NextButton){
+    "text!templates/nextButton.html",
+    "util/queryParameters.js"
+  ], function(template, NextButton, QueryParameters){
     return Backbone.View.extend({
       template: Handlebars.compile(template),
       nextButton: Handlebars.compile(NextButton),
+      el: '#left-col',
 
       initialize: function(options) {
         this.update = options.model;
-        this.visibleDifference = false;
         this.borderDifference = false;
-        this.notes = "";
+        this.checkedAnswer = false;
         this.parent = options.parent;
+        this.buttonText = options.buttonText;
         this.render();
       },
 
       events: {
-        "click #q1-checkbox": "q1Clicked",
-        "click #q2-checkbox": "q2Clicked",
-        "click #q3-checkbox": "q3Clicked",
+        'click input[name=borderDifference]:checked': 'onRadioClick',
         "click #submit-button": "submit"
       },
 
+      onRadioClick: function() {
+        this.checkedAnswer = true;
+        this.borderDifference = $('input[name=borderDifference]:checked').val();
+      },
+
       submit: function() {
-        console.log('submitting');
-        var appearDifferent = $('#q1-checkbox').is(':checked');
-        var borderChange = $('#q2-checkbox').is(':checked');
-        var comments = $('#comment').val();
-        var notes = "Appear different - " + appearDifferent + " | Border Change - " + borderChange + " | " + comments;
-        this.update.set('notes', notes);
-        if(borderChange) {
-          this.update.set('needsInvestigation', true);
-        }
-        this.update.save();
-        this.undelegateEvents();
-        this.parent.next();
-
-        //this.renderNextButton()
-      },
-
-      q1Clicked: function() {
-        console.log('q1');
-        console.log($('#q1-checkbox').is(':checked'));
-        console.log(this.update);
-        if($('#q1-checkbox').is(':checked')) {
-          $('#q2-checkbox').attr("disabled", false);
-          $('#q3-checkbox').attr("disabled", false);
-        } else {
-          $('#q2-checkbox').attr("disabled", true);
-          $('#q3-checkbox').attr("disabled", true);
-        }
-      },
-
-      q2Clicked: function() {
-        console.log('q2');
-        console.log($('#q2-checkbox').is(':checked'));
-        console.log(this.update);
-        if($('#q2-checkbox').is(':checked')) {
-          this.borderDifference = true;
-        } else {
-          this.borderDifference = false;
-        }
-      },
-
-      q3Clicked: function() {
-        console.log('q3');
-        console.log($('#q3-checkbox').is(':checked'));
-        console.log(this.update);
-        if($('#q3-checkbox').is(':checked')) {
-          
-        } else {
-          
+        var queryParameters = new QueryParameters();
+        if(this.checkedAnswer 
+          && queryParameters.getAssignmentId()
+          && queryParameters.getAssignmentId() != 'ASSIGNMENT_ID_NOT_AVAILABLE') {
+          this.update.set('hasBorderChange', this.borderDifference);
+          this.update.save();
+          this.undelegateEvents();
+          this.parent.next();
         }
       },
       
       render: function() {
-        this.$el.append(this.template());
+        this.$el.html(this.template({buttonText: this.buttonText}));
       },
 
       renderNextButton: function() {
-        this.$el.append(this.nextButton());
+        this.$el.html(this.nextButton());
       }
     });
 });

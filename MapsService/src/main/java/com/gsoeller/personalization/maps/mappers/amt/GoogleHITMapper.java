@@ -3,8 +3,10 @@ package com.gsoeller.personalization.maps.mappers.amt;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
@@ -32,14 +34,26 @@ public class GoogleHITMapper implements ResultSetMapper<GoogleHIT> {
 		Optional<GoogleControlUpdate> control = getControl(r.getInt("control"));
 		List<GoogleHITUpdate> updates = getUpdates(id);
 		boolean approved = r.getBoolean("approved");
+		boolean readyForApproval = r.getBoolean("readyForApproval");
 		GoogleHIT.GoogleHITBuilder builder = new GoogleHIT.GoogleHITBuilder();
+		String hitId = r.getString("hitId");
+		boolean controlResponse = r.getBoolean("controlResponse");
+		boolean finished = r.getBoolean("finished");
+		Optional<Timestamp> created = Optional.fromNullable(r.getTimestamp("created"));
 		if(control.isPresent()) {
 			builder.setControl(control.get());
+		}
+		if(created.isPresent()) {
+			builder.setCreated(new DateTime(created.get()));
 		}
 		return builder.setId(id)
 			.setTurkId(r.getInt("turkId"))
 			.setId(updates)
 			.setApproved(approved)
+			.setReadyForApproval(readyForApproval)
+			.setHitId(hitId)
+			.setControlResponse(controlResponse)
+			.setFinished(finished)
 			.build();
 	}
 	

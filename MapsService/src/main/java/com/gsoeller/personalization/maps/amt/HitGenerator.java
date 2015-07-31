@@ -1,27 +1,10 @@
 package com.gsoeller.personalization.maps.amt;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.axis.description.ParameterDesc;
-
-import com.amazonaws.mturk.addon.HITDataBuffer;
-import com.amazonaws.mturk.addon.HITDataCSVReader;
-import com.amazonaws.mturk.addon.HITDataCSVWriter;
-import com.amazonaws.mturk.addon.HITDataInput;
-import com.amazonaws.mturk.addon.HITDataOutput;
-import com.amazonaws.mturk.addon.HITDataReader;
-import com.amazonaws.mturk.addon.HITProperties;
-import com.amazonaws.mturk.addon.HITQuestion;
-import com.amazonaws.mturk.requester.HIT;
-import com.amazonaws.mturk.requester.QualificationRequirement;
-import com.amazonaws.mturk.service.axis.RequesterService;
-import com.amazonaws.mturk.util.PropertiesClientConfig;
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.data.GoogleMap;
 import com.gsoeller.personalization.maps.data.MapChange;
 import com.gsoeller.personalization.maps.data.MapProvider;
@@ -48,46 +31,9 @@ public class HitGenerator {
 		updateManager = new GoogleHITUpdateManager();
 	}
 
-	public static void main(String[] args) throws Exception {
-		HitGenerator gen = new HitGenerator();
-		gen.sendHITToTurk(0);
-	}
 	
-	public void sendHITToTurk(int hitId) throws Exception {
-		System.out.println("Creating test HIT");
-
-		PropertiesLoader prop = new PropertiesLoader();
-		System.out.println(prop.getProperty("mturkproperties"));
-		PropertiesClientConfig p = new PropertiesClientConfig(
-				prop.getProperty("mturkproperties"));
-		RequesterService service = new RequesterService(p);
-
-		HITQuestion question = new HITQuestion();
-		question.setQuestion(generateQuestionXML());
-		HITProperties props = new HITProperties(
-				prop.getProperty("mturkexternalproperties"));
-		HITDataInput input = new HITDataCSVReader(
-				prop.getProperty("mturkinput"));
-	
-
-		System.out.println("--[Loading HITs]----------");
-		Date startTime = new Date();
-		System.out.println("  Start time: " + startTime);
-
-		HITDataOutput success = new HITDataCSVWriter(
-				prop.getProperty("mturkinput") + ".success");
-		HITDataOutput failure = new HITDataCSVWriter(
-				prop.getProperty("mturkinput") + ".failure");
-
-		HIT[] hits = service
-				.createHITs(input, props, question, success, failure);
-		System.out.println("--[End Loading HITs]----------");
-		Date endTime = new Date();
-		System.out.println("  End time: " + endTime);
-		System.out.println("--[Done Loading HITs]----------");
-		System.out.println("  Total load time: "
-				+ (endTime.getTime() - startTime.getTime()) / 1000
-				+ " seconds.");
+	public List<GoogleHIT> approveHITS(int count) {
+		return null;
 	}
 
 	public void addUpdate(MapProvider mapProvider, MapChange change)
@@ -141,13 +87,5 @@ public class HitGenerator {
 		}
 		throw new Exception(String.format(
 				"Error occurred creating HIT with id %s", id));
-	}
-	
-	private static String generateQuestionXML() {
-		return "<?xml version=\"1.0\"?>"
-				+ "<ExternalQuestion xmlns=\"http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2006-07-14/ExternalQuestion.xsd\">"
-				+ "<ExternalURL>https://achtung.ccs.neu.edu/~soelgary/index.html?derp=${helper.urlencode($hitId)}</ExternalURL>"
-				+ "<FrameHeight>400</FrameHeight>"
-				+ "</ExternalQuestion>";
 	}
 }

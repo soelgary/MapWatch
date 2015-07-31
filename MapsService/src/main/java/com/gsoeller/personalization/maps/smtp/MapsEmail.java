@@ -97,11 +97,10 @@ public class MapsEmail {
 		private String message;
 
 		public MapsEmailBuilder() throws IOException {
-			PropertiesLoader loader = new PropertiesLoader();
-			username = loader.getProperty("username");
-			password = loader.getProperty("password");
-			hostname = loader.getProperty("server");
-			from = loader.getProperty("from");
+			username = PropertiesLoader.getProperty("username");
+			password = PropertiesLoader.getProperty("password");
+			hostname = PropertiesLoader.getProperty("server");
+			from = PropertiesLoader.getProperty("from");
 		}
 
 		public MapsEmailBuilder setFrom(String from) {

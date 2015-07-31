@@ -1,17 +1,24 @@
-define([],
-  function(){
+define([
+    "util/queryParameters.js"
+  ], function(QueryParameters){
     var Update = Backbone.Model.extend({
-      url: 'http://api.test.gsoeller.com/maps/google/updates',
+      url: function() {
+        return 'https://achtung.ccs.neu.edu/maps/maps/google/hits/mturk/' + this.getHITId() + '/update/' + this.id;
+      },
+
+      getHITId: function() {
+        var queryParams = new QueryParameters();
+        return queryParams.getHITId();
+      },
+
       defaults: {
         oldMap: null,
         newMap: null,
         id: null,
         notes: null,
-        stage: null,
-        needsInvestigation: null,
-        lastUpdated: null,
-        inProgress: null,
-        mapProvider: null
+        hasBorderChange: null,
+        finished: null,
+        hitId: null
       },
     });
   return Update;
