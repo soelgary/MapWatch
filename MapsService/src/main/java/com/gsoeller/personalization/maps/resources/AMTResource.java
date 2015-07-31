@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import org.joda.time.DateTime;
 
 import com.google.common.base.Optional;
+import com.gsoeller.personalization.maps.data.GoogleHITResult;
 import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 import com.gsoeller.personalization.maps.managers.GoogleAMTManager;
@@ -84,6 +85,12 @@ public class AMTResource {
 		System.out.println(createdAfter);
 		System.out.println(new DateTime(createdAfter));
 		return new GoogleHITResponse(manager.getHITS(offset, count, readyForApproval, approved, new DateTime(createdAfter)));
+	}
+	
+	@GET
+	@Path("/analyze")
+	public List<GoogleHITResult> analyze(@QueryParam("createdAfter") long createdAfter) {
+		return manager.analyzeHITS(new DateTime(createdAfter));
 	}
 	
 	@POST
