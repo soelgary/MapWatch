@@ -147,18 +147,17 @@ public class GoogleAMTManager {
 	public Optional<String> sendHITsToTurk() throws Exception {
 		System.out.println("Creating test HIT");
 
-		PropertiesLoader prop = new PropertiesLoader();
-		System.out.println(prop.getProperty("mturkproperties"));
+		System.out.println(PropertiesLoader.getProperty("mturkproperties"));
 		PropertiesClientConfig p = new PropertiesClientConfig(
-				prop.getProperty("mturkproperties"));
+				PropertiesLoader.getProperty("mturkproperties"));
 		RequesterService service = new RequesterService(p);
 
 		HITQuestion question = new HITQuestion();
 		question.setQuestion(generateQuestionXML());
 		HITProperties props = new HITProperties(
-				prop.getProperty("mturkexternalproperties"));
+				PropertiesLoader.getProperty("mturkexternalproperties"));
 		HITDataInput input = new HITDataCSVReader(
-				prop.getProperty("mturkinput"));
+				PropertiesLoader.getProperty("mturkinput"));
 	
 
 		System.out.println("--[Loading HITs]----------");
@@ -166,9 +165,9 @@ public class GoogleAMTManager {
 		System.out.println("  Start time: " + startTime);
 
 		HITDataOutput success = new HITDataCSVWriter(
-				prop.getProperty("mturkinput") + ".success");
+				PropertiesLoader.getProperty("mturkinput") + ".success");
 		HITDataOutput failure = new HITDataCSVWriter(
-				prop.getProperty("mturkinput") + ".failure");
+				PropertiesLoader.getProperty("mturkinput") + ".failure");
 
 		HIT[] hits = service
 				.createHITs(input, props, question, success, failure);

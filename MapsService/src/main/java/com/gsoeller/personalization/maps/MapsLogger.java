@@ -13,8 +13,7 @@ public class MapsLogger {
 	public static Logger createLogger(String className) {
 		Logger logger = Logger.getLogger(className);
 		try {
-			PropertiesLoader loader = new PropertiesLoader();
-			LogManager.getLogManager().readConfiguration(new FileInputStream(loader.getProperty("logproperties")));
+			LogManager.getLogManager().readConfiguration(new FileInputStream(PropertiesLoader.getProperty("logproperties")));
 			//FileHandler fileHandler = new FileHandler(loader.getProperty("logpath") + "logs1.log");
 			//fileHandler.setLevel(Level.ALL);
 			logger.setLevel(Level.ALL);

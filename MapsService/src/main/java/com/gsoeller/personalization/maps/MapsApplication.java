@@ -99,8 +99,7 @@ public class MapsApplication extends Application<MapsConfiguration> {
 			HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("Maps Personalization", options);
 		} else if(cmd.hasOption("s")) {
-			PropertiesLoader propLoader = new PropertiesLoader(configFile);
-			new MapsApplication().run(new String[] {"server", propLoader.getProperty("config")});
+			new MapsApplication().run(new String[] {"server", PropertiesLoader.getProperty("config")});
 		} else if(cmd.hasOption("create")) {
 			String mapNumber = (String) cmd.getOptionValue("create");
 			String map = (String) cmd.getOptionValue("mp");

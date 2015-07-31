@@ -36,8 +36,7 @@ public class StaticMapFetcher {
 	
 	public StaticMapFetcher() {
 		try {
-			PropertiesLoader propLoader = new PropertiesLoader();
-			outputDir = propLoader.getProperty("imgdirectory");
+			outputDir = PropertiesLoader.getProperty("imgdirectory");
 		} catch (IOException e) {
 			e.printStackTrace();
 			outputDir = "/net/data/google-maps/img/";
