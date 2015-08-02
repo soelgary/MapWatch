@@ -38,7 +38,10 @@ public class GoogleHITUpdateManager {
 	public Optional<GoogleHITUpdate> getUpdate(int id) {
 		List<GoogleHITUpdate> updates =  updateDao.getHITUpdate(id);
 		if(updates.size() == 1) {
-			return Optional.of(updates.get(0));
+			GoogleHITUpdate update = updates.get(0);
+			update.setNewMap(getMap(update.getNewMap().getId()).get());
+			update.setOldMap(getMap(update.getOldMap().getId()).get());
+			return Optional.fromNullable(update);
 		}
 		return Optional.absent();
 	}

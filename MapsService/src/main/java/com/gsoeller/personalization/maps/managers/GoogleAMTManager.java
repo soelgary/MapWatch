@@ -9,6 +9,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import jersey.repackaged.com.google.common.collect.Lists;
+
 import org.joda.time.DateTime;
 
 import com.amazonaws.mturk.addon.HITDataCSVReader;
@@ -98,32 +100,27 @@ public class GoogleAMTManager {
 	public Optional<GoogleHIT> getHITFromMTurkHitId(String id) {
 		List<GoogleHIT> hits = dao.getHITFromMTurkHitId(id);
 		if(hits.size() == 1) {
-			return Optional.fromNullable(hits.get(0));
+			return Optional.fromNullable(getHIT(hits.get(0)));
 		}
 		return Optional.absent();
 	}
 	
 	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved, DateTime createdAfter) {
 		List<GoogleHIT> hits = dao.getHITS(offset, count, readyForApproval, approved, createdAfter.toString());
+		List<GoogleHIT> acc = Lists.newArrayList();
 		for(GoogleHIT hit: hits) {
-			GoogleControlUpdate control = getControl(hit.getControl().getId()).get();
-			control.setNewMap(getMap(control.getNewMap().getId()).get());
-			control.setOldMap(getMap(control.getOldMap().getId()).get());
-			List<GoogleHITUpdate> updates = updateDao.getHITUpdates(hit.getId());
-			for(GoogleHITUpdate update: updates) {
-				update.setNewMap(getMap(update.getNewMap().getId()).get());
-				update.setOldMap(getMap(update.getOldMap().getId()).get());
-			}
-			hit.setControl(control);
-			hit.setUpdates(updates);
+			acc.add(getHIT(hit));
 		}
-		return hits;
+		return acc;
 	}
 	
 	public Optional<GoogleHITUpdate> getUpdate(String hitId, int updateId) {
 		List<GoogleHITUpdate> updates = updateDao.getUpdate(hitId, updateId);
 		if(updates.size() == 1) {
-			return Optional.fromNullable(updates.get(0));
+			GoogleHITUpdate update = updates.get(0);
+			update.setNewMap(getMap(update.getNewMap().getId()).get());
+			update.setOldMap(getMap(update.getOldMap().getId()).get());
+			return Optional.fromNullable(update);
 		}
 		return Optional.absent();
 	}
@@ -224,5 +221,19 @@ public class GoogleAMTManager {
 			return Optional.absent();
 		}
 		return Optional.fromNullable(map.get(0));
+	}
+	
+	private GoogleHIT getHIT(GoogleHIT hit) {
+		GoogleControlUpdate control = getControl(hit.getControl().getId()).get();
+		control.setNewMap(getMap(control.getNewMap().getId()).get());
+		control.setOldMap(getMap(control.getOldMap().getId()).get());
+		List<GoogleHITUpdate> updates = updateDao.getHITUpdates(hit.getId());
+		for(GoogleHITUpdate update: updates) {
+			update.setNewMap(getMap(update.getNewMap().getId()).get());
+			update.setOldMap(getMap(update.getOldMap().getId()).get());
+		}
+		hit.setControl(control);
+		hit.setUpdates(updates);
+		return hit;
 	}
 }
