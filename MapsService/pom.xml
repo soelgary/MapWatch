@@ -12,7 +12,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<dropwizard.version>0.7.1</dropwizard.version>
+		<dropwizard.version>0.8.2</dropwizard.version>
 		<metrics.version>3.1.0</metrics.version>
 		<project.libs>/Users/garysoeller/dev/src/MapsPersonalization/MapsService/lib</project.libs>
 	</properties>
@@ -387,7 +387,7 @@
 			<artifactId>xml-apis</artifactId>
 			<version>2.9.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk</artifactId>
@@ -399,24 +399,29 @@
 			<artifactId>mturk</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>wsdl</artifactId>
 			<version>1.0</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>contrib</artifactId>
 			<version>3.1</version>
 		</dependency>
-	
+
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>4.0</version>
+		</dependency>
 	</dependencies>
 </project>

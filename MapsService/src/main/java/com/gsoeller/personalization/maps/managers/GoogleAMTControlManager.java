@@ -9,10 +9,10 @@ import com.gsoeller.personalization.maps.data.amt.GoogleControlUpdate;
 
 public class GoogleAMTControlManager {
 	
-	public GoogleAMTControlDao dao;
+	private GoogleAMTControlDao dao;
 	
-	public GoogleAMTControlManager() throws IOException {
-		this.dao = new GoogleAMTControlDao();
+	public GoogleAMTControlManager(final GoogleAMTControlDao controlDao) throws IOException {
+		this.dao = controlDao;
 	}
 	
 	public List<GoogleControlUpdate> getControls(int offset, int count) {
@@ -20,7 +20,11 @@ public class GoogleAMTControlManager {
 	}
 	
 	public Optional<GoogleControlUpdate> getControl(int id) {
-		return dao.getControl(id);
+		List<GoogleControlUpdate> controls = dao.getControl(id);
+		if(controls.size() == 1) {
+			return Optional.fromNullable(controls.get(0));
+		}
+		return Optional.absent();
 	}
 	
 	public int createControl(GoogleControlUpdate update) {

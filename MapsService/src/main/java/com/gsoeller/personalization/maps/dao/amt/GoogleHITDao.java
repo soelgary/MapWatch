@@ -19,6 +19,7 @@ import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
 import com.gsoeller.personalization.maps.mappers.amt.GoogleHITMapper;
 
+/*
 public class GoogleHITDao {
 
 	private DBI dbi;
@@ -125,4 +126,48 @@ public class GoogleHITDao {
 		public int updateControlResponse(@Bind("hitId") String hitId, @Bind("response") boolean response);
 	}
 	
+}
+*/
+
+public interface GoogleHITDao {
+	@SqlQuery("Select * from GoogleHIT where id = :id")
+	@Mapper(GoogleHITMapper.class)
+	public List<GoogleHIT> getHIT(@Bind("id") int id);
+	
+	@SqlQuery("Select * from GoogleHIT where approved = :approved && readyForApproval = :readyForApproval && created >= :createdAfter LIMIT :offset, :count")
+	@Mapper(GoogleHITMapper.class)
+	public List<GoogleHIT> getHITS(@Bind("offset") int offset, 
+			@Bind("count") int count, 
+			@Bind("readyForApproval") boolean readyForApproval, 
+			@Bind("approved") boolean approved,
+			@Bind("createdAfter") String createdAfter);
+	
+	@SqlQuery("Select * from GoogleHIT where hitId = :hitId")
+	@Mapper(GoogleHITMapper.class)
+	public List<GoogleHIT> getHITFromMTurkHitId(@Bind("hitId") String hitId);
+	
+	@SqlUpdate("Insert into GoogleHIT (turkId, control, approved, readyForApproval) values (:turkId, :control, :approved, :readyForApproval)")
+	@GetGeneratedKeys
+	public int createHIT(@Bind("turkId") int turkId, 
+			@Bind("control") int control, 
+			@Bind("approved") boolean approved,
+			@Bind("readyForApproval") boolean readyForApproval);
+	
+	@SqlQuery("Select * from GoogleHIT where readyForApproval = false LIMIT :offset, :count")
+	@Mapper(GoogleHITMapper.class)
+	public List<GoogleHIT> getNextAvailableHITs(@Bind("offset") int offset, @Bind("count") int count);
+	
+	@SqlUpdate("Update GoogleHIT SET readyForApproval=true where id = :id")
+	public int markForApproval(@Bind("id") int id);
+	
+	@SqlUpdate("Update GoogleHIT SET approved=true where id = :hitId")
+	public int approve(@Bind("hitId") int hitId);
+	
+	@SqlUpdate("Update GoogleHIT SET hitId=:hitId where id = :id")
+	public int setMTurkHitId(@Bind("hitId") String hitId, @Bind("id") int id);
+	
+	@SqlUpdate("Update GoogleHIT SET controlResponse=:response, finished=true where hitId = :hitId")
+	public int updateControlResponse(@Bind("hitId") String hitId, @Bind("response") boolean response);
+	
+	public void close();
 }

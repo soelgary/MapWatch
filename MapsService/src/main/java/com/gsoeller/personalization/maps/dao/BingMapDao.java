@@ -20,7 +20,7 @@ import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.data.BingMap;
 import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.mappers.BingMapWrapper;
-
+/*
 public class BingMapDao implements MapDao {
 	private DBI dbi;
 	private Handle handle;
@@ -109,4 +109,29 @@ public class BingMapDao implements MapDao {
 		@SqlQuery("Select id from BingMap where hash = :hash")
 		public List<String> countHashes(@Bind("hash") String hash);
 	}
+}
+*/
+
+public interface BingMapDao {
+	
+	@SqlQuery("Select bingMapRequest from BingMap where FetchJob = :fetchJob order by dateTime desc limit 1")
+	public List<Integer> getLastMap(@Bind("fetchJob") int fetchJob);
+	
+	@SqlUpdate("Insert into BingMap (hasChanged, bingMapRequest, path, hash, FetchJob) values (:hasChanged, :mapRequest, :path, :hash, :fetchJob)")
+	@GetGeneratedKeys
+	public int saveMap(@Bind("hasChanged") boolean hasChanged, @Bind("mapRequest") int mapRequest, @Bind("path") String path, @Bind("hash") String hash, @Bind("fetchJob") int fetchJob);
+	
+	@SqlQuery("Select path from BingMap where hash = :hash limit 1")
+	public List<String> getPathWithHash(@Bind("hash") String hash);
+
+	@SqlQuery("Select * from BingMap cross join BingMapRequest on bingMapRequest = BingMapRequest.id where BingMap.bingMapRequest = :mapRequest order by dateTime DESC limit 1;")
+	@Mapper(BingMapWrapper.class)
+	public List<BingMap> getMapMostRecentWithMapRequestId(@Bind("mapRequest") int mapRequest);
+	
+	@SqlQuery("select * from Map where mapRequest = :mapRequest && FetchJob = :fetchJob;")
+	@Mapper(BingMapWrapper.class)
+	public List<BingMap> getMapFromFetchJobByMapRequest(@Bind("fetchJob") int fetchJob, @Bind("mapRequest") int mapRequest);
+	
+	@SqlQuery("Select id from BingMap where hash = :hash")
+	public List<String> countHashes(@Bind("hash") String hash);
 }

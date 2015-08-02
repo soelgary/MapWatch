@@ -3,16 +3,23 @@ package com.gsoeller.personalization.maps.managers;
 import java.io.IOException;
 import java.util.List;
 
+import jersey.repackaged.com.google.common.collect.Lists;
+
 import com.google.common.base.Optional;
+import com.gsoeller.personalization.maps.dao.GoogleMapDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
+import com.gsoeller.personalization.maps.data.GoogleMap;
+import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 
 public class GoogleHITUpdateManager {
 	
 	private GoogleHITUpdateDao updateDao;
+	private GoogleMapDao googleMapDao;
 	
-	public GoogleHITUpdateManager() throws IOException {
-		updateDao = new GoogleHITUpdateDao();
+	public GoogleHITUpdateManager(final GoogleHITUpdateDao updateDao, final GoogleMapDao googleMapDao) throws IOException {
+		this.updateDao = updateDao;
+		this.googleMapDao = googleMapDao;
 	}
 	
 	public int createUpdate(GoogleHITUpdate update) {
@@ -24,10 +31,38 @@ public class GoogleHITUpdateManager {
 	}
 	
 	public List<GoogleHITUpdate> getUpdates(int count, int offset, boolean finished) {
-		return updateDao.getUpdates(count, offset, finished);
+		List<GoogleHITUpdate> updates = updateDao.getHITUpdates(finished, count, offset);
+		return setMaps(updates);
 	}
 	
 	public Optional<GoogleHITUpdate> getUpdate(int id) {
-		return updateDao.getUpdate(id);
+		List<GoogleHITUpdate> updates =  updateDao.getHITUpdate(id);
+		if(updates.size() == 1) {
+			return Optional.of(updates.get(0));
+		}
+		return Optional.absent();
+	}
+	
+	private List<GoogleHITUpdate> setMaps(List<GoogleHITUpdate> updates) {
+		List<GoogleHITUpdate> completeUpdates = Lists.newArrayList();
+		for(GoogleHITUpdate update: updates) {
+			completeUpdates.add(setMap(update));
+		}
+		return completeUpdates;
+	}
+	
+	private GoogleHITUpdate setMap(GoogleHITUpdate update) {
+		update.setOldMap(getMap(update.getOldMap().getId()).get());
+		update.setNewMap(getMap(update.getNewMap().getId()).get());
+		return update;
+	}
+	
+	
+	private Optional<GoogleMap> getMap(int id) {
+		List<GoogleMap> map = googleMapDao.getMap(id);
+		if(map.isEmpty()) {
+			return Optional.absent();
+		}
+		return Optional.fromNullable(map.get(0));
 	}
 }

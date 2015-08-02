@@ -19,20 +19,25 @@ import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 
 public class GoogleHITMapper implements ResultSetMapper<GoogleHIT> {
 
-	
-	private GoogleHITUpdateDao updateDao;
-	private GoogleAMTControlDao controlDao;
-	
-	public GoogleHITMapper() throws IOException {
-		updateDao = new GoogleHITUpdateDao();
-		controlDao = new GoogleAMTControlDao();
-	}
-	
 	public GoogleHIT map(int index, ResultSet r, StatementContext ctx)
 			throws SQLException {
+		//GoogleHITUpdateDao updateDao;
+		//GoogleAMTControlDao controlDao;
+		//try {
+			//updateDao = new GoogleHITUpdateDao();
+			//controlDao = new GoogleAMTControlDao();
+		//} catch (IOException e) {
+			// TODO Auto-generated catch block
+		//	e.printStackTrace();
+		//	throw new SQLException("Cannot create DAO");
+		//}
+		
 		int id = r.getInt("id");
-		Optional<GoogleControlUpdate> control = getControl(r.getInt("control"));
-		List<GoogleHITUpdate> updates = getUpdates(id);
+		//Optional<GoogleControlUpdate> control = controlDao.getControl(r.getInt("control"));
+		//List<GoogleHITUpdate> updates = updateDao.getUpdates(id);
+		
+		GoogleControlUpdate control = new GoogleControlUpdate.GoogleControlUpdateBuilder().setId(r.getInt("control")).build();
+		
 		boolean approved = r.getBoolean("approved");
 		boolean readyForApproval = r.getBoolean("readyForApproval");
 		GoogleHIT.GoogleHITBuilder builder = new GoogleHIT.GoogleHITBuilder();
@@ -40,29 +45,23 @@ public class GoogleHITMapper implements ResultSetMapper<GoogleHIT> {
 		boolean controlResponse = r.getBoolean("controlResponse");
 		boolean finished = r.getBoolean("finished");
 		Optional<Timestamp> created = Optional.fromNullable(r.getTimestamp("created"));
-		if(control.isPresent()) {
-			builder.setControl(control.get());
-		}
+		//if(control.isPresent()) {
+			//builder.setControl(control.get());
+		//}
 		if(created.isPresent()) {
 			builder.setCreated(new DateTime(created.get()));
 		}
+		//updateDao.close();
+		//controlDao.close();
 		return builder.setId(id)
 			.setTurkId(r.getInt("turkId"))
-			.setId(updates)
+			//.setId(updates)
 			.setApproved(approved)
 			.setReadyForApproval(readyForApproval)
 			.setHitId(hitId)
 			.setControlResponse(controlResponse)
 			.setFinished(finished)
+			.setControl(control)
 			.build();
 	}
-	
-	private Optional<GoogleControlUpdate> getControl(int controlId) {
-		return controlDao.getControl(controlId);
-	}
-	
-	private List<GoogleHITUpdate> getUpdates(int hitId) {
-		return updateDao.getUpdates(hitId);
-	}
-
 }

@@ -2,6 +2,7 @@ package com.gsoeller.personalization.maps.resources;
 
 import java.util.List;
 
+import javax.inject.Singleton;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -15,13 +16,13 @@ import javax.ws.rs.core.MediaType;
 import org.joda.time.DateTime;
 
 import com.google.common.base.Optional;
-import com.gsoeller.personalization.maps.data.GoogleHITResult;
 import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 import com.gsoeller.personalization.maps.managers.GoogleAMTManager;
 
 @Path("/maps/{mapProvider}/hits")
 @Produces(MediaType.APPLICATION_JSON)
+@Singleton
 public class AMTResource {
 	
 	private GoogleAMTManager manager;
@@ -32,8 +33,8 @@ public class AMTResource {
 	private final String APPROVED = "false";
 	private final String DEFAULT_CREATED_AFTER = "0";
 	
-	public AMTResource() throws Exception {
-		this.manager = new GoogleAMTManager();
+	public AMTResource(final GoogleAMTManager manager) throws Exception {
+		this.manager = manager;
 	}
 	
 	@GET
@@ -85,12 +86,6 @@ public class AMTResource {
 		System.out.println(createdAfter);
 		System.out.println(new DateTime(createdAfter));
 		return new GoogleHITResponse(manager.getHITS(offset, count, readyForApproval, approved, new DateTime(createdAfter)));
-	}
-	
-	@GET
-	@Path("/analyze")
-	public List<GoogleHITResult> analyze(@QueryParam("createdAfter") long createdAfter) {
-		return manager.analyzeHITS(new DateTime(createdAfter));
 	}
 	
 	@POST

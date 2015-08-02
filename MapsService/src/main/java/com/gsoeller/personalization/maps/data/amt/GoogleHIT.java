@@ -148,7 +148,7 @@ public class GoogleHIT {
 			return this;
 		}
 		
-		public GoogleHITBuilder setId(List<GoogleHITUpdate> updates) {
+		public GoogleHITBuilder setUpdates(List<GoogleHITUpdate> updates) {
 			this.updates = updates;
 			return this;
 		}

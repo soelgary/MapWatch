@@ -4,14 +4,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import io.dropwizard.jdbi.OptionalContainerFactory;
-
 import org.apache.commons.io.IOUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.skife.jdbi.v2.DBI;
-import org.skife.jdbi.v2.Handle;
 
 import com.google.common.base.Splitter;
 import com.gsoeller.personalization.maps.MapsLogger;
@@ -46,18 +42,16 @@ public class RequestJob implements Job {
 	//		new Box(66, 94, -60 ,-3));
 	//private final String[] CC_TLD = {"en", "in"};
 	
-	private DBI dbi;
-	private Handle handle;
-	
 	private String bingTilesLocation;
 
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.FetchJob");
 
-	public RequestJob() throws IOException {
-		dbi = new DBI(PropertiesLoader.getProperty("db"), PropertiesLoader.getProperty("dbuser"), PropertiesLoader.getProperty("dbpwd"));
-		dbi.registerContainerFactory(new OptionalContainerFactory());
-		handle = dbi.open();
-		//mapRequestDao = handle.attach(GoogleMapRequestDao.class);
+	private GoogleMapRequestDao googleMapRequestDao;
+	private BingMapRequestDao bingMapRequestDao;
+	
+	public RequestJob(final GoogleMapRequestDao googleMapRequestDao, final BingMapRequestDao bingMapRequestDao) throws IOException {
+		this.googleMapRequestDao = googleMapRequestDao;
+		this.bingMapRequestDao = bingMapRequestDao;
 		bingTilesLocation = PropertiesLoader.getProperty("bingtiles");
 	}
 	
@@ -77,7 +71,6 @@ public class RequestJob implements Job {
 	}
 	
 	public void setForBing(int mapNumber) {
-		BingMapRequestDao mapRequestDao = handle.attach(BingMapRequestDao.class);
 		try {
 	    	FileInputStream inputStream = new FileInputStream(bingTilesLocation);
 	        String everything = IOUtils.toString(inputStream);
@@ -89,7 +82,7 @@ public class RequestJob implements Job {
 	        			.setRegion(Region.findRegion(cc))
 	        			.setTileNumber(new BingQuadKey(tileNumber))
 	        			.build();
-	        		mapRequestDao.addMapRequest(mapRequest);
+	        		bingMapRequestDao.addMapRequest(mapRequest.getMapNumber(), mapRequest.getRegion().toString(), mapRequest.getTileNumber().getKey());
 	        	}
 	        }
 	        inputStream.close();
@@ -99,7 +92,6 @@ public class RequestJob implements Job {
 	}
 	
 	public void setForGoogle(int mapNumber) {
-		GoogleMapRequestDao mapRequestDao = handle.attach(GoogleMapRequestDao.class);
 		for(int lat = startLat; lat < maxLat; lat+=latMultiple) {
 			for(int lon = startLon; lon < maxLon; lon+= lonMultiple) {
 				//int location = locationDao.addLocation(lat, lon, mapNumber);
@@ -116,7 +108,14 @@ public class RequestJob implements Job {
 							.setYDimension(600)
 							.setRegion(Region.findRegion(cc))
 							.build();
-						mapRequestDao.addMapRequest(mapRequest);
+						googleMapRequestDao.addMapRequest(mapRequest.getMapNumber(),
+								mapRequest.getLatitude(), 
+								mapRequest.getLongitude(), 
+								mapRequest.getZoom(), 
+								mapRequest.getXDimension(), 
+								mapRequest.getYDimension(), 
+								mapRequest.getRegion().toString(), 
+								mapRequest.getLanguage().toString());
 					}
 				}
 			}

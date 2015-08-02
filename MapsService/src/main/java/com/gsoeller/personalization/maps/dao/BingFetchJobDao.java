@@ -15,7 +15,7 @@ import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 
-
+/*
 public class BingFetchJobDao implements FetchJobDao {
 	private DBI dbi;
 	private Handle handle;
@@ -67,4 +67,22 @@ public class BingFetchJobDao implements FetchJobDao {
 		public int finishFetchJob(@Bind("id") int id);
 		
 	}
+}
+*/
+
+public interface BingFetchJobDao {
+
+	@SqlUpdate("Insert into BingFetchJob (MapNumber) values (:mapNumber)")
+	@GetGeneratedKeys
+	public int createFetchJob(@Bind("mapNumber") int mapNumber);
+
+	@SqlQuery("select finished from BingFetchJob order by startTime desc limit 1")
+	public List<Boolean> isLastJobFinished();
+	
+	@SqlQuery("select id from BingFetchJob order by startTime desc limit 1")
+	public List<Integer> getLastFetchJob();
+	
+	@SqlUpdate("Update BingFetchJob set finished = true where id = :id")
+	public int finishFetchJob(@Bind("id") int id);
+	
 }

@@ -1,10 +1,6 @@
 package com.gsoeller.personalization.maps.managers;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.Date;
 import java.util.List;
 
@@ -25,11 +21,14 @@ import com.amazonaws.mturk.requester.HIT;
 import com.amazonaws.mturk.service.axis.RequesterService;
 import com.amazonaws.mturk.util.PropertiesClientConfig;
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
 import com.gsoeller.personalization.maps.PropertiesLoader;
+import com.gsoeller.personalization.maps.dao.GoogleMapDao;
+import com.gsoeller.personalization.maps.dao.amt.GoogleAMTControlDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
-import com.gsoeller.personalization.maps.data.GoogleHITResult;
+import com.gsoeller.personalization.maps.data.GoogleMap;
+import com.gsoeller.personalization.maps.data.Map;
+import com.gsoeller.personalization.maps.data.amt.GoogleControlUpdate;
 import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 
@@ -37,28 +36,23 @@ public class GoogleAMTManager {
 	
 	private GoogleHITDao dao;
 	private GoogleHITUpdateDao updateDao;
+	private GoogleAMTControlDao controlDao;
+	private GoogleMapDao googleMapDao;
 	
 	private final int DEFAULT_OFFSET = 0;
 	private final int DEFAULT_HIT_COUNT = 10;
 	
 	private static final DateTime START_OF_TIME = new DateTime(0);
-		
-	private static final int DEFAULT_ANALYZE_COUNT = 1000;
-	private static final boolean DEFAULT_ANALYZE_READY_FOR_APPROVAL = true;
-	private static final boolean DEFAULT_ANALYZE_APPROVED = true;
 	
-	public GoogleAMTManager() throws IOException {
-		this.dao = new GoogleHITDao();
-		this.updateDao = new GoogleHITUpdateDao();
-	}
-	
-	public List<GoogleHITResult> analyzeHITS(DateTime createdAfter) {
-		List<GoogleHIT> hits = dao.getHITS(DEFAULT_OFFSET, DEFAULT_ANALYZE_COUNT, DEFAULT_ANALYZE_READY_FOR_APPROVAL, DEFAULT_ANALYZE_APPROVED, createdAfter);
-		return Lists.newArrayList();
+	public GoogleAMTManager(final GoogleHITDao dao, final GoogleHITUpdateDao updateDao, final GoogleAMTControlDao controlDao, final GoogleMapDao googleMapDao) throws IOException {
+		this.dao = dao;
+		this.updateDao = updateDao;
+		this.controlDao = controlDao;
+		this.googleMapDao = googleMapDao;
 	}
 	
 	public List<GoogleHIT> approveHITS(int count) {
-		List<GoogleHIT> hitsToApprove = dao.getHITS(0, count, true, false, START_OF_TIME);
+		List<GoogleHIT> hitsToApprove = dao.getHITS(0, count, true, false, START_OF_TIME.toString());
 		System.out.println("START OF HITS");
 		for(GoogleHIT hit: hitsToApprove) {
 			System.out.println("HIT -> " + hit.getId());
@@ -94,28 +88,50 @@ public class GoogleAMTManager {
 	}
 	
 	public Optional<GoogleHIT> getHIT(int id) {
-		return dao.getHIT(id);
+		List<GoogleHIT> hits = dao.getHIT(id);
+		if(hits.size() == 1) {
+			return Optional.fromNullable(hits.get(0));
+		}
+		return Optional.absent();
 	}
 	
 	public Optional<GoogleHIT> getHITFromMTurkHitId(String id) {
-		return dao.getHITFromMTurkHitId(id);
+		List<GoogleHIT> hits = dao.getHITFromMTurkHitId(id);
+		if(hits.size() == 1) {
+			return Optional.fromNullable(hits.get(0));
+		}
+		return Optional.absent();
 	}
 	
 	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved, DateTime createdAfter) {
-		return dao.getHITS(offset, count, readyForApproval, approved, createdAfter);
+		List<GoogleHIT> hits = dao.getHITS(offset, count, readyForApproval, approved, createdAfter.toString());
+		for(GoogleHIT hit: hits) {
+			GoogleControlUpdate control = getControl(hit.getControl().getId()).get();
+			control.setNewMap(getMap(control.getNewMap().getId()).get());
+			control.setOldMap(getMap(control.getOldMap().getId()).get());
+			List<GoogleHITUpdate> updates = updateDao.getHITUpdates(hit.getId());
+			hit.setControl(control);
+			hit.setUpdates(updates);
+		}
+		return hits;
 	}
 	
 	public Optional<GoogleHITUpdate> getUpdate(String hitId, int updateId) {
-		return updateDao.getUpdate(hitId, updateId);
+		List<GoogleHITUpdate> updates = updateDao.getUpdate(hitId, updateId);
+		if(updates.size() == 1) {
+			return Optional.fromNullable(updates.get(0));
+		}
+		return Optional.absent();
 	}
 	
 	public Optional<GoogleHITUpdate> updateGoogleHITUpdate(int updateId, GoogleHITUpdate update) {
-		return updateDao.update(updateId, update.isHasBorderChange());
+		updateDao.update(updateId, update.isHasBorderChange());
+		return getUpdate("", updateId);
 	}
 	
 	public Optional<GoogleHIT> updateGoogleHITControlResponse(String hitId, GoogleHIT hit) {
 		dao.updateControlResponse(hitId, hit.isControlResponse());
-		return dao.getHITFromMTurkHitId(hitId);
+		return getHITFromMTurkHitId(hitId);
 	}
 	
 	public List<GoogleHIT> getNextAvailableHits(int count) {
@@ -137,11 +153,6 @@ public class GoogleAMTManager {
 		if(count >= DEFAULT_HIT_COUNT) {
 			dao.markForApproval(hit.getId());
 		}
-	}
-	
-	public static void main(String[] args) throws Exception {
-		GoogleAMTManager manager = new GoogleAMTManager();
-		manager.sendHITsToTurk();
 	}
 	
 	public Optional<String> sendHITsToTurk() throws Exception {
@@ -193,5 +204,21 @@ public class GoogleAMTManager {
 				+ "<ExternalURL>https://achtung.ccs.neu.edu/~soelgary/maps/</ExternalURL>"
 				+ "<FrameHeight>800</FrameHeight>"
 				+ "</ExternalQuestion>";
+	}
+	
+	private Optional<GoogleControlUpdate> getControl(int id) {
+		List<GoogleControlUpdate> controls = controlDao.getControl(id);
+		if(controls.size() == 1) {
+			return Optional.fromNullable(controls.get(0));
+		}
+		return Optional.absent();
+	}
+	
+	private Optional<GoogleMap> getMap(int id) {
+		List<GoogleMap> map = googleMapDao.getMap(id);
+		if(map.isEmpty()) {
+			return Optional.absent();
+		}
+		return Optional.fromNullable(map.get(0));
 	}
 }

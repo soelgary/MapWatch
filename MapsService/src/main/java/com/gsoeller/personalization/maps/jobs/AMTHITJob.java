@@ -3,45 +3,32 @@ package com.gsoeller.personalization.maps.jobs;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.google.common.base.Optional;
+
 import com.gsoeller.personalization.maps.MapsLogger;
 import com.gsoeller.personalization.maps.amt.HitGenerator;
-import com.gsoeller.personalization.maps.dao.GoogleMapDao;
-import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
-import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
-import com.gsoeller.personalization.maps.data.GoogleMap;
 import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapChange;
 import com.gsoeller.personalization.maps.data.MapProvider;
+import com.gsoeller.personalization.maps.managers.AMTHITManager;
 
-public class AMTHITJob implements Job {
+public class AMTHITJob {
 
 	private MapProvider mapProvider = MapProvider.google;
-	private int fetchJob;
 	private int numMapRequests = 156060;
-	
-	private GoogleMapRequestDao googleMapRequestDao;
-	private GoogleMapDao googleMapDao;
-	private GoogleHITUpdateDao googleUpdateDao;
 	
 	private HitGenerator hitGenerator;
 	
+	private AMTHITManager manager;
+	
 	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.jobs.AMTHITJob");
 	
-	public AMTHITJob() throws IOException {
-		googleMapRequestDao = new GoogleMapRequestDao();
-		googleMapDao = new GoogleMapDao();
+	public AMTHITJob(final AMTHITManager manager) throws IOException {
 		hitGenerator = new HitGenerator();
-		googleUpdateDao = new GoogleHITUpdateDao();
-	}
-	
-	public static void main(String[] args) throws IOException, JobExecutionException {
-		AMTHITJob job = new AMTHITJob();
-		job.execute(null);
+		this.manager = manager;
 	}
 	
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -50,8 +37,8 @@ public class AMTHITJob implements Job {
 		int baselineFetchJob = fetchJob - 1;
 		for(int i = 1; i <= numMapRequests; i++) {
 			int requestId = i;
-			Optional<Map> baselineMap = googleMapDao.getMap(requestId, baselineFetchJob);
-			Optional<Map> updatedMap = googleMapDao.getMap(requestId, fetchJob);
+			Optional<Map> baselineMap = manager.getMap(requestId, baselineFetchJob);
+			Optional<Map> updatedMap = manager.getMap(requestId, fetchJob);
 			if(!baselineMap.isPresent()) {
 				System.out.println("baseline is not present");
 			}
@@ -61,7 +48,7 @@ public class AMTHITJob implements Job {
 			if(baselineMap.isPresent() && updatedMap.isPresent()) {
 				if(!baselineMap.get().getHash().equals(updatedMap.get().getHash())) {
 					// need to also check that a similar update doesnt already exist
-					int similarUpdatesCount = googleUpdateDao.countUpdatesWithHashSets(baselineMap.get().getHash(), updatedMap.get().getHash());
+					int similarUpdatesCount = manager.countUpdatesWithHashSets(baselineMap.get().getHash(), updatedMap.get().getHash());
 					if(similarUpdatesCount < 1) {
 						LOG.info(String.format("Creating a new update for map request, `%s`, and fetch job, `%s`", requestId, fetchJob));
 						// need to add to a HIT
@@ -84,5 +71,4 @@ public class AMTHITJob implements Job {
 		}
 		LOG.info("Finished amt hit job");
 	}
-
 }

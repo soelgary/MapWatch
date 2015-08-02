@@ -26,8 +26,8 @@ public class AMTControlResource {
 	
 	private GoogleAMTControlManager manager;
 	
-	public AMTControlResource() throws IOException {
-		this.manager = new GoogleAMTControlManager();
+	public AMTControlResource(final GoogleAMTControlManager controlManager) throws IOException {
+		this.manager = controlManager;
 	}
 	
 	@GET

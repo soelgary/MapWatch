@@ -12,6 +12,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import com.google.common.base.Optional;
+import com.gsoeller.personalization.maps.dao.amt.GoogleAMTControlDao;
+import com.gsoeller.personalization.maps.dao.amt.GoogleHITDao;
+import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 import com.gsoeller.personalization.maps.managers.GoogleAMTManager;
 import com.gsoeller.personalization.maps.managers.GoogleHITUpdateManager;
@@ -27,9 +30,9 @@ public class GoogleHITUpdateResource {
 	private static final String DEFAULT_OFFSET = "0";
 	private static final String DEFAULT_FINISHED = "false";
 	
-	public GoogleHITUpdateResource() throws Exception {
-		this.manager = new GoogleHITUpdateManager();
-		this.amtManager = new GoogleAMTManager();
+	public GoogleHITUpdateResource(final GoogleAMTManager amtManager, final GoogleHITUpdateManager manager) throws Exception {
+		this.manager = manager;
+		this.amtManager = amtManager;
 	}
 	
 	@GET

@@ -18,6 +18,7 @@ import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.data.amt.GoogleControlUpdate;
 import com.gsoeller.personalization.maps.mappers.amt.GoogleControlMapper;
 
+/*
 public class GoogleAMTControlDao {
 
 	private DBI dbi;
@@ -29,6 +30,12 @@ public class GoogleAMTControlDao {
 		dbi.registerContainerFactory(new OptionalContainerFactory());
 		handle = dbi.open();
 		dao = handle.attach(GoogleAMTControlDaoImpl.class);
+	}
+	
+	public void close() {
+		dao.close();
+		handle.close();
+		dbi.close(dao);
 	}
 	
 	public List<GoogleControlUpdate> getControls(int offset, int count) {
@@ -59,5 +66,23 @@ public class GoogleAMTControlDao {
 		@SqlUpdate("Insert into GoogleControlUpdate (oldMap, newMap, hasBorderDifference) values (:oldMap, :newMap, :hasBorderDifference)")
 		@GetGeneratedKeys
 		public int createControl(@Bind("oldMap") int oldMap, @Bind("newMap") int newMap, @Bind("hasBorderDifference") boolean hasBorderDifference);
+		
+		public void close();
 	}
+}
+*/
+public interface GoogleAMTControlDao {
+	@SqlQuery("Select * from GoogleControlUpdate LIMIT :offset, :count")
+	@Mapper(GoogleControlMapper.class)
+	public List<GoogleControlUpdate> getControls(@Bind("offset") int offset, @Bind("count") int count);
+	
+	@SqlQuery("Select * from GoogleControlUpdate where id = :id")
+	@Mapper(GoogleControlMapper.class)
+	public List<GoogleControlUpdate> getControl(@Bind("id") int id);
+	
+	@SqlUpdate("Insert into GoogleControlUpdate (oldMap, newMap, hasBorderDifference) values (:oldMap, :newMap, :hasBorderDifference)")
+	@GetGeneratedKeys
+	public int createControl(@Bind("oldMap") int oldMap, @Bind("newMap") int newMap, @Bind("hasBorderDifference") boolean hasBorderDifference);
+	
+	public void close();
 }
