@@ -54,7 +54,7 @@ public class GoogleAMTManager {
 	}
 	
 	public List<GoogleHIT> approveHITS(int count) {
-		List<GoogleHIT> hitsToApprove = dao.getHITS(0, count, true, false, START_OF_TIME.toString());
+		List<GoogleHIT> hitsToApprove = getHITS(0, count, true, false, START_OF_TIME);
 		System.out.println("START OF HITS");
 		for(GoogleHIT hit: hitsToApprove) {
 			System.out.println("HIT -> " + hit.getId());
