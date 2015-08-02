@@ -12,7 +12,7 @@ public class PropertiesLoader {
 		try {
 			input = new FileInputStream("/Users/garysoeller/dev/src/MapsPersonalization/MapsService/src/main/resources/maps.properties");
 		} catch (IOException e) {
-			input = new FileInputStream("/home/soelgary/dev/src/MapsPersonalization/MapsService/src/main/resources/achtung.properties");
+			input = new FileInputStream("/home/soelgary/dev/src/v2/MapsPersonalization/MapsService/src/main/resources/achtung.properties");
 		}
 		prop.load(input);
 		input.close();
