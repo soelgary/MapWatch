@@ -3,9 +3,8 @@ package com.gsoeller.personalization.maps.managers;
 import java.io.IOException;
 import java.util.List;
 
-import jersey.repackaged.com.google.common.collect.Lists;
-
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.gsoeller.personalization.maps.dao.GoogleMapDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
 import com.gsoeller.personalization.maps.data.GoogleMap;

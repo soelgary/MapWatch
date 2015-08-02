@@ -37,7 +37,7 @@ public abstract class AbstractApplication extends Application<MapsConfiguration>
 		});
 	}
 	
-	public void initializeDaos(MapsConfiguration config, Environment environment) {
+	public void initializeDaos(MapsConfiguration config, Environment environment) throws ClassNotFoundException {
 		final DBIFactory factory = new DBIFactory();
 	    final DBI jdbi = factory.build(environment, config.getDataSourceFactory(), "mysql");
 	    googleHitDao = jdbi.onDemand(GoogleHITDao.class);

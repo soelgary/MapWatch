@@ -9,8 +9,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import jersey.repackaged.com.google.common.collect.Lists;
-
 import org.joda.time.DateTime;
 
 import com.amazonaws.mturk.addon.HITDataCSVReader;
@@ -23,6 +21,7 @@ import com.amazonaws.mturk.requester.HIT;
 import com.amazonaws.mturk.service.axis.RequesterService;
 import com.amazonaws.mturk.util.PropertiesClientConfig;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.gsoeller.personalization.maps.PropertiesLoader;
 import com.gsoeller.personalization.maps.dao.GoogleMapDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleAMTControlDao;
