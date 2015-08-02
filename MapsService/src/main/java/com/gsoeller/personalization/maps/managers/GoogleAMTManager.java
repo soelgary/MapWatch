@@ -110,6 +110,10 @@ public class GoogleAMTManager {
 			control.setNewMap(getMap(control.getNewMap().getId()).get());
 			control.setOldMap(getMap(control.getOldMap().getId()).get());
 			List<GoogleHITUpdate> updates = updateDao.getHITUpdates(hit.getId());
+			for(GoogleHITUpdate update: updates) {
+				update.setNewMap(getMap(update.getNewMap().getId()).get());
+				update.setOldMap(getMap(update.getOldMap().getId()).get());
+			}
 			hit.setControl(control);
 			hit.setUpdates(updates);
 		}
