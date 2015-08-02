@@ -22,7 +22,6 @@ import com.gsoeller.personalization.maps.jobs.RequestJob;
 public class MapsApplication {
 	
 	public static void main(String[] args) throws Exception {
-		new CrawlApplication().run(args);
 		Options options = new Options();
 		options.addOption("test", false, "Run the application/job using the maps.properties file");
 		options.addOption("s", false, "Run the dropwizard server to get REST api access");
