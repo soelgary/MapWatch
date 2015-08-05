@@ -1,5 +1,7 @@
 package com.gsoeller.personalization.maps;
 
+import io.dropwizard.auth.AuthFactory;
+import io.dropwizard.auth.basic.BasicAuthFactory;
 import io.dropwizard.setup.Environment;
 
 import java.util.EnumSet;
@@ -9,11 +11,15 @@ import javax.servlet.FilterRegistration;
 
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
+import com.gsoeller.personalization.maps.auth.User;
+import com.gsoeller.personalization.maps.auth.UserAuthenticator;
+import com.gsoeller.personalization.maps.auth.managers.AuthManager;
 import com.gsoeller.personalization.maps.managers.GoogleAMTControlManager;
 import com.gsoeller.personalization.maps.managers.GoogleAMTManager;
 import com.gsoeller.personalization.maps.managers.GoogleHITUpdateManager;
 import com.gsoeller.personalization.maps.resources.AMTControlResource;
 import com.gsoeller.personalization.maps.resources.AMTResource;
+import com.gsoeller.personalization.maps.resources.AuthenticationResource;
 import com.gsoeller.personalization.maps.resources.GoogleHITUpdateResource;
 
 public class WebApplication extends AbstractApplication {
@@ -21,6 +27,14 @@ public class WebApplication extends AbstractApplication {
 	@Override
 	public void run(MapsConfiguration configuration, Environment environment) throws Exception {
 		super.initializeDaos(configuration, environment);
+		
+		environment.jersey().register(AuthFactory.binder(new BasicAuthFactory<User>(new UserAuthenticator(userDao),
+                "SUPER SECRET STUFF",
+                User.class)));
+		
+		final AuthManager authManager = new AuthManager(tokenDao, userDao);
+		environment.jersey().register(new AuthenticationResource(authManager));
+        
 		FilterRegistration.Dynamic filter = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
 	    filter.setInitParameter(CrossOriginFilter.ALLOWED_METHODS_PARAM, "GET,PUT,POST,DELETE,OPTIONS");
 	    filter.setInitParameter(CrossOriginFilter.ALLOWED_ORIGINS_PARAM, "*");

@@ -2,6 +2,8 @@ package com.gsoeller.personalization.maps;
 
 import org.skife.jdbi.v2.DBI;
 
+import com.gsoeller.personalization.maps.auth.dao.TokenDao;
+import com.gsoeller.personalization.maps.auth.dao.UserDao;
 import com.gsoeller.personalization.maps.dao.GoogleFetchJobDao;
 import com.gsoeller.personalization.maps.dao.GoogleMapDao;
 import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
@@ -27,6 +29,9 @@ public abstract class AbstractApplication extends Application<MapsConfiguration>
     protected GoogleFetchJobDao googleFetchJobDao;
     protected GoogleMapUpdateDao googleMapUpdateDao;
     
+    protected TokenDao tokenDao;
+    protected UserDao userDao;
+    
 	@Override
 	public void initialize(Bootstrap<MapsConfiguration> bootstrap) {
 		bootstrap.addBundle(new MigrationsBundle<MapsConfiguration>() {
@@ -47,5 +52,8 @@ public abstract class AbstractApplication extends Application<MapsConfiguration>
 	    googleMapRequestDao = jdbi.onDemand(GoogleMapRequestDao.class);
 	    googleFetchJobDao = jdbi.onDemand(GoogleFetchJobDao.class);
 	    googleMapUpdateDao = jdbi.onDemand(GoogleMapUpdateDao.class);
+	
+	    tokenDao = new TokenDao();
+	    userDao = new UserDao();
 	}
 }
