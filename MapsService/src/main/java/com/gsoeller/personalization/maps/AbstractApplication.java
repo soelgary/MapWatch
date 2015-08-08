@@ -52,8 +52,7 @@ public abstract class AbstractApplication extends Application<MapsConfiguration>
 	    googleMapRequestDao = jdbi.onDemand(GoogleMapRequestDao.class);
 	    googleFetchJobDao = jdbi.onDemand(GoogleFetchJobDao.class);
 	    googleMapUpdateDao = jdbi.onDemand(GoogleMapUpdateDao.class);
-	
+	    userDao = jdbi.onDemand(UserDao.class);
 	    tokenDao = new TokenDao();
-	    userDao = new UserDao();
 	}
 }

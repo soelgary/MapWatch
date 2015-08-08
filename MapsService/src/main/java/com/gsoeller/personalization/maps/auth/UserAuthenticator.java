@@ -1,5 +1,7 @@
 package com.gsoeller.personalization.maps.auth;
 
+import java.util.List;
+
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
@@ -20,11 +22,13 @@ public class UserAuthenticator implements Authenticator<BasicCredentials, User> 
 	
 	@Override
     public Optional<User> authenticate(BasicCredentials credentials) throws AuthenticationException {
-		Optional<User> user = userDao.getUser(credentials.getUsername());
-		if(user.isPresent()) {
-			String saltedPlaintext = credentials.getPassword(); //user.get().getSalt() + credentials.getPassword();
-			if(authManager.passwordMatches(saltedPlaintext, user.get().getPassword())) {
-				return user;
+		List<User> users = userDao.getUser(credentials.getUsername());
+		if(users.size() == 1) {
+			User user = users.get(0);
+			String saltedPlaintext = credentials.getPassword();
+			if(authManager.passwordMatches(saltedPlaintext, user.getPassword())
+					&& user.isActive()) {
+				return Optional.of(user);
 			}
 		}
 		System.out.println("Not authorized");

@@ -24,20 +24,26 @@ public class AuthManager {
 	}
 	
 	public Optional<User> createUser(User user) {
+		if(userExists(user.getUsername())) {
+			return Optional.absent();
+		}
 		String salt = generateSalt();
 		String hash = calculateHash(user.getPassword(), salt);
 		user.setPassword(hash);
-		user.setSalt(salt);
 		user.setActive(false);
-		Optional<User> created = userDao.createUser(user);
-		if(created.isPresent()) {
-			//created.get().setPassword("***********");
+		Role role;
+		if(user.getRole() != null) {
+			role = user.getRole();
+		} else {
+			role = Role.RESEARCHER;
 		}
-		return created;
-	}
-	
-	public List<User> getUsers() {
-		return userDao.getUsers();
+		int created = userDao.createUser(user.getUsername(), hash, role.toString());
+		List<User> createdUser = userDao.getUser(created);
+		if(createdUser.size() == 1) {
+			return Optional.of(createdUser.get(0));
+		}
+		
+		return Optional.absent();
 	}
 	
 	public Token generateToken(User user) {
@@ -49,7 +55,19 @@ public class AuthManager {
 		if(!token.isPresent()) {
 			return Optional.absent();
 		}
-		return userDao.getUser(token.get());
+		List<User> users = userDao.getUser(token.get().getUsername());
+		if(users.size() == 1) {
+			return Optional.of(users.get(0));
+		}
+		return Optional.absent();
+	}
+	
+	public boolean userExists(String username) {
+		List<User> users = userDao.getUser(username);
+		if(users.size() > 0) {
+			return true;
+		}
+		return false;
 	}
 	
 	public Optional<Token> getToken(String tokenValue) {

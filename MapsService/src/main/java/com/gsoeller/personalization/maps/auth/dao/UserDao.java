@@ -2,44 +2,26 @@ package com.gsoeller.personalization.maps.auth.dao;
 
 import java.util.List;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.gsoeller.personalization.maps.auth.Token;
+import org.skife.jdbi.v2.sqlobject.Bind;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
+import org.skife.jdbi.v2.sqlobject.SqlQuery;
+import org.skife.jdbi.v2.sqlobject.SqlUpdate;
+import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
+
 import com.gsoeller.personalization.maps.auth.User;
+import com.gsoeller.personalization.maps.mappers.UserMapper;
 
-public class UserDao {
-
-	private List<User> users = Lists.newArrayList();
+public interface UserDao {
 	
-	public Optional<User> createUser(User newUser) {
-		for(User user: users) {
-			if(user.getUsername().equals(newUser.getUsername())) {
-				return Optional.absent();
-			}
-		}
-		users.add(newUser);
-		return Optional.of(newUser);
-	}
+	@SqlUpdate("Insert into User (username, password, role, active) values (:username, :password, :role, false)")
+	@GetGeneratedKeys
+	public int createUser(@Bind("username") String username, @Bind("password") String password, @Bind("role") String role);
 	
-	public Optional<User> getUser(String username) {
-		for(User user: users) {
-			if(user.getUsername().equals(username)) {
-				return Optional.of(user);
-			}
-		}
-		return Optional.absent();
-	}
+	@SqlQuery("Select * from User where username = :username")
+	@Mapper(UserMapper.class)
+	public List<User> getUser(@Bind("username") String username);
 	
-	public Optional<User> getUser(Token token) {
-		for(User user: users) {
-			if(user.getUsername().equals(token.getUsername())) {
-				return Optional.of(user);
-			}
-		}
-		return Optional.absent();
-	}
-	
-	public List<User> getUsers() {
-		return users;
-	}
+	@SqlQuery("Select * from User where id = :id")
+	@Mapper(UserMapper.class)
+	public List<User> getUser(@Bind("id") int id);
 }

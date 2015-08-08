@@ -9,12 +9,18 @@ public class User {
 	private String username;
 	@JsonProperty
 	private String password;
-	@JsonIgnore
-	private String salt;
 	private Role role;
 	private boolean active;
 
 	public User() {}
+
+	public User(int id, String username, String password, Role role, boolean active) {
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.role = role;
+		this.active = active;
+	}
 	
 	public int getId() {
 		return id;
@@ -60,12 +66,38 @@ public class User {
 	public void setActive(boolean active) {
 		this.active = active;
 	}
-
-	public String getSalt() {
-		return salt;
-	}
-
-	public void setSalt(String salt) {
-		this.salt = salt;
+	
+	public static class UserBuilder {
+		private int id;
+		private String username;
+		private String password;
+		private Role role;
+		private boolean active;
+		
+		public UserBuilder setId(int id) {
+			this.id = id;
+			return this;
+		}
+		
+		public UserBuilder setUsername(String username) {
+			this.username = username;
+			return this;
+		}
+		public UserBuilder setPassword(String password) {
+			this.password = password;
+			return this;
+		}
+		public UserBuilder setRole(Role role) {
+			this.role = role;
+			return this;
+		}
+		public UserBuilder setActive(boolean active) {
+			this.active = active;
+			return this;
+		}
+		
+		public User build() {
+			return new User(id, username, password, role, active);
+		}
 	}
 }
