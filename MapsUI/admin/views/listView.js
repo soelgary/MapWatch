@@ -2,7 +2,7 @@ define([
     "text!templates/listUpdates.html",
     "collections/GoogleHITUpdates",
     "views/analyzeView",
-    "models/Cookie"
+    "models/Cookies"
   ], function(template, GoogleHITUpdates, AnalyzeView, Cookie){
     return Backbone.View.extend({
       template: Handlebars.compile(template),

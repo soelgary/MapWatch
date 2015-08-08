@@ -2,7 +2,7 @@ define([
     "text!templates/nav.html",
     "models/User",
     "models/Token",
-    "models/Cookie"
+    "models/Cookies"
   ], function(template, User, Token, Cookie){
     return Backbone.View.extend({
       template: Handlebars.compile(template),
