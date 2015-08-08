@@ -39,6 +39,7 @@ define([
           success: function(model, response, options) {
             console.log('success fetching');
             self.token = response;
+            self.cookies.setCookie("token", response.value, 1);
             self.render();
           },
           error: function() {
