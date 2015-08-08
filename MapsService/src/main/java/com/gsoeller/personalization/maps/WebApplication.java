@@ -1,7 +1,6 @@
 package com.gsoeller.personalization.maps;
 
-import io.dropwizard.auth.AuthFactory;
-import io.dropwizard.auth.basic.BasicAuthFactory;
+import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.setup.Environment;
 
 import java.util.EnumSet;
@@ -28,11 +27,14 @@ public class WebApplication extends AbstractApplication {
 	public void run(MapsConfiguration configuration, Environment environment) throws Exception {
 		super.initializeDaos(configuration, environment);
 		
-		environment.jersey().register(AuthFactory.binder(new BasicAuthFactory<User>(new UserAuthenticator(userDao),
-                "SUPER SECRET STUFF",
-                User.class)));
-		
+		//environment.jersey().register(AuthFactory.binder(new BasicAuthFactory<User>(new UserAuthenticator(userDao),
+        //        "SUPER SECRET STUFF",
+        //        User.class)));
 		final AuthManager authManager = new AuthManager(tokenDao, userDao);
+		environment.jersey().register(new BasicAuthProvider<User>(new UserAuthenticator(userDao, authManager),
+                "SUPER SECRET STUFF"));
+		
+		
 		environment.jersey().register(new AuthenticationResource(authManager));
         
 		FilterRegistration.Dynamic filter = environment.servlets().addFilter("CORS", CrossOriginFilter.class);
@@ -48,6 +50,6 @@ public class WebApplication extends AbstractApplication {
 	    
 	    environment.jersey().register(new AMTResource(googleAMTManager));
 		environment.jersey().register(new AMTControlResource(googleControlManager));
-		environment.jersey().register(new GoogleHITUpdateResource(googleAMTManager, googleHITUpdateManager));
+		environment.jersey().register(new GoogleHITUpdateResource(googleAMTManager, googleHITUpdateManager, authManager));
 	}
 }

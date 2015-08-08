@@ -2,6 +2,8 @@ package com.gsoeller.personalization.maps.auth.managers;
 
 import java.util.List;
 
+import org.mindrot.BCrypt;
+
 import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.auth.Role;
 import com.gsoeller.personalization.maps.auth.Token;
@@ -13,6 +15,8 @@ public class AuthManager {
 
 	private TokenDao tokenDao;
 	private UserDao userDao;
+
+	private static final int LOG_ROUNDS = 12;
 	
 	public AuthManager(TokenDao tokenDao, UserDao userDao) {
 		this.tokenDao = tokenDao;
@@ -20,7 +24,16 @@ public class AuthManager {
 	}
 	
 	public Optional<User> createUser(User user) {
-		return userDao.createUser(user);
+		String salt = generateSalt();
+		String hash = calculateHash(user.getPassword(), salt);
+		user.setPassword(hash);
+		user.setSalt(salt);
+		user.setActive(false);
+		Optional<User> created = userDao.createUser(user);
+		if(created.isPresent()) {
+			//created.get().setPassword("***********");
+		}
+		return created;
 	}
 	
 	public List<User> getUsers() {
@@ -39,6 +52,10 @@ public class AuthManager {
 		return userDao.getUser(token.get());
 	}
 	
+	public Optional<Token> getToken(String tokenValue) {
+		return tokenDao.getToken(tokenValue);
+	}
+	
 	/*
 	 * Checks whether the user is authorized.
 	 * If the user is admin, user is authorized,
@@ -53,5 +70,19 @@ public class AuthManager {
 			}
 		}
 		return false;
+	}
+	
+	public String calculateHash(String password, String salt) {
+		return BCrypt.hashpw(password, salt);
+	}
+	
+	public boolean passwordMatches(String plaintext, String hashed) {
+		System.out.println("checking password");
+		System.out.println(BCrypt.checkpw(plaintext, hashed));
+		return BCrypt.checkpw(plaintext, hashed);
+	}
+	
+	public String generateSalt() {
+		return BCrypt.gensalt(LOG_ROUNDS);
 	}
 }

@@ -14,7 +14,7 @@ database:
   validationQuery: "/* MyService Health Check */ SELECT 1"
 
   # the timeout before a connection validation queries fail
-  validationQueryTimeout: 3s
+  #validationQueryTimeout: 3s
 
   # the minimum number of connections to keep open
   minSize: 8

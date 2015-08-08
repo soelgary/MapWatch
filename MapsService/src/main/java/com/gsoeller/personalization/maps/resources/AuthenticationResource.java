@@ -12,6 +12,7 @@ import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -41,16 +42,22 @@ public class AuthenticationResource {
 		if(created.isPresent()) {
 			return user;
 		}
-		throw new WebApplicationException("Invalid credentials. Try a different username/password combo", Response.Status.CONFLICT);
+		throw new WebApplicationException(Response.Status.CONFLICT);
 	}
 	
-    @POST
+    @GET
     @Path("/generate-token")
     public Response get(@Auth User user) {
     	Token token = manager.generateToken(user);
     	return Response.ok().cookie(new NewCookie("token", token.getValue()))
     			.entity(token)
     			.build();
+    }
+    
+    @GET
+    @Path("/token/{token}")
+    public Optional<Token> getToken(@PathParam("token") String token) {
+    	return manager.getToken(token);
     }
     
     @GET

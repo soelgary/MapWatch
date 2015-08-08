@@ -4,10 +4,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.gsoeller.personalization.maps.auth.Token;
 import com.gsoeller.personalization.maps.auth.User;
-
-import jersey.repackaged.com.google.common.collect.Lists;
 
 public class TokenDao {
 

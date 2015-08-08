@@ -9,12 +9,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.google.common.base.Optional;
-import com.gsoeller.personalization.maps.dao.amt.GoogleAMTControlDao;
-import com.gsoeller.personalization.maps.dao.amt.GoogleHITDao;
-import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
+import com.gsoeller.personalization.maps.auth.Role;
+import com.gsoeller.personalization.maps.auth.User;
+import com.gsoeller.personalization.maps.auth.managers.AuthManager;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 import com.gsoeller.personalization.maps.managers.GoogleAMTManager;
 import com.gsoeller.personalization.maps.managers.GoogleHITUpdateManager;
@@ -25,22 +27,30 @@ public class GoogleHITUpdateResource {
 
 	private GoogleHITUpdateManager manager;
 	private GoogleAMTManager amtManager;
+	private AuthManager authManager;
 	
 	private static final String DEFAULT_COUNT = "20";
 	private static final String DEFAULT_OFFSET = "0";
 	private static final String DEFAULT_FINISHED = "false";
 	
-	public GoogleHITUpdateResource(final GoogleAMTManager amtManager, final GoogleHITUpdateManager manager) throws Exception {
+	public GoogleHITUpdateResource(final GoogleAMTManager amtManager, 
+			final GoogleHITUpdateManager manager,
+			final AuthManager authManager) throws Exception {
 		this.manager = manager;
 		this.amtManager = amtManager;
+		this.authManager = authManager;
 	}
 	
 	@GET
-	public List<GoogleHITUpdate> getUpdates(
+	public List<GoogleHITUpdate> getUpdates(@QueryParam("token") String tokenValue,
 			@QueryParam("finished") @DefaultValue(DEFAULT_FINISHED) boolean finished,
 			@QueryParam("count") @DefaultValue(DEFAULT_COUNT) int count,
 			@QueryParam("offset") @DefaultValue(DEFAULT_OFFSET) int offset) {
-		return manager.getUpdates(count, offset, finished);
+		Optional<User> user = authManager.getUser(tokenValue);
+    	if(authManager.isAuthorized(user, Role.RESEARCHER)) {
+    		return manager.getUpdates(count, offset, finished);
+    	}
+    	throw new WebApplicationException(Response.Status.UNAUTHORIZED);
 	}
 	
 	@GET
@@ -51,8 +61,13 @@ public class GoogleHITUpdateResource {
 	
 	@PUT
 	@Path("{id}")
-	public Optional<GoogleHITUpdate> updateUpdate(@PathParam("id") int id,
+	public Optional<GoogleHITUpdate> updateUpdate(@QueryParam("token") String tokenValue,
+			@PathParam("id") int id,
 			GoogleHITUpdate googleHITUpdate) {
-		return amtManager.updateGoogleHITUpdate(id, googleHITUpdate);
+		Optional<User> user = authManager.getUser(tokenValue);
+		if(authManager.isAuthorized(user, Role.ADMIN)) {
+			return amtManager.updateGoogleHITUpdate(id, googleHITUpdate);
+		}
+		throw new WebApplicationException(Response.Status.UNAUTHORIZED);
 	}
 }

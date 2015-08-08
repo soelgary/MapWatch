@@ -1,6 +1,6 @@
 Context Memo
 ============
-This document is a set of instructions for deploying a custom tool to detect personalization and border updates for Google Maps and Bing Maps. The document is designed for members of the research group working on the project, as well as any outside researcher looking to validate our results. I decided to write the document using Markdown. Markdown is an incredibly easy to use/learn markup language that has a very clean look when displayed. It is used by many developers to create readme files for their code(much like this document). There are 3 main sections to this document. The first is just an overview saying who created it, contact info, and where to look for more background. The second section explains the capabilities of the code and the third is an in depth explanation of how to set it up and all of the necessary commands to run the experiment. Initially, the only people that will be exposed to this document are the 4 team members working on the project and for the most part, they will use it to reference the commands and HTTP endpoints. They wont need to know much about how to set it up because that work is already done. When we decide to release the results, we will release the code with it so any interested reader can use the tool on their own. At this point in time, all of the information in the document will be critical to setting up the experiments, to analyzing the results.
+This document is a set of instructions for deploying a custom tool to detect personalization and border updates for Google Maps and Bing Maps. The document is designed for members of the research group working on the project, as well as any outside researcher looking to validate our results. I decided to write the document using Markdown because Markdown is an incredibly easy to use and learn markup language that has a very clean look when displayed. It is used by many developers to create readme files for their code(much like this document). There are 3 main sections to this document. The first is just an overview saying who created it, contact info, and where to look for more background. The second section explains the capabilities of the code and the third is an in depth explanation of how to set it up and all of the necessary commands to run the experiment. Initially, the only people that will be exposed to this document are the 4 team members working on the project. Once the code and results are made public, the document will be an asset to other researchers looking to validate our results.
 
 
 MapsService
@@ -11,13 +11,21 @@ This is the backend to the NEU Maps Personalization Project. Background informat
 What can this code do?
 ======================
 
-This code is all of the backend code for our map personalization detecting tool. It can do quite a few things.
+This is all of the backend code for our map personalization detecting tool. It can do quite a few things.
 1. Crawl Google Maps and Bing Maps
-3. Create and host Amazon Mechanical Turk HIT's
+3. Create and host Amazon Mechanical Turk(MTurk) HIT's to detect border changes
 4. REST api for admin interface to MTurk responses
 
 Getting Started
 ===============
+
+### Environment
+
+The versions of the tools and technology used are as follows.
+
+1. Ubuntu 14.04
+2. Java 7
+3. Maven 3
 
 ### Set Up Maven Repository
 

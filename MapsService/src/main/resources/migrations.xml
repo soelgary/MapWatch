@@ -385,4 +385,24 @@
 			</column>
 		</addColumn>
 	</changeSet>
+	
+	<changeSet id="23" author="gary">
+		<createTable tableName="User">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="username" type="varchar(255)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="password" type="varchar(60)">
+				<constraints nullable="false" />
+			</column>
+			<column name="role" type="varchar(255)">
+				<constraints nullable="false" />
+			</column>
+			<column name="active" type="boolean">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+	</changeSet>
 </databaseChangeLog>
