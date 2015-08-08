@@ -5,8 +5,8 @@ define([
       model: GoogleHITUpdate,
       async: false,
       url: function() {
-        return 'http://127.0.0.1:9092/google/updates';
-        //return 'https://achtung.ccs.neu.edu/maps/google/updates'
+        //return 'http://127.0.0.1:9092/google/updates';
+        return 'https://achtung.ccs.neu.edu/maps/google/updates'
       },
       parse: function(response) {
         return response;

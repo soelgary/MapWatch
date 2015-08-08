@@ -3,7 +3,8 @@ define([],
     var GoogleHITUpdate = Backbone.Model.extend({
 
       url: function() {
-        return 'http://127.0.0.1:9092/auth/generate-token';
+        //return 'http://127.0.0.1:9092/auth/generate-token';
+        return 'https://achtung.ccs.neu.edu/maps/auth/generate-token';
       },
 
       initialize: function(username, password) {
