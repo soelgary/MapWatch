@@ -2,8 +2,8 @@ define([
     "text!templates/nav.html",
     "models/User",
     "models/Token",
-    "cookie"
-  ], function(template, User, Token, cookie){
+    "models/Cookie"
+  ], function(template, User, Token, Cookie){
     return Backbone.View.extend({
       template: Handlebars.compile(template),
       el: '#nav',
@@ -12,10 +12,11 @@ define([
       initialize: function(options) {
         this.render();
         $('#loginFailed').hide();
+        this.cookies = new Cookie();
         // need to check if there is a token
         // if token exists, check backend to see if it is valid
         // if valid, set the token to be that and skip the login process
-        var token = $.cookie.get('token');
+        var token = this.cookies.getCookie('token');
         if(token) {
           var fetchedToken = new Token(token);
           fetchedToken.fetch(
@@ -40,7 +41,6 @@ define([
           success: function(model, response, options) {
             console.log('success fetching');
             self.token = response;
-            $.cookie('token', response.value, {expires: 1, path: '/'});
             self.render();
           },
           error: function() {

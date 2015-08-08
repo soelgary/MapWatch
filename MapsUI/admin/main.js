@@ -1,7 +1,6 @@
 requirejs.config({
     paths: {
-        'datatables': '//cdn.datatables.net/1.10-dev/js/jquery.dataTables',
-        'cookies': '../cookies.js'
+        'datatables': '//cdn.datatables.net/1.10-dev/js/jquery.dataTables'
     }
 });
 require([

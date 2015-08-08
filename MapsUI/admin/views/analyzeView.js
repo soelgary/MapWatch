@@ -31,7 +31,7 @@ define([
           img2: "https://achtung.ccs.neu.edu/~soelgary/img/" + this.model.get('oldMap').path,
         };
         var formView = new FormView({model: this.model, token: this.token});
-        //var gifView = new GifView(options);
+        var gifView = new GifView(options);
       },
     });
 });

@@ -1,8 +1,9 @@
 define([
     "text!templates/listUpdates.html",
     "collections/GoogleHITUpdates",
-    "views/analyzeView"
-  ], function(template, GoogleHITUpdates, AnalyzeView){
+    "views/analyzeView",
+    "models/Cookie"
+  ], function(template, GoogleHITUpdates, AnalyzeView, Cookie){
     return Backbone.View.extend({
       template: Handlebars.compile(template),
       el: '#table',
@@ -11,7 +12,8 @@ define([
         finished = options.finished,
         count = options.count,
         offset = options.offset;
-        token = $.cookie.get('token');
+        this.cookies = new Cookie();
+        token = this.cookies.getCookie('token');
         console.log(token);
         this.updates = new GoogleHITUpdates();
         var self = this;
