@@ -38,10 +38,6 @@ define([
               $('#status').text('An error occurred..');
               var id = '#icon-' + model.id;
               $(id).html('<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>');
-            },
-            processData: true,
-            data: {
-              token: this.token
             }
           });
           this.undelegateEvents();
