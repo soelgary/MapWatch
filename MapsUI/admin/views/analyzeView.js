@@ -11,6 +11,7 @@ define([
       initialize: function(options) {
         this.id = options.id;
         this.model = new GoogleHITUpdate();
+        this.token = options.token;
         var self = this;
 
         this.model.setUrl(this.id);
@@ -29,7 +30,7 @@ define([
           img1: "https://achtung.ccs.neu.edu/~soelgary/img/" + this.model.get('newMap').path,
           img2: "https://achtung.ccs.neu.edu/~soelgary/img/" + this.model.get('oldMap').path,
         };
-        var formView = new FormView({model: this.model});
+        var formView = new FormView({model: this.model, token: this.token});
         //var gifView = new GifView(options);
       },
     });

@@ -11,32 +11,43 @@ define([
         finished = options.finished,
         count = options.count,
         offset = options.offset;
-        this.updates = new GoogleHITUpdates(finished, count, offset);
+        token = $.cookie.get('token');
+        console.log(token);
+        this.updates = new GoogleHITUpdates();
         var self = this;
         this.updates.fetch(
           {
+            success: function(collection, response, options) {
+              console.log('success fetching');
+              Handlebars.registerHelper('list', function(items, options) {
+                var out = "";
+                for(var i=0, len=items.length; i<len; i++) {
+                  out = out + "<tr>";
+                  out = out + "<th>" + items[i].get('id') + "</th>";
+                  out = out + "<th>" + items[i].get('hasBorderChange') + "</th>";
+                  out = out + "<th>" + items[i].get('finished') + "</th>";
+                  out = out + "<th><button data-update='" + items[i].get('id') + "' class='analyze-button'>Analyze</button><th>";
+                  out = out + "<th id='icon-" + items[i].get('id') + "'></th>"
+                  out = out + "</tr>";
+                }
+                return out;
+              });
+              self.render();
+            },
+            error: function(collection, response, options) {
+              console.log('error fetching');
+              $('#filterUnauthorized').show();
+            },
             processData: true,
             data: {
               finished: finished,
               count: count,
-              offset: offset
+              offset: offset,
+              token: token
             }
           }
         ).complete(function(){
-          Handlebars.registerHelper('list', function(items, options) {
-            var out = "";
-            for(var i=0, len=items.length; i<len; i++) {
-              out = out + "<tr>";
-              out = out + "<th>" + items[i].get('id') + "</th>";
-              out = out + "<th>" + items[i].get('hasBorderChange') + "</th>";
-              out = out + "<th>" + items[i].get('finished') + "</th>";
-              out = out + "<th><button data-update='" + items[i].get('id') + "' class='analyze-button'>Analyze</button><th>";
-              out = out + "<th id='icon-" + items[i].get('id') + "'></th>"
-              out = out + "</tr>";
-            }
-            return out;
-          });
-          self.render();
+
         });
       },
 
@@ -46,7 +57,7 @@ define([
 
       analyze: function(ev){
         var id = $(ev.currentTarget).data('update');
-        var analyzeView = new AnalyzeView({id: id});
+        var analyzeView = new AnalyzeView({id: id, token: this.token});
       },
 
       render: function() {

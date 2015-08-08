@@ -1,0 +1,62 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        <img height="24px" width="24px" alt="Brand" src="/static/img/brand.ico">
+      </a>
+      <p class="navbar-text">Maps Personalization Admin Site</p>
+
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      <li>
+        {{#if token.username}}
+        <p class="navbar-text">Welcome, {{token.username}}</p>
+        {{/if}}
+      </li>
+      <li>
+        <button type="button" class="btn btn-primary navbar-btn" data-toggle="modal" data-target="#myModal">
+          Sign In
+        </button>
+      </li>
+    </ul>
+
+
+  </div>
+</nav>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Sign In</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">Username</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="inputUsername" placeholder="Username">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+            </div>
+          </div>
+          <div class="form-group">
+            <div id="loginFailed" class="alert alert-danger alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <strong>Warning!</strong> Invalid Credentials
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="login-button">Sign In</button>
+      </div>
+    </div>
+  </div>
+</div>
