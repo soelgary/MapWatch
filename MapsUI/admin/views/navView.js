@@ -13,9 +13,7 @@ define([
         this.render();
         $('#loginFailed').hide();
         this.cookies = new Cookie();
-        // need to check if there is a token
-        // if token exists, check backend to see if it is valid
-        // if valid, set the token to be that and skip the login process
+        var self = this;
         var token = this.cookies.getCookie('token');
         if(token) {
           var fetchedToken = new Token(token);
