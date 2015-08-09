@@ -66,9 +66,6 @@ define([
 
       render: function() {
         this.$el.html(this.template({updates: this.updates.models}));
-        $('#searchErrorMessage').html(this.unauthorizedTemplate({message: "fucking shit"}));
-        console.log(JSON.stringify(this.updates.models));
-        console.log(this.updates.models);
         $('#example').dataTable( {
           "aaData": this.updates.models,
           "aoColumns": [
