@@ -2,10 +2,12 @@ define([
     "text!templates/nav.html",
     "models/User",
     "models/Token",
-    "models/Cookies"
-  ], function(template, User, Token, Cookie){
+    "models/Cookies",
+    "text!templates/unauthorized.html"
+  ], function(template, User, Token, Cookie, UnauthorizedTemplate){
     return Backbone.View.extend({
       template: Handlebars.compile(template),
+      unauthorizedTemplate: Handlebars.compile(UnauthorizedTemplate),
       el: '#nav',
       token: {},
 
@@ -43,7 +45,7 @@ define([
             self.render();
           },
           error: function() {
-            $('#loginFailed').show();
+            $('#loginFailedMessage').html(self.unauthorizedTemplate({message: "Invalid credentials"}));
           }
         };
         this.user = new User(username, password);

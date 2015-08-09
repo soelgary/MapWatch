@@ -2,10 +2,12 @@ define([
     "text!templates/listUpdates.html",
     "collections/GoogleHITUpdates",
     "views/analyzeView",
-    "models/Cookies"
-  ], function(template, GoogleHITUpdates, AnalyzeView, Cookie){
+    "models/Cookies",
+    "text!templates/unauthorized.html"
+  ], function(template, GoogleHITUpdates, AnalyzeView, Cookie, UnauthorizedTemplate){
     return Backbone.View.extend({
       template: Handlebars.compile(template),
+      unauthorizedTemplate: Handlebars.compile(UnauthorizedTemplate),
       el: '#table',
 
       initialize: function(options) {
@@ -38,7 +40,7 @@ define([
             },
             error: function(collection, response, options) {
               console.log('error fetching');
-              $('#filterUnauthorized').show();
+              $('#searchErrorMessage').html(self.unauthorizedTemplate({message: "Unauthorized -- Please login"}));
             },
             processData: true,
             data: {
@@ -64,6 +66,7 @@ define([
 
       render: function() {
         this.$el.html(this.template({updates: this.updates.models}));
+        $('#searchErrorMessage').html(this.unauthorizedTemplate({message: "fucking shit"}));
         console.log(JSON.stringify(this.updates.models));
         console.log(this.updates.models);
         $('#example').dataTable( {
