@@ -33,5 +33,5 @@ public class UserAuthenticator implements Authenticator<BasicCredentials, User> 
 		}
 		System.out.println("Not authorized");
         return Optional.absent();
-    }
+    }	
 }

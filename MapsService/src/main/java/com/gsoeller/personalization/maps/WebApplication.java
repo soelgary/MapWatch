@@ -1,6 +1,5 @@
 package com.gsoeller.personalization.maps;
 
-import io.dropwizard.auth.basic.BasicAuthProvider;
 import io.dropwizard.setup.Environment;
 
 import java.util.EnumSet;
@@ -10,6 +9,7 @@ import javax.servlet.FilterRegistration;
 
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 
+import com.gsoeller.personalization.maps.auth.PersonalizationAuthProvider;
 import com.gsoeller.personalization.maps.auth.User;
 import com.gsoeller.personalization.maps.auth.UserAuthenticator;
 import com.gsoeller.personalization.maps.auth.managers.AuthManager;
@@ -31,7 +31,7 @@ public class WebApplication extends AbstractApplication {
         //        "SUPER SECRET STUFF",
         //        User.class)));
 		final AuthManager authManager = new AuthManager(tokenDao, userDao);
-		environment.jersey().register(new BasicAuthProvider<User>(new UserAuthenticator(userDao, authManager),
+		environment.jersey().register(new PersonalizationAuthProvider<User>(new UserAuthenticator(userDao, authManager),
                 "SUPER SECRET STUFF"));
 		
 		
