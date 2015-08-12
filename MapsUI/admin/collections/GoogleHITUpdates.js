@@ -1,12 +1,13 @@
 define([
   "models/GoogleHITUpdate",
-], function(GoogleHITUpdate){
+  "models/URL"
+], function(GoogleHITUpdate, URL){
     var GoogleHITUpdates = Backbone.Collection.extend({
       model: GoogleHITUpdate,
       async: false,
       url: function() {
-        //return 'http://127.0.0.1:9092/google/updates';
-        return 'https://achtung.ccs.neu.edu/maps/google/updates'
+        var url = new URL();
+        return url.getURL() + 'google/updates'
       },
       parse: function(response) {
         return response;

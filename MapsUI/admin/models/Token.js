@@ -1,10 +1,12 @@
-define([],
-  function(){
+define([
+  "models/URL"
+],
+  function(URL){
     var Token = Backbone.Model.extend({
 
       url: function() {
-        //return 'http://127.0.0.1:9092/auth/token/' + this.tokenValue;
-        return 'https://achtung.ccs.neu.edu/maps/auth/token/' + this.tokenValue;
+        var url = new URL();
+        return url.getURL() + 'auth/token/' + this.tokenValue;
       },
 
       initialize: function(tokenValue) {
