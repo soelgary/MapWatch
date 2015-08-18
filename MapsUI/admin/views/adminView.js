@@ -23,7 +23,15 @@ define([
         var finished = $('#finished').is(':checked');
         var offset = Number($('#offset').val());
         var totalCount = Number($('#totalCount').val());
-        var listView = new ListView({finished: finished, offset: offset, count: totalCount});
+        var hasBorderDifference = $('#hasChange').is(':checked');
+        var listView = new ListView(
+          {
+            finished: finished,
+            offset: offset,
+            count: totalCount,
+            hasBorderDifference: hasBorderDifference
+          }
+        );
       },
 
       render: function() {

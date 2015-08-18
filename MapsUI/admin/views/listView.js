@@ -14,6 +14,7 @@ define([
         finished = options.finished,
         count = options.count,
         offset = options.offset;
+        hasBorderDifference = options.hasBorderDifference;
         this.cookies = new Cookie();
         token = this.cookies.getCookie('token');
         console.log(token);
@@ -47,6 +48,7 @@ define([
               finished: finished,
               count: count,
               offset: offset,
+              hasBorderDifference: hasBorderDifference
               token: token
             }
           }
