@@ -48,7 +48,7 @@ define([
               finished: finished,
               count: count,
               offset: offset,
-              hasBorderDifference: hasBorderDifference
+              hasBorderDifference: hasBorderDifference,
               token: token
             }
           }
