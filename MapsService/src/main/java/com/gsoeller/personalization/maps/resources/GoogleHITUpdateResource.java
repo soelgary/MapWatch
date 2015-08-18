@@ -43,14 +43,19 @@ public class GoogleHITUpdateResource {
 	
 	@GET
 	public List<GoogleHITUpdate> getUpdates(@QueryParam("token") String tokenValue,
+			@QueryParam("hasBorderDifference") Optional<Boolean> hasBorderDifference,
 			@QueryParam("finished") @DefaultValue(DEFAULT_FINISHED) boolean finished,
 			@QueryParam("count") @DefaultValue(DEFAULT_COUNT) int count,
 			@QueryParam("offset") @DefaultValue(DEFAULT_OFFSET) int offset) {
 		Optional<User> user = authManager.getUser(tokenValue);
-    	if(authManager.isAuthorized(user, Role.RESEARCHER)) {
-    		return manager.getUpdates(count, offset, finished);
+    	if(!authManager.isAuthorized(user, Role.RESEARCHER)) {
+    		throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     	}
-    	throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+    	if(hasBorderDifference.isPresent()) {
+			return manager.getUpdatesBasedOnBorderDifference(count, offset, hasBorderDifference.get());
+		} else {
+			return manager.getUpdates(count, offset, finished);
+		}
 	}
 	
 	@GET

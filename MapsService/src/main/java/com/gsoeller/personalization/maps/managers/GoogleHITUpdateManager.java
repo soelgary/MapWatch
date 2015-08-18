@@ -8,7 +8,6 @@ import com.google.common.collect.Lists;
 import com.gsoeller.personalization.maps.dao.GoogleMapDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
 import com.gsoeller.personalization.maps.data.GoogleMap;
-import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 
 public class GoogleHITUpdateManager {
@@ -31,6 +30,11 @@ public class GoogleHITUpdateManager {
 	
 	public List<GoogleHITUpdate> getUpdates(int count, int offset, boolean finished) {
 		List<GoogleHITUpdate> updates = updateDao.getHITUpdates(finished, count, offset);
+		return setMaps(updates);
+	}
+	
+	public List<GoogleHITUpdate> getUpdatesBasedOnBorderDifference(int count, int offset, boolean hasBorderDifference) {
+		List<GoogleHITUpdate> updates = updateDao.getHITUpdatesBasedOnBorderDifference(hasBorderDifference, count, offset);
 		return setMaps(updates);
 	}
 	

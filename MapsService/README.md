@@ -1,12 +1,14 @@
 Context Memo
 ============
-This document is a set of instructions for deploying a custom tool to detect personalization and border updates for Google Maps and Bing Maps. The document is designed for members of the research group working on the project, as well as any outside researcher looking to validate our results. I decided to write the document using Markdown because Markdown is an incredibly easy to use and learn markup language that has a very clean look when displayed. It is used by many developers to create readme files for their code(much like this document). There are 3 main sections to this document. The first is just an overview saying who created it, contact info, and where to look for more background. The second section explains the capabilities of the code and the third is an in depth explanation of how to set it up and all of the necessary commands to run the experiment. Initially, the only people that will be exposed to this document are the 4 team members working on the project. Once the code and results are made public, the document will be an asset to other researchers looking to validate our results.
+This document is a set of instructions for deploying a custom tool to detect personalization and border updates for Google Maps and Bing Maps. The document is designed for members of the research group working on the project, as well as any outside researcher looking to validate our results. I decided to write the document using Markdown because Markdown is an incredibly easy to use and learn markup language that has a very clean look when displayed. It is used by many developers to create readme files for their code(much like this document). There are 3 main sections to this document. The first is just an overview saying who created it, contact info, and where to look for more background. The second section explains the capabilities of the code and the third is an in depth explanation of how to set it up and all of the necessary commands to run the experiment. Initially, the only people that will be exposed to this document are the 4 team members working on the project. Once the code and results are made public, the document will be an asset to other researchers looking to validate our results. These instructions assume the users have a lot of experience with software engineering. It assumes they have knowledge on how to use the command line, git, set up a reverse HTTP proxy, Amazon Mechanical Turk basics, maven, mysql, and how to use an HTTP client. These are all standard skills and technologies in the industry so this set of instructions intentionally does not cover them. The readers will come across this document from its Github repository or from personalization.ccs.neu.edu.
 
 
 MapsService
 ===========
 
-This is the backend to the NEU Maps Personalization Project. Background information can be found at personalization.ccs.neu.edu. The following will be a set of instructions on how to set up this service. If anything is broken or confusing, contact us at soelgary@ccs.neu.edu.
+This is the backend to the NEU Maps Personalization Project. The purpose of this code is to create a solution to constantly crawl Google Maps and Bing Maps in order to detect personalization for countries borders and to detect updates to countries borders. More background information can be found at personalization.ccs.neu.edu.
+
+The following will be a set of instructions on how to set up this service. If anything is broken or confusing, contact us at soelgary@ccs.neu.edu.
 
 What can this code do?
 ======================
@@ -14,7 +16,7 @@ What can this code do?
 This is all of the backend code for our map personalization detecting tool. It can do quite a few things.
 1. Crawl Google Maps and Bing Maps
 3. Create and host Amazon Mechanical Turk(MTurk) HIT's to detect border changes
-4. REST api for admin interface to MTurk responses
+4. REST api for an admin interface to MTurk responses
 
 Getting Started
 ===============
@@ -26,6 +28,14 @@ The versions of the tools and technology used are as follows.
 1. Ubuntu 14.04
 2. Java 7
 3. Maven 3
+
+### Download the Code
+
+To get the code you must run the following command
+
+```
+git clone https://github.com/soelgary/MapsPersonalization.git
+```
 
 ### Set Up Maven Repository
 
@@ -157,4 +167,4 @@ POST https://your-domain-name/maps/maps/{mapProvider}/hits/approve
 ```mapProvider``` is ```google``` or ```bing```
 
 ### Analyze Results
-By putting the ```MapsUI``` folder behind an HTTP server on the same host as the Maps Server, you can view the admin interface at https://your-domain-name/maps/admin. This will show a search bar for the MTurk results and will allow you to override any Mturk response.
+By putting the ```MapsUI``` folder behind an HTTP server, you can view the admin interface at https://your-domain-name/maps/admin. This will show a search bar for the MTurk results and will allow you to override any Mturk response.
