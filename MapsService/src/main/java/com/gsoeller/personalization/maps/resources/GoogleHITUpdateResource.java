@@ -60,8 +60,14 @@ public class GoogleHITUpdateResource {
 	}
 	
 	@GET
+	@Path("{id}")
+	public Optional<GoogleHITUpdate> getUpdate(@PathParam("id") int id) {
+		return manager.getUpdate(id);
+	}
+	
+	@GET
 	@Path("{id}/cctld")
-	public List<GoogleHITUpdateCountryData> getUpdate(@PathParam("id") int id) {
+	public List<GoogleHITUpdateCountryData> getCountryData(@PathParam("id") int id) {
 		 return manager.getCountryInformation(id);
 	}
 	
