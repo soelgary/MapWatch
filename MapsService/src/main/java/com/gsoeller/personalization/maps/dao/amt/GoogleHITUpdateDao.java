@@ -9,6 +9,7 @@ import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
+import com.gsoeller.personalization.maps.mappers.amt.GoogleHITUpdateJoinedMapper;
 import com.gsoeller.personalization.maps.mappers.amt.GoogleHITUpdateMapper;
 
 public interface GoogleHITUpdateDao {
@@ -55,6 +56,10 @@ public interface GoogleHITUpdateDao {
 	
 	@SqlQuery("select count(*) from GoogleHITUpdate hit inner join Map o on hit.oldMap = o.id inner join Map n on hit.newMap = n.id where (o.hash = :firstHash && n.hash = :secondHash) || (n.hash = :firstHash && o.hash = :secondHash);")
 	public int countUpdatesWithTiles(@Bind("firstHash") String firstHash, @Bind("secondHash") String secondHash);
+	
+	@SqlQuery("select * from Map old, Map new where new.hash = :newHash && old.hash = :oldHash && new.mapRequest = old.mapRequest && new.FetchJob = old.FetchJob + 1")
+	@Mapper(GoogleHITUpdateJoinedMapper.class)
+	public List<GoogleHITUpdate> getSimilarUpdates(@Bind("oldHash") String oldHash, @Bind("newHash") String newHash);
 	
 	public void close();
 }

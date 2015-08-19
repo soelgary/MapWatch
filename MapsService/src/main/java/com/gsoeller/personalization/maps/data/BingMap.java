@@ -4,7 +4,7 @@ import org.joda.time.DateTime;
 
 public class BingMap implements Map {
 
-	private int mapRequest;
+	private BingMapRequest mapRequest;
 	private DateTime dateTime;
 	private boolean hasChanged;
 	private int id;
@@ -38,7 +38,7 @@ public class BingMap implements Map {
 		return id;
 	}
 	
-	public int getMapRequest() {
+	public BingMapRequest getMapRequest() {
 		return mapRequest;
 	}
 	
@@ -56,7 +56,7 @@ public class BingMap implements Map {
 	
 	public static class MapBuilder {
 		
-		private int mapRequest;
+		private BingMapRequest mapRequest;
 		private DateTime dateTime;
 		private boolean hasChanged;
 		private int id;
@@ -74,7 +74,7 @@ public class BingMap implements Map {
 			return this;
 		}
 		
-		public MapBuilder setMapRequest(int mapRequest) {
+		public MapBuilder setMapRequest(BingMapRequest mapRequest) {
 			this.mapRequest = mapRequest;
 			return this;
 		}

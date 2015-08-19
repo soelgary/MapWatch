@@ -8,6 +8,7 @@ import org.skife.jdbi.v2.StatementContext;
 import org.skife.jdbi.v2.tweak.ResultSetMapper;
 
 import com.gsoeller.personalization.maps.data.BingMap;
+import com.gsoeller.personalization.maps.data.BingMapRequest;
 
 public class BingMapMapper implements ResultSetMapper<BingMap> {
 
@@ -16,7 +17,7 @@ public class BingMapMapper implements ResultSetMapper<BingMap> {
 		return new BingMap.MapBuilder()
 			.setId(r.getInt("id"))
 			.setHasChanged(r.getBoolean("hasChanged"))
-			.setMapRequest(r.getInt("bingMapRequest"))
+			.setMapRequest(new BingMapRequest.BingMapRequestBuilder().setId(r.getInt("bingMapRequest")).build())
 			.setDateTime(new DateTime(r.getTimestamp("dateTime")))
 			.setPath(r.getString("path"))
 			.setHash(r.getString("hash"))

@@ -28,7 +28,7 @@ public class HitGenerator {
 	public HitGenerator() throws IOException {
 		hitManager = new GoogleAMTManager(null, null, null, null);
 		controlManager = new GoogleAMTControlManager(null);
-		updateManager = new GoogleHITUpdateManager(null, null);
+		updateManager = new GoogleHITUpdateManager(null, null, null);
 	}
 
 	

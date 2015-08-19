@@ -10,7 +10,7 @@ public interface Map {
 	
 	public String getHash();
 	
-	public int getMapRequest();
+	public MapRequest getMapRequest();
 	
 	public int getId();
 }

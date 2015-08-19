@@ -18,6 +18,7 @@ import com.gsoeller.personalization.maps.auth.Role;
 import com.gsoeller.personalization.maps.auth.User;
 import com.gsoeller.personalization.maps.auth.managers.AuthManager;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
+import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdateCountryData;
 import com.gsoeller.personalization.maps.managers.GoogleAMTManager;
 import com.gsoeller.personalization.maps.managers.GoogleHITUpdateManager;
 
@@ -59,9 +60,9 @@ public class GoogleHITUpdateResource {
 	}
 	
 	@GET
-	@Path("{id}")
-	public Optional<GoogleHITUpdate> getUpdate(@PathParam("id") int id) {
-		return manager.getUpdate(id);
+	@Path("{id}/cctld")
+	public List<GoogleHITUpdateCountryData> getUpdate(@PathParam("id") int id) {
+		 return manager.getCountryInformation(id);
 	}
 	
 	@PUT

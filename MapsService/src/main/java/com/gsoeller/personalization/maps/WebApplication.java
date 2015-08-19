@@ -45,7 +45,7 @@ public class WebApplication extends AbstractApplication {
 	    filter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 	    
 		final GoogleAMTManager googleAMTManager = new GoogleAMTManager(googleHitDao, updateDao, controlDao, googleMapDao);
-	    final GoogleHITUpdateManager googleHITUpdateManager = new GoogleHITUpdateManager(updateDao, googleMapDao);
+	    final GoogleHITUpdateManager googleHITUpdateManager = new GoogleHITUpdateManager(updateDao, googleMapDao, googleMapRequestDao);
 	    final GoogleAMTControlManager googleControlManager = new GoogleAMTControlManager(controlDao);
 	    
 	    environment.jersey().register(new AMTResource(googleAMTManager));
