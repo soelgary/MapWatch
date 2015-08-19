@@ -1,5 +1,7 @@
 package com.gsoeller.personalization.maps.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class GoogleMapRequest implements MapRequest {
 	private double latitude;
 	private double longitude;
@@ -72,6 +74,7 @@ public class GoogleMapRequest implements MapRequest {
 				id, zoom, xDimension, yDimension, region.toString(), language.toString());
 	}
 	
+	@JsonIgnore
 	public BingQuadKey getTileNumber() {
 		throw new UnsupportedOperationException("Tile number is not supported");
 	}

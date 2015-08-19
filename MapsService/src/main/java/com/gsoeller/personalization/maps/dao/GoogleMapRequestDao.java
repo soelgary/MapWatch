@@ -12,6 +12,11 @@ import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.mappers.GoogleMapRequestMapper;
 
 public interface GoogleMapRequestDao {
+	
+	@SqlQuery("Select * from MapRequest where id = :id")
+	@Mapper(GoogleMapRequestMapper.class)
+	public List<MapRequest> getRequest(@Bind("id") int id);
+	
 	@SqlQuery("select * from MapRequest where MapNumber = :mapNumber limit :offset,:limit;")
 	@Mapper(GoogleMapRequestMapper.class)
 	public List<MapRequest> getRequests(@Bind("limit") int limit, @Bind("offset") int offset, @Bind("mapNumber") int mapNumber);

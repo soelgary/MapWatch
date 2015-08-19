@@ -17,6 +17,8 @@ import com.gsoeller.personalization.maps.dao.GoogleMapDao;
 import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
 import com.gsoeller.personalization.maps.data.GoogleMap;
+import com.gsoeller.personalization.maps.data.GoogleMapRequest;
+import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.data.Region;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdateCountryData;
@@ -77,7 +79,7 @@ public class GoogleHITUpdateManager {
 		if(update.isPresent()) {
 			String oldHash = update.get().getOldMap().getHash();
 			String newHash = update.get().getNewMap().getHash();
-			List<GoogleHITUpdate> updates = updateDao.getSimilarUpdates(oldHash, newHash);
+			List<GoogleHITUpdate> updates = setMaps(updateDao.getSimilarUpdates(oldHash, newHash));
 			List<GoogleHITUpdateCountryData> countryData = Lists.newArrayList();
 			for(GoogleHITUpdate mapUpdate: updates) {
 				Optional<Region> region = getRegion(mapUpdate.getNewMap().getMapRequest().getId());
@@ -120,6 +122,21 @@ public class GoogleHITUpdateManager {
 		List<GoogleMap> map = googleMapDao.getMap(id);
 		if(map.isEmpty()) {
 			return Optional.absent();
+		}
+		int mapRequest = map.get(0).getMapRequest().getId();
+		List<MapRequest> requests = mapRequestDao.getRequest(mapRequest);
+		GoogleMap googleMap = map.get(0);
+		if(requests.size() == 1) {
+			return Optional.of(new GoogleMap.MapBuilder()
+				.setDateTime(googleMap.getDateTime())
+				.setFetchJob(googleMap.getFetchJob())
+				.setHasChanged(googleMap.hasChanged())
+				.setHash(googleMap.getHash())
+				.setId(googleMap.getId())
+				.setMapRequest((GoogleMapRequest)requests.get(0))
+				.setPath(googleMap.getPath())
+				.build());
+				
 		}
 		return Optional.fromNullable(map.get(0));
 	}
