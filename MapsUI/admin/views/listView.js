@@ -2,9 +2,10 @@ define([
     "text!templates/listUpdates.html",
     "collections/GoogleHITUpdates",
     "views/analyzeView",
+    "views/countryView",
     "models/Cookies",
     "text!templates/unauthorized.html"
-  ], function(template, GoogleHITUpdates, AnalyzeView, Cookie, UnauthorizedTemplate){
+  ], function(template, GoogleHITUpdates, AnalyzeView, CountryView, Cookie, UnauthorizedTemplate){
     return Backbone.View.extend({
       template: Handlebars.compile(template),
       unauthorizedTemplate: Handlebars.compile(UnauthorizedTemplate),
@@ -31,6 +32,7 @@ define([
                   out = out + "<th>" + items[i].get('id') + "</th>";
                   out = out + "<th>" + items[i].get('hasBorderChange') + "</th>";
                   out = out + "<th>" + items[i].get('finished') + "</th>";
+                  out = out + "<th><button class='analyze-button'>Countries</button>";
                   out = out + "<th><button data-update='" + items[i].get('id') + "' class='analyze-button'>Analyze</button><th>";
                   out = out + "<th id='icon-" + items[i].get('id') + "'></th>"
                   out = out + "</tr>";
@@ -58,7 +60,8 @@ define([
       },
 
       events: {
-        "click .analyze-button": "analyze"
+        "click .analyze-button": "analyze",
+        "click .country-button": "countryData"
       },
 
       analyze: function(ev){
@@ -66,8 +69,13 @@ define([
         var analyzeView = new AnalyzeView({id: id, token: this.token});
       },
 
+      countryData: function(ev) {
+        var id = $(ev.currentTarget).data('country');
+        var countryView = new CountryView({id: id, token: this.token});
+      },
+
       render: function() {
-        this.$el.html(this.template({updates: this.updates.models}));
+        this.$el.html(this.template());
         $('#example').dataTable( {
           "aaData": this.updates.models,
           "aoColumns": [
@@ -84,13 +92,24 @@ define([
               "title": "Finished?"
             },
             {
+              "title": "Country Data"
+            },
+            {
                 "title": "analyze"
             },
             {
               "title": "status"
             }
           ],
-            "columnDefs": [{
+            "columnDefs": [
+            {
+              "targets": -3,
+              "data": null,
+              "render": function(data, type, row) {
+                return "<button data-country='" + data.get('id') + "' class='country-button'>Country Data</button>"
+              }
+            } ,
+            {
               "targets": -2,
               "data": null,
               "render": function(data, type, row) {
