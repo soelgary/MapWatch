@@ -37,27 +37,27 @@ public class BingMapRequest implements MapRequest {
 	}
 	
 	public double getLatitude() {
-		throw new UnsupportedOperationException("Latitude is not supported");
+		return 0;
 	}
 
 	public double getLongitude() {
-		throw new UnsupportedOperationException("Longitude is not supported");
+		return 0;
 	}
 
 	public int getZoom() {
-		throw new UnsupportedOperationException("Zoom is not supported");
+		return 0;
 	}
 
 	public int getXDimension() {
-		throw new UnsupportedOperationException("X dimension is not supported");
+		return 0;
 	}
 
 	public int getYDimension() {
-		throw new UnsupportedOperationException("Y dimension is not supported");
+		return 0;
 	}
 
 	public Language getLanguage() {
-		throw new UnsupportedOperationException("Language is not supported");
+		return Language.English;
 	}
 	
 	public static class BingMapRequestBuilder {

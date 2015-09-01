@@ -36,4 +36,8 @@ public interface CrawlManager {
 	
 	public MapProvider getMapProvider();
 	
+	public Optional<Map> getMap(int id);
+	
+	public void addUpdate(Map oldMap, Map newMap);
+	
 }

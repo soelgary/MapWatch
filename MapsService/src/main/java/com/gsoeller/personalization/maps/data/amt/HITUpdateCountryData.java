@@ -4,12 +4,12 @@ import org.joda.time.DateTime;
 
 import com.gsoeller.personalization.maps.data.Region;
 
-public class GoogleHITUpdateCountryData {
+public class HITUpdateCountryData {
 	
 	private Region region;
 	private DateTime dateTime;
 	
-	public GoogleHITUpdateCountryData(Region region, DateTime dateTime) {
+	public HITUpdateCountryData(Region region, DateTime dateTime) {
 		this.region = region;
 		this.dateTime = dateTime;
 	}

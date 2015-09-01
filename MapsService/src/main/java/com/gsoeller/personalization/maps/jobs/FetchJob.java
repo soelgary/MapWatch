@@ -147,8 +147,18 @@ public class FetchJob implements Job {
 								}
 								LOG.info("Images are different. Keeping both images in the filesystem");
 							}
-							saveImage(hasChanged, request.getId(), imagePath, fetchJob);
+							Optional<Map> oldMap = crawlManager.getMapMostRecentWithMapRequestId(request.getId());
+							int currentMapId = saveImage(hasChanged, request.getId(), imagePath, fetchJob);
+							Optional<Map> newMap = crawlManager.getMap(currentMapId);
 							LOG.info("Saved image");
+							if(hasChanged) {
+								LOG.info("Tile changed, saving the map update");
+								if(oldMap.isPresent() && newMap.isPresent()) {
+									crawlManager.addUpdate(oldMap.get(), newMap.get());
+								} else {
+									LOG.severe(String.format("Could not find a map when the new map id is %s", currentMapId));
+								}
+							}
 							
 						} else {
 							saveImage(false, request.getId(), path.get(), fetchJob);

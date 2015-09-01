@@ -11,7 +11,8 @@ define([
       initialize: function(options) {
         this.token = options.token;
         this.id = options.id;
-        this.collection = new CountryDataCollection(this.id);
+        this.mapProvider = options.mapProvider;
+        this.collection = new CountryDataCollection(this.id, this.mapProvider);
         var self = this;
         this.collection.fetch({
           error: function(collection, response, options) {

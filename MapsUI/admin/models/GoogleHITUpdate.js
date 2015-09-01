@@ -1,6 +1,6 @@
 define([
   "models/Cookies",
-  "models/URL"
+  "../../util/URL"
 ],
   function(Cookies, URL){
     var GoogleHITUpdate = Backbone.Model.extend({
@@ -14,10 +14,14 @@ define([
         hitId: null
       },
 
-      setUrl: function(id, token) {
+      setUrl: function(id) {
           var cookies = new Cookies();
           var url = new URL();
-          this.url = url.getURL() + 'google/updates/' + id + "?token=" + cookies.getCookie("token");
+          this.url = url.getURL() + this.mapProvider + '/updates/' + id + "?token=" + cookies.getCookie("token");
+      },
+
+      initialize: function(mapProvider) {
+        this.mapProvider = mapProvider;
       }
     });
   return GoogleHITUpdate;

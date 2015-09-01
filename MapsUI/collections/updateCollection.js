@@ -6,7 +6,13 @@ define([
       model: Update,
       async: false,
       url: function() {
-        return 'https://achtung.ccs.neu.edu/maps/maps/google/hits/mturk/' + this.getHITId()
+        return 'http://127.0.0.1:9092/maps/' + this.getMapProvider() + '/hits/mturk/' + this.getHITId();
+        //return 'https://achtung.ccs.neu.edu/maps/maps/google/hits/mturk/' + this.getHITId()
+      },
+
+      getMapProvider() {
+        var queryParams = new QueryParameters();
+        return queryParams.getMapProvider();
       },
 
       getHITId: function() {
@@ -14,7 +20,8 @@ define([
         return queryParams.getHITId();
       },
 
-      initialize: function(){
+      initialize: function(mapProvider){
+        this.mapProvider = mapProvider;
         this.fetch({
             success: this.fetchSuccess,
             error: this.fetchError

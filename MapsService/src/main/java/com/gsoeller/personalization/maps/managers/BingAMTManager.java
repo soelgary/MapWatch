@@ -23,38 +23,41 @@ import com.amazonaws.mturk.util.PropertiesClientConfig;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.gsoeller.personalization.maps.PropertiesLoader;
-import com.gsoeller.personalization.maps.dao.GoogleMapDao;
-import com.gsoeller.personalization.maps.dao.amt.GoogleAMTControlDao;
-import com.gsoeller.personalization.maps.dao.amt.GoogleHITDao;
-import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
-import com.gsoeller.personalization.maps.data.GoogleMap;
-import com.gsoeller.personalization.maps.data.amt.GoogleControlUpdate;
-import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
-import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
+import com.gsoeller.personalization.maps.dao.BingMapDao;
+import com.gsoeller.personalization.maps.dao.amt.BingAMTControlDao;
+import com.gsoeller.personalization.maps.dao.amt.BingHITDao;
+import com.gsoeller.personalization.maps.dao.amt.BingHITUpdateDao;
+import com.gsoeller.personalization.maps.data.BingMap;
+import com.gsoeller.personalization.maps.data.amt.BingControlUpdate;
+import com.gsoeller.personalization.maps.data.amt.BingHIT;
+import com.gsoeller.personalization.maps.data.amt.BingHITUpdate;
 
-public class GoogleAMTManager {
+public class BingAMTManager {
 	
-	private GoogleHITDao dao;
-	private GoogleHITUpdateDao updateDao;
-	private GoogleAMTControlDao controlDao;
-	private GoogleMapDao googleMapDao;
+	private BingHITDao dao;
+	private BingHITUpdateDao updateDao;
+	private BingAMTControlDao controlDao;
+	private BingMapDao bingMapDao;
 	
 	private final int DEFAULT_OFFSET = 0;
 	private final int DEFAULT_HIT_COUNT = 10;
 	
 	private static final DateTime START_OF_TIME = new DateTime(0);
 	
-	public GoogleAMTManager(final GoogleHITDao dao, final GoogleHITUpdateDao updateDao, final GoogleAMTControlDao controlDao, final GoogleMapDao googleMapDao) throws IOException {
+	public BingAMTManager(final BingHITDao dao, 
+			final BingHITUpdateDao updateDao, 
+			final BingAMTControlDao controlDao, 
+			final BingMapDao bingMapDao) throws IOException {
 		this.dao = dao;
 		this.updateDao = updateDao;
 		this.controlDao = controlDao;
-		this.googleMapDao = googleMapDao;
+		this.bingMapDao = bingMapDao;
 	}
 	
-	public List<GoogleHIT> approveHITS(int count) {
-		List<GoogleHIT> hitsToApprove = getHITS(0, count, true, false, START_OF_TIME);
+	public List<BingHIT> approveHITS(int count) {
+		List<BingHIT> hitsToApprove = getHITS(0, count, true, false, START_OF_TIME);
 		System.out.println("START OF HITS");
-		for(GoogleHIT hit: hitsToApprove) {
+		for(BingHIT hit: hitsToApprove) {
 			System.out.println("HIT -> " + hit.getId());
 			if(!approveHIT(hit)) {
 				throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
@@ -67,7 +70,7 @@ public class GoogleAMTManager {
 		return hitsToApprove;
 	}
 	
-	public boolean approveHIT(GoogleHIT hit) {
+	public boolean approveHIT(BingHIT hit) {
 		if(hit.isApproved()) {
 			throw new WebApplicationException(Response.status(Status.BAD_REQUEST)
 					.entity(String.format("HIT `%s` is already approved", hit.getId()))
@@ -87,35 +90,35 @@ public class GoogleAMTManager {
 		return false;
 	}
 	
-	public Optional<GoogleHIT> getHIT(int id) {
-		List<GoogleHIT> hits = dao.getHIT(id);
+	public Optional<BingHIT> getHIT(int id) {
+		List<BingHIT> hits = dao.getHIT(id);
 		if(hits.size() == 1) {
 			return Optional.fromNullable(hits.get(0));
 		}
 		return Optional.absent();
 	}
 	
-	public Optional<GoogleHIT> getHITFromMTurkHitId(String id) {
-		List<GoogleHIT> hits = dao.getHITFromMTurkHitId(id);
+	public Optional<BingHIT> getHITFromMTurkHitId(String id) {
+		List<BingHIT> hits = dao.getHITFromMTurkHitId(id);
 		if(hits.size() == 1) {
 			return Optional.fromNullable(getHIT(hits.get(0)));
 		}
 		return Optional.absent();
 	}
 	
-	public List<GoogleHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved, DateTime createdAfter) {
-		List<GoogleHIT> hits = dao.getHITS(offset, count, readyForApproval, approved, createdAfter.toString());
-		List<GoogleHIT> acc = Lists.newArrayList();
-		for(GoogleHIT hit: hits) {
+	public List<BingHIT> getHITS(int offset, int count, boolean readyForApproval, boolean approved, DateTime createdAfter) {
+		List<BingHIT> hits = dao.getHITS(offset, count, readyForApproval, approved, createdAfter.toString());
+		List<BingHIT> acc = Lists.newArrayList();
+		for(BingHIT hit: hits) {
 			acc.add(getHIT(hit));
 		}
 		return acc;
 	}
 	
-	public Optional<GoogleHITUpdate> getUpdate(String hitId, int updateId) {
-		List<GoogleHITUpdate> updates = updateDao.getUpdate(hitId, updateId);
+	public Optional<BingHITUpdate> getUpdate(String hitId, int updateId) {
+		List<BingHITUpdate> updates = updateDao.getUpdate(hitId, updateId);
 		if(updates.size() == 1) {
-			GoogleHITUpdate update = updates.get(0);
+			BingHITUpdate update = updates.get(0);
 			update.setNewMap(getMap(update.getNewMap().getId()).get());
 			update.setOldMap(getMap(update.getOldMap().getId()).get());
 			return Optional.fromNullable(update);
@@ -123,35 +126,39 @@ public class GoogleAMTManager {
 		return Optional.absent();
 	}
 	
-	public Optional<GoogleHITUpdate> updateGoogleHITUpdate(int updateId, GoogleHITUpdate update) {
+	public Optional<BingHITUpdate> updateBingHITUpdate(int updateId, BingHITUpdate update) {
 		updateDao.update(updateId, update.isHasBorderChange());
 		return getUpdate("", updateId);
 	}
 	
-	public Optional<GoogleHIT> updateGoogleHITControlResponse(String hitId, GoogleHIT hit) {
+	public Optional<BingHIT> updateBingHITControlResponse(String hitId, BingHIT hit) {
 		dao.updateControlResponse(hitId, hit.isControlResponse());
 		return getHITFromMTurkHitId(hitId);
 	}
 	
-	public List<GoogleHIT> getNextAvailableHits(int count) {
+	public List<BingHIT> getNextAvailableHits(int count) {
 		return dao.getNextAvailableHITs(DEFAULT_OFFSET, count);
 	}
 	
-	public int createHIT(GoogleHIT hit) {
+	public int createHIT(BingHIT hit) {
 		return dao.createHIT(hit.getTurkId(), hit.getControl().getId(), hit.isApproved(), hit.isReadyForApproval());
 	}
 	
-	public void markHITSForApproval(List<GoogleHIT> hits) {
-		for(GoogleHIT hit: hits) {
+	public void markHITSForApproval(List<BingHIT> hits) {
+		for(BingHIT hit: hits) {
 			markHITForApproval(hit);
 		}
 	}
 	
-	private void markHITForApproval(GoogleHIT hit) {
+	private void markHITForApproval(BingHIT hit) {
 		int count = updateDao.countUpdates(hit.getId());
 		if(count >= DEFAULT_HIT_COUNT) {
 			dao.markForApproval(hit.getId());
 		}
+	}
+	
+	public static void main(String[] args) throws IOException, Exception {
+		new BingAMTManager(null, null, null, null).sendHITsToTurk();
 	}
 	
 	public Optional<String> sendHITsToTurk() throws Exception {
@@ -200,33 +207,33 @@ public class GoogleAMTManager {
 	private String generateQuestionXML() {
 		return "<?xml version=\"1.0\"?>"
 				+ "<ExternalQuestion xmlns=\"http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2006-07-14/ExternalQuestion.xsd\">"
-				+ "<ExternalURL>https://achtung.ccs.neu.edu/~soelgary/maps/?mapProvider=google</ExternalURL>"
+				+ "<ExternalURL>https://achtung.ccs.neu.edu/~soelgary/maps/?mapProvider=bing</ExternalURL>"
 				+ "<FrameHeight>800</FrameHeight>"
 				+ "</ExternalQuestion>";
 	}
 	
-	private Optional<GoogleControlUpdate> getControl(int id) {
-		List<GoogleControlUpdate> controls = controlDao.getControl(id);
+	private Optional<BingControlUpdate> getControl(int id) {
+		List<BingControlUpdate> controls = controlDao.getControl(id);
 		if(controls.size() == 1) {
 			return Optional.fromNullable(controls.get(0));
 		}
 		return Optional.absent();
 	}
 	
-	private Optional<GoogleMap> getMap(int id) {
-		List<GoogleMap> map = googleMapDao.getMap(id);
+	private Optional<BingMap> getMap(int id) {
+		List<BingMap> map = bingMapDao.getMap(id);
 		if(map.isEmpty()) {
 			return Optional.absent();
 		}
 		return Optional.fromNullable(map.get(0));
 	}
 	
-	private GoogleHIT getHIT(GoogleHIT hit) {
-		GoogleControlUpdate control = getControl(hit.getControl().getId()).get();
+	private BingHIT getHIT(BingHIT hit) {
+		BingControlUpdate control = getControl(hit.getControl().getId()).get();
 		control.setNewMap(getMap(control.getNewMap().getId()).get());
 		control.setOldMap(getMap(control.getOldMap().getId()).get());
-		List<GoogleHITUpdate> updates = updateDao.getHITUpdates(hit.getId());
-		for(GoogleHITUpdate update: updates) {
+		List<BingHITUpdate> updates = updateDao.getHITUpdates(hit.getId());
+		for(BingHITUpdate update: updates) {
 			update.setNewMap(getMap(update.getNewMap().getId()).get());
 			update.setOldMap(getMap(update.getOldMap().getId()).get());
 		}

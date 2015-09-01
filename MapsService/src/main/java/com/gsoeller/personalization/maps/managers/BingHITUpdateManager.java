@@ -13,33 +13,32 @@ import org.joda.time.DateTime;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.gsoeller.personalization.maps.MapsLogger;
-import com.gsoeller.personalization.maps.dao.GoogleMapDao;
-import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
-import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
-import com.gsoeller.personalization.maps.data.GoogleMap;
-import com.gsoeller.personalization.maps.data.GoogleMapRequest;
+import com.gsoeller.personalization.maps.dao.BingMapDao;
+import com.gsoeller.personalization.maps.dao.BingMapRequestDao;
+import com.gsoeller.personalization.maps.dao.amt.BingHITUpdateDao;
+import com.gsoeller.personalization.maps.data.BingMap;
+import com.gsoeller.personalization.maps.data.BingMapRequest;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.data.Region;
-import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
+import com.gsoeller.personalization.maps.data.amt.BingHITUpdate;
 import com.gsoeller.personalization.maps.data.amt.HITUpdateCountryData;
 
-public class GoogleHITUpdateManager {
+public class BingHITUpdateManager {
+	private BingHITUpdateDao updateDao;
+	private BingMapDao BingMapDao;
+	private BingMapRequestDao mapRequestDao;
 	
-	private GoogleHITUpdateDao updateDao;
-	private GoogleMapDao googleMapDao;
-	private GoogleMapRequestDao mapRequestDao;
+	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.managers.BingHITUpdateManager");
 	
-	private Logger LOG = MapsLogger.createLogger("com.gsoeller.personalization.maps.managers.GoogleHITUpdateManager");
-	
-	public GoogleHITUpdateManager(final GoogleHITUpdateDao updateDao, 
-			final GoogleMapDao googleMapDao,
-			final GoogleMapRequestDao mapRequestDao) throws IOException {
+	public BingHITUpdateManager(final BingHITUpdateDao updateDao, 
+			final BingMapDao BingMapDao,
+			final BingMapRequestDao mapRequestDao) throws IOException {
 		this.updateDao = updateDao;
-		this.googleMapDao = googleMapDao;
+		this.BingMapDao = BingMapDao;
 		this.mapRequestDao = mapRequestDao;
 	}
 	
-	public int createUpdate(GoogleHITUpdate update) {
+	public int createUpdate(BingHITUpdate update) {
 		return updateDao.createUpdate(update.getHitId(), 
 				update.getOldMap().getId(), 
 				update.getNewMap().getId(), 
@@ -47,20 +46,20 @@ public class GoogleHITUpdateManager {
 				update.getNotes());
 	}
 	
-	public List<GoogleHITUpdate> getUpdates(int count, int offset, boolean finished) {
-		List<GoogleHITUpdate> updates = updateDao.getHITUpdates(finished, count, offset);
+	public List<BingHITUpdate> getUpdates(int count, int offset, boolean finished) {
+		List<BingHITUpdate> updates = updateDao.getHITUpdates(finished, count, offset);
 		return setMaps(updates);
 	}
 	
-	public List<GoogleHITUpdate> getUpdatesBasedOnBorderDifference(int count, int offset, boolean hasBorderDifference) {
-		List<GoogleHITUpdate> updates = updateDao.getHITUpdatesBasedOnBorderDifference(hasBorderDifference, count, offset);
+	public List<BingHITUpdate> getUpdatesBasedOnBorderDifference(int count, int offset, boolean hasBorderDifference) {
+		List<BingHITUpdate> updates = updateDao.getHITUpdatesBasedOnBorderDifference(hasBorderDifference, count, offset);
 		return setMaps(updates);
 	}
 	
-	public Optional<GoogleHITUpdate> getUpdate(int id) {
-		List<GoogleHITUpdate> updates =  updateDao.getHITUpdate(id);
+	public Optional<BingHITUpdate> getUpdate(int id) {
+		List<BingHITUpdate> updates =  updateDao.getHITUpdate(id);
 		if(updates.size() == 1) {
-			GoogleHITUpdate update = updates.get(0);
+			BingHITUpdate update = updates.get(0);
 			update.setNewMap(getMap(update.getNewMap().getId()).get());
 			update.setOldMap(getMap(update.getOldMap().getId()).get());
 			return Optional.fromNullable(update);
@@ -75,13 +74,13 @@ public class GoogleHITUpdateManager {
 	 * 
 	 */
 	public List<HITUpdateCountryData> getCountryInformation(int id) {
-		Optional<GoogleHITUpdate> update = getUpdate(id);
+		Optional<BingHITUpdate> update = getUpdate(id);
 		if(update.isPresent()) {
 			String oldHash = update.get().getOldMap().getHash();
 			String newHash = update.get().getNewMap().getHash();
-			List<GoogleHITUpdate> updates = setMaps(updateDao.getSimilarUpdates(oldHash, newHash));
+			List<BingHITUpdate> updates = setMaps(updateDao.getSimilarUpdates(oldHash, newHash));
 			List<HITUpdateCountryData> countryData = Lists.newArrayList();
-			for(GoogleHITUpdate mapUpdate: updates) {
+			for(BingHITUpdate mapUpdate: updates) {
 				Optional<Region> region = getRegion(mapUpdate.getNewMap().getMapRequest().getId());
 				DateTime dateTime = mapUpdate.getNewMap().getDateTime();
 				countryData.add(new HITUpdateCountryData(region.get(), dateTime));
@@ -103,38 +102,38 @@ public class GoogleHITUpdateManager {
 		return Optional.absent();
 	}
 	
-	private List<GoogleHITUpdate> setMaps(List<GoogleHITUpdate> updates) {
-		List<GoogleHITUpdate> completeUpdates = Lists.newArrayList();
-		for(GoogleHITUpdate update: updates) {
+	private List<BingHITUpdate> setMaps(List<BingHITUpdate> updates) {
+		List<BingHITUpdate> completeUpdates = Lists.newArrayList();
+		for(BingHITUpdate update: updates) {
 			completeUpdates.add(setMap(update));
 		}
 		return completeUpdates;
 	}
 	
-	private GoogleHITUpdate setMap(GoogleHITUpdate update) {
+	private BingHITUpdate setMap(BingHITUpdate update) {
 		update.setOldMap(getMap(update.getOldMap().getId()).get());
 		update.setNewMap(getMap(update.getNewMap().getId()).get());
 		return update;
 	}
 	
 	
-	private Optional<GoogleMap> getMap(int id) {
-		List<GoogleMap> map = googleMapDao.getMap(id);
+	private Optional<BingMap> getMap(int id) {
+		List<BingMap> map = BingMapDao.getMap(id);
 		if(map.isEmpty()) {
 			return Optional.absent();
 		}
 		int mapRequest = map.get(0).getMapRequest().getId();
 		List<MapRequest> requests = mapRequestDao.getRequest(mapRequest);
-		GoogleMap googleMap = map.get(0);
+		BingMap BingMap = map.get(0);
 		if(requests.size() == 1) {
-			return Optional.of(new GoogleMap.MapBuilder()
-				.setDateTime(googleMap.getDateTime())
-				.setFetchJob(googleMap.getFetchJob())
-				.setHasChanged(googleMap.hasChanged())
-				.setHash(googleMap.getHash())
-				.setId(googleMap.getId())
-				.setMapRequest((GoogleMapRequest)requests.get(0))
-				.setPath(googleMap.getPath())
+			return Optional.of(new BingMap.MapBuilder()
+				.setDateTime(BingMap.getDateTime())
+				.setFetchJob(BingMap.getFetchJob())
+				.setHasChanged(BingMap.hasChanged())
+				.setHash(BingMap.getHash())
+				.setId(BingMap.getId())
+				.setMapRequest((BingMapRequest)requests.get(0))
+				.setPath(BingMap.getPath())
 				.build());
 				
 		}

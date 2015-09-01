@@ -19,6 +19,8 @@ import com.gsoeller.personalization.maps.managers.GoogleHITUpdateManager;
 import com.gsoeller.personalization.maps.resources.AMTControlResource;
 import com.gsoeller.personalization.maps.resources.AMTResource;
 import com.gsoeller.personalization.maps.resources.AuthenticationResource;
+import com.gsoeller.personalization.maps.resources.BingAMTResource;
+import com.gsoeller.personalization.maps.resources.BingHITUpdateResource;
 import com.gsoeller.personalization.maps.resources.GoogleHITUpdateResource;
 
 public class WebApplication extends AbstractApplication {
@@ -51,5 +53,7 @@ public class WebApplication extends AbstractApplication {
 	    environment.jersey().register(new AMTResource(googleAMTManager));
 		environment.jersey().register(new AMTControlResource(googleControlManager));
 		environment.jersey().register(new GoogleHITUpdateResource(googleAMTManager, googleHITUpdateManager, authManager));
+		environment.jersey().register(new BingHITUpdateResource(bingAMTManager, bingHITUpdateManager, authManager));
+		environment.jersey().register(new BingAMTResource(bingAMTManager));
 	}
 }

@@ -7,17 +7,17 @@ import org.joda.time.DateTime;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
-public class GoogleHIT extends HIT {
-	
-	public List<GoogleHITUpdate> updates;
-	public GoogleControlUpdate control;
+public class BingHIT extends HIT {
 
-	public GoogleHIT() {};
+	public List<BingHITUpdate> updates;
+	public BingControlUpdate control;
+
+	public BingHIT() {};
 	
-	private GoogleHIT(int id, 
+	private BingHIT(int id, 
 			int turkId, 
-			List<GoogleHITUpdate> updates, 
-			GoogleControlUpdate control, 
+			List<BingHITUpdate> updates, 
+			BingControlUpdate control, 
 			boolean approved, 
 			boolean readyForApproval,
 			String hitId,
@@ -29,27 +29,27 @@ public class GoogleHIT extends HIT {
 		this.control = control;
 	}
 	
-	public List<GoogleHITUpdate> getUpdates() {
+	public List<BingHITUpdate> getUpdates() {
 		return updates;
 	}
 
-	public void setUpdates(List<GoogleHITUpdate> updates) {
+	public void setUpdates(List<BingHITUpdate> updates) {
 		this.updates = updates;
 	}
 
-	public GoogleControlUpdate getControl() {
+	public BingControlUpdate getControl() {
 		return control;
 	}
 
-	public void setControl(GoogleControlUpdate control) {
+	public void setControl(BingControlUpdate control) {
 		this.control = control;
 	}
 
-	public static class GoogleHITBuilder {
+	public static class BingHITBuilder {
 		private int id;
 		private int turkId;
-		private List<GoogleHITUpdate> updates = Lists.newArrayList();
-		private GoogleControlUpdate control;
+		private List<BingHITUpdate> updates = Lists.newArrayList();
+		private BingControlUpdate control;
 		private boolean approved;
 		private boolean readyForApproval;
 		private String hitId;
@@ -57,58 +57,58 @@ public class GoogleHIT extends HIT {
 		private boolean finished;
 		private Optional<DateTime> created = Optional.absent();
 		
-		public GoogleHITBuilder setId(int id) {
+		public BingHITBuilder setId(int id) {
 			this.id = id;
 			return this;
 		}
 		
-		public GoogleHITBuilder setTurkId(int turkId) {
+		public BingHITBuilder setTurkId(int turkId) {
 			this.turkId = turkId;
 			return this;
 		}
 		
-		public GoogleHITBuilder setUpdates(List<GoogleHITUpdate> updates) {
+		public BingHITBuilder setUpdates(List<BingHITUpdate> updates) {
 			this.updates = updates;
 			return this;
 		}
 		
-		public GoogleHITBuilder setControl(GoogleControlUpdate control) {
+		public BingHITBuilder setControl(BingControlUpdate control) {
 			this.control = control;
 			return this;
 		}
 		
-		public GoogleHITBuilder setApproved(boolean approved) {
+		public BingHITBuilder setApproved(boolean approved) {
 			this.approved = approved;
 			return this;
 		}
 		
-		public GoogleHITBuilder setReadyForApproval(boolean readyForApproval) {
+		public BingHITBuilder setReadyForApproval(boolean readyForApproval) {
 			this.readyForApproval = readyForApproval;
 			return this;
 		}
 		
-		public GoogleHITBuilder setHitId(String hitId) {
+		public BingHITBuilder setHitId(String hitId) {
 			this.hitId = hitId;
 			return this;
 		}
 		
-		public GoogleHITBuilder setControlResponse(boolean controlResponse) {
+		public BingHITBuilder setControlResponse(boolean controlResponse) {
 			this.controlResponse = controlResponse;
 			return this;
 		}
 		
-		public GoogleHITBuilder setFinished(boolean finished) {
+		public BingHITBuilder setFinished(boolean finished) {
 			this.finished = finished;
 			return this;
 		}
 		
-		public GoogleHITBuilder setCreated(DateTime created) {
+		public BingHITBuilder setCreated(DateTime created) {
 			this.created = Optional.of(created);
 			return this;
 		}
 		
-		public GoogleHIT build() {
-			return new GoogleHIT(id, turkId, updates, control, approved, readyForApproval, hitId, controlResponse, finished, created);
+		public BingHIT build() {
+			return new BingHIT(id, turkId, updates, control, approved, readyForApproval, hitId, controlResponse, finished, created);
 		}
 	}
 }

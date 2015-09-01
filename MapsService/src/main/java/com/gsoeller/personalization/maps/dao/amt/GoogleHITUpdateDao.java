@@ -9,6 +9,7 @@ import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
+import com.gsoeller.personalization.maps.data.amt.HITUpdate;
 import com.gsoeller.personalization.maps.mappers.amt.GoogleHITUpdateJoinedMapper;
 import com.gsoeller.personalization.maps.mappers.amt.GoogleHITUpdateMapper;
 

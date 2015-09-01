@@ -20,8 +20,13 @@ public class CrawlApplication extends AbstractApplication {
 	@Override
 	public void run(MapsConfiguration configuration, Environment environment) throws Exception {
 		super.initializeDaos(configuration, environment);
-		CrawlManager crawlManager = new GoogleCrawlManager(googleMapRequestDao, googleFetchJobDao, googleMapUpdateDao, googleMapDao);
-		
+		CrawlManager crawlManager = new GoogleCrawlManager(googleMapRequestDao, 
+				googleFetchJobDao, 
+				googleMapUpdateDao, 
+				googleMapDao, 
+				googleAMTManager, 
+				googleControlManager,
+				googleHITUpdateManager);
 		SchedulerFactory schedFact = new StdSchedulerFactory();
 		Scheduler sched = schedFact.getScheduler();
 		sched.start();

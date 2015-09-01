@@ -17,25 +17,25 @@ import com.google.common.base.Optional;
 import com.gsoeller.personalization.maps.auth.Role;
 import com.gsoeller.personalization.maps.auth.User;
 import com.gsoeller.personalization.maps.auth.managers.AuthManager;
-import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
+import com.gsoeller.personalization.maps.data.amt.BingHITUpdate;
 import com.gsoeller.personalization.maps.data.amt.HITUpdateCountryData;
-import com.gsoeller.personalization.maps.managers.GoogleAMTManager;
-import com.gsoeller.personalization.maps.managers.GoogleHITUpdateManager;
+import com.gsoeller.personalization.maps.managers.BingAMTManager;
+import com.gsoeller.personalization.maps.managers.BingHITUpdateManager;
 
-@Path("/google/updates")
+@Path("/bing/updates")
 @Produces(MediaType.APPLICATION_JSON)
-public class GoogleHITUpdateResource {
+public class BingHITUpdateResource {
 
-	private GoogleHITUpdateManager manager;
-	private GoogleAMTManager amtManager;
+	private BingHITUpdateManager manager;
+	private BingAMTManager amtManager;
 	private AuthManager authManager;
 	
 	private static final String DEFAULT_COUNT = "20";
 	private static final String DEFAULT_OFFSET = "0";
 	private static final String DEFAULT_FINISHED = "false";
 	
-	public GoogleHITUpdateResource(final GoogleAMTManager amtManager, 
-			final GoogleHITUpdateManager manager,
+	public BingHITUpdateResource(final BingAMTManager amtManager, 
+			final BingHITUpdateManager manager,
 			final AuthManager authManager) throws Exception {
 		this.manager = manager;
 		this.amtManager = amtManager;
@@ -43,7 +43,7 @@ public class GoogleHITUpdateResource {
 	}
 	
 	@GET
-	public List<GoogleHITUpdate> getUpdates(@QueryParam("token") String tokenValue,
+	public List<BingHITUpdate> getUpdates(@QueryParam("token") String tokenValue,
 			@QueryParam("hasBorderDifference") Optional<Boolean> hasBorderDifference,
 			@QueryParam("finished") @DefaultValue(DEFAULT_FINISHED) boolean finished,
 			@QueryParam("count") @DefaultValue(DEFAULT_COUNT) int count,
@@ -61,7 +61,7 @@ public class GoogleHITUpdateResource {
 	
 	@GET
 	@Path("{id}")
-	public Optional<GoogleHITUpdate> getUpdate(@PathParam("id") int id) {
+	public Optional<BingHITUpdate> getUpdate(@PathParam("id") int id) {
 		return manager.getUpdate(id);
 	}
 	
@@ -73,12 +73,12 @@ public class GoogleHITUpdateResource {
 	
 	@PUT
 	@Path("{id}")
-	public Optional<GoogleHITUpdate> updateUpdate(@QueryParam("token") String tokenValue,
+	public Optional<BingHITUpdate> updateUpdate(@QueryParam("token") String tokenValue,
 			@PathParam("id") int id,
-			GoogleHITUpdate googleHITUpdate) {
+			BingHITUpdate bingHITUpdate) {
 		Optional<User> user = authManager.getUser(tokenValue);
 		if(authManager.isAuthorized(user, Role.ADMIN)) {
-			return amtManager.updateGoogleHITUpdate(id, googleHITUpdate);
+			return amtManager.updateBingHITUpdate(id, bingHITUpdate);
 		}
 		throw new WebApplicationException(Response.Status.UNAUTHORIZED);
 	}

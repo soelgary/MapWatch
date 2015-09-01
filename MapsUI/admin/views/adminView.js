@@ -9,9 +9,6 @@ define([
 
       initialize: function(options) {
         var nav = new NavView();
-        finished = true,
-        count = 20,
-        offset = 0;
         this.render();
       },
 
@@ -20,16 +17,25 @@ define([
       },
 
       fetch: function() {
+        if(this.listView) {
+          this.listView.$el.empty();
+          this.listView.undelegateEvents();
+          //this.listView.$el.empty().off();
+          //this.listView.stopListening();
+          //this.listView.remove();
+        }
         var finished = $('#finished').is(':checked');
         var offset = Number($('#offset').val());
         var totalCount = Number($('#totalCount').val());
         var hasBorderDifference = $('#hasChange').is(':checked');
-        var listView = new ListView(
+        var mapProvider = $("input[name=mapProvidersRadios]:checked").val();
+        this.listView = new ListView(
           {
             finished: finished,
             offset: offset,
             count: totalCount,
-            hasBorderDifference: hasBorderDifference
+            hasBorderDifference: hasBorderDifference,
+            mapProvider: mapProvider
           }
         );
       },

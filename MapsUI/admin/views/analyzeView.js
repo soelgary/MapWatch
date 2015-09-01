@@ -10,7 +10,8 @@ define([
 
       initialize: function(options) {
         this.id = options.id;
-        this.model = new GoogleHITUpdate();
+        this.mapProvider = options.mapProvider;
+        this.model = new GoogleHITUpdate(this.mapProvider);
         this.token = options.token;
         var self = this;
 

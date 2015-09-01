@@ -31,11 +31,6 @@ public class HitGenerator {
 		updateManager = new GoogleHITUpdateManager(null, null, null);
 	}
 
-	
-	public List<GoogleHIT> approveHITS(int count) {
-		return null;
-	}
-
 	public void addUpdate(MapProvider mapProvider, MapChange change)
 			throws Exception {
 		// need to get 3 HIT's

@@ -405,4 +405,71 @@
 			</column>
 		</createTable>
 	</changeSet>
+	
+	<changeSet id="24" author="gary">
+		<createTable tableName="BingControlUpdate">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="hasBorderDifference" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+			<column name="oldMap" type="int">
+				<constraints foreignKeyName="fk_old_bing_map_for_control" references="BingMap(id)"></constraints>
+			</column>
+			<column name="newMap" type="int">
+				<constraints foreignKeyName="fk_new_bing_map_for_control" references="BingMap(id)"></constraints>
+			</column>
+		</createTable>
+		<createTable tableName="BingHITUpdate">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="oldMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_old_bing_map_for_update" references="BingMap(id)"/>
+			</column>
+			<column name="newMap" type="int">
+				<constraints nullable="false" foreignKeyName="fk_new_bing_map_for_update" references="BingMap(id)"/>
+			</column>
+			<column name="hasBorderChange" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="notes" type="text">
+				<constraints nullable="true" />
+			</column>
+			<column name="hitId" type="int" defaultValue="0">
+				<constraints nullable="false"></constraints>
+			</column>
+			<column name="finished" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+		</createTable>
+		<createTable tableName="BingHIT">
+			<column name="id" type="int" autoIncrement="true">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="turkId" type="int">
+				<constraints nullable="false" />
+			</column>
+			<column name="approved" type="boolean">
+				<constraints nullable="false" />
+			</column>
+			<column name="control" type="int">
+				<constraints nullable="false" foreignKeyName="fk_control_bing_update" references="BingControlUpdate(id)" />
+			</column>
+			<column name="readyForApproval" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+			<column name="hitId" type="varchar(255)" defaultValue="">
+				<constraints nullable="false"></constraints>
+			</column>
+			<column name="controlResponse" type="boolean"></column>
+			<column name="finished" type="boolean" defaultValueBoolean="false">
+				<constraints nullable="false"></constraints>
+			</column>
+			<column name="created"  type="timestamp" defaultValueComputed="LOCALTIMESTAMP">
+				<constraints nullable="false"></constraints>
+			</column>
+		</createTable>
+	</changeSet>
 </databaseChangeLog>

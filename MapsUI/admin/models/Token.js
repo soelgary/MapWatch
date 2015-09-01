@@ -1,5 +1,5 @@
 define([
-  "models/URL"
+  "../../util/URL"
 ],
   function(URL){
     var Token = Backbone.Model.extend({

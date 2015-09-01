@@ -1,5 +1,5 @@
 define([
-  "models/URL",
+  "../../util/URL",
   "models/CountryData"
 ],
   function(URL, CountryData){
@@ -9,11 +9,12 @@ define([
 
       url: function() {
         var url = new URL();
-        return url.getURL() + 'google/updates/' + this.googleHITUpdateId + '/cctld';
+        return url.getURL() + this.mapProvider + '/updates/' + this.googleHITUpdateId + '/cctld';
       },
 
-      initialize: function(googleHITUpdateId) {
+      initialize: function(googleHITUpdateId, mapProvider) {
         this.googleHITUpdateId = googleHITUpdateId;
+        this.mapProvider = mapProvider;
       },
 
     });

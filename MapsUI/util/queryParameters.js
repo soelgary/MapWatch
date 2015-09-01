@@ -10,6 +10,10 @@ define([],
         return this.getQueryParameter('assignmentId');
       },
 
+      getMapProvider: function() {
+        return this.getQueryParameter('mapProvider');
+      },
+
       getQueryParameter: function(param) {
         var query = window.location.search.substring(1);
         var vars = query.split("&");

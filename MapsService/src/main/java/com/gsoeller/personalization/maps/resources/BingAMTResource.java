@@ -16,16 +16,16 @@ import javax.ws.rs.core.MediaType;
 import org.joda.time.DateTime;
 
 import com.google.common.base.Optional;
-import com.gsoeller.personalization.maps.data.amt.GoogleHIT;
-import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
-import com.gsoeller.personalization.maps.managers.GoogleAMTManager;
+import com.gsoeller.personalization.maps.data.amt.BingHIT;
+import com.gsoeller.personalization.maps.data.amt.BingHITUpdate;
+import com.gsoeller.personalization.maps.managers.BingAMTManager;
 
-@Path("/maps/google/hits")
+@Path("/maps/bing/hits")
 @Produces(MediaType.APPLICATION_JSON)
 @Singleton
-public class AMTResource {
+public class BingAMTResource {
 	
-	private GoogleAMTManager manager;
+	private BingAMTManager manager;
 	
 	private final String DEFAULT_OFFSET = "0";
 	private final String DEFAULT_COUNT = "10";
@@ -33,27 +33,27 @@ public class AMTResource {
 	private final String APPROVED = "false";
 	private final String DEFAULT_CREATED_AFTER = "0";
 	
-	public AMTResource(final GoogleAMTManager manager) throws Exception {
+	public BingAMTResource(final BingAMTManager manager) throws Exception {
 		this.manager = manager;
 	}
 	
 	@GET
 	@Path("/{hitId}")
-	public Optional<GoogleHIT> getHit(@PathParam("mapProvider") String mapProvider,
+	public Optional<BingHIT> getHit(@PathParam("mapProvider") String mapProvider,
 			@PathParam("hitId") int hitId) {
 		return manager.getHIT(hitId);
 	}
 	
 	@GET
 	@Path("/mturk/{hitId}")
-	public Optional<GoogleHIT> getHitFromMTurkHitId(@PathParam("mapProvider") String mapProvider,
+	public Optional<BingHIT> getHitFromMTurkHitId(@PathParam("mapProvider") String mapProvider,
 			@PathParam("hitId") String hitId) {
 		return manager.getHITFromMTurkHitId(hitId);
 	}
 	
 	@GET
 	@Path("/mturk/{hitId}/update/{updateId}")
-	public Optional<GoogleHITUpdate> getUpdatesFromHIT(@PathParam("mapProvider") String mapProvider,
+	public Optional<BingHITUpdate> getUpdatesFromHIT(@PathParam("mapProvider") String mapProvider,
 			@PathParam("hitId") String hitId,
 			@PathParam("updateId") int updateId) {
 		return manager.getUpdate(hitId, updateId);
@@ -61,23 +61,23 @@ public class AMTResource {
 	
 	@PUT
 	@Path("/mturk/{hitId}/update/{updateId}")
-	public Optional<GoogleHITUpdate> updateGoogleHITUpdate(@PathParam("mapProvider") String mapProvider,
+	public Optional<BingHITUpdate> updateBingHITUpdate(@PathParam("mapProvider") String mapProvider,
 			@PathParam("hitId") String hitId,
 			@PathParam("updateId") int updateId,
-			GoogleHITUpdate update) {
-		return manager.updateGoogleHITUpdate(updateId, update);
+			BingHITUpdate update) {
+		return manager.updateBingHITUpdate(updateId, update);
 	}
 	
 	@PUT
 	@Path("/{hitId}/control")
-	public Optional<GoogleHIT> updateGoogleHITControlResponse(@PathParam("mapProvider") String mapProvider,
+	public Optional<BingHIT> updateBingHITControlResponse(@PathParam("mapProvider") String mapProvider,
 			@PathParam("hitId") String hitId,
-			GoogleHIT hit) {
-		return manager.updateGoogleHITControlResponse(hitId, hit);
+			BingHIT hit) {
+		return manager.updateBingHITControlResponse(hitId, hit);
 	}
 	
 	@GET
-	public GoogleHITResponse getHits(@PathParam("mapProvider") String mapProvider,
+	public BingHITResponse getHits(@PathParam("mapProvider") String mapProvider,
 			@QueryParam("offset") @DefaultValue(DEFAULT_OFFSET) int offset,
 			@QueryParam("count") @DefaultValue(DEFAULT_COUNT) int count,
 			@QueryParam("readyForApproval") @DefaultValue(READY_FOR_APPROVAL) boolean readyForApproval,
@@ -85,18 +85,18 @@ public class AMTResource {
 			@QueryParam("createdAfter") @DefaultValue(DEFAULT_CREATED_AFTER) long createdAfter) {
 		System.out.println(createdAfter);
 		System.out.println(new DateTime(createdAfter));
-		return new GoogleHITResponse(manager.getHITS(offset, count, readyForApproval, approved, new DateTime(createdAfter)));
+		return new BingHITResponse(manager.getHITS(offset, count, readyForApproval, approved, new DateTime(createdAfter)));
 	}
 	
 	@POST
-	public int createHit(@PathParam("mapProvider") String mapProvider, GoogleHIT hit) {
+	public int createHit(@PathParam("mapProvider") String mapProvider, BingHIT hit) {
 		return manager.createHIT(hit);
 	}
 	
 	@POST
 	@Path("/approve")
-	public GoogleHITResponse approve(@PathParam("mapProvider") String mapProvider, Count count) {
-		return new GoogleHITResponse(manager.approveHITS(count.getCount()));
+	public BingHITResponse approve(@PathParam("mapProvider") String mapProvider, Count count) {
+		return new BingHITResponse(manager.approveHITS(count.getCount()));
 	}
 	
 	public static class Count {
@@ -113,11 +113,11 @@ public class AMTResource {
 		}
 	}
 	
-	private class GoogleHITResponse {
+	private class BingHITResponse {
 		private int count;
-		private List<GoogleHIT> hits;
+		private List<BingHIT> hits;
 		
-		public GoogleHITResponse(List<GoogleHIT> hits) {
+		public BingHITResponse(List<BingHIT> hits) {
 			this.hits = hits;
 			this.count = hits.size();
 		}
@@ -126,7 +126,7 @@ public class AMTResource {
 			return count;
 		}
 
-		public List<GoogleHIT> getHits() {
+		public List<BingHIT> getHits() {
 			return hits;
 		}
 	}

@@ -2,6 +2,10 @@ package com.gsoeller.personalization.maps.data;
 
 import org.joda.time.DateTime;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.gsoeller.personalization.maps.resources.deserializers.BingMapChangeDeserializer;
+
+@JsonDeserialize(using = BingMapChangeDeserializer.class)
 public class BingMap implements Map {
 
 	private BingMapRequest mapRequest;

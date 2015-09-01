@@ -19,7 +19,8 @@ define([
         this.cookies = new Cookie();
         token = this.cookies.getCookie('token');
         console.log(token);
-        this.updates = new GoogleHITUpdates();
+        this.mapProvider = options.mapProvider;
+        this.updates = new GoogleHITUpdates(this.mapProvider);
         var self = this;
         this.updates.fetch(
           {
@@ -66,12 +67,12 @@ define([
 
       analyze: function(ev){
         var id = $(ev.currentTarget).data('update');
-        var analyzeView = new AnalyzeView({id: id, token: this.token});
+        var analyzeView = new AnalyzeView({id: id, token: this.token, mapProvider: this.mapProvider});
       },
 
       countryData: function(ev) {
         var id = $(ev.currentTarget).data('country');
-        var countryView = new CountryView({id: id, token: this.token});
+        var countryView = new CountryView({id: id, token: this.token, mapProvider: this.mapProvider});
       },
 
       render: function() {
