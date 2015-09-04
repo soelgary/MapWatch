@@ -28,11 +28,12 @@ public interface BingHITUpdateDao {
 			@Bind("count") int count,
 			@Bind("offset") int offset);
 	
-	@SqlQuery("Select * from BingHITUpdate where finished = true && hasBorderChange = :hasBorderDifference LIMIT :offset, :count")
+	@SqlQuery("Select * from BingHITUpdate where finished = :finished && hasBorderChange = :hasBorderDifference LIMIT :offset, :count")
 	@Mapper(BingHITUpdateMapper.class)
 	public List<BingHITUpdate> getHITUpdatesBasedOnBorderDifference(@Bind("hasBorderDifference") boolean hasBorderDifference,
 			@Bind("count") int count,
-			@Bind("offset") int offset);
+			@Bind("offset") int offset,
+			@Bind("finished") boolean finished);
 	
 	@SqlUpdate("Insert into BingHITUpdate (hitId, oldMap, newMap, hasBorderChange, notes) values (:hitId, :oldMap, :newMap, :hasBorderChange, :notes)")
 	@GetGeneratedKeys

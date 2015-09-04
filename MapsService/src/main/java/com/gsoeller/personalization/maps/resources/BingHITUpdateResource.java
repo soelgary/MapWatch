@@ -53,7 +53,7 @@ public class BingHITUpdateResource {
     		throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     	}
     	if(hasBorderDifference.isPresent()) {
-			return manager.getUpdatesBasedOnBorderDifference(count, offset, hasBorderDifference.get());
+			return manager.getUpdatesBasedOnBorderDifference(count, offset, hasBorderDifference.get(), finished);
 		} else {
 			return manager.getUpdates(count, offset, finished);
 		}

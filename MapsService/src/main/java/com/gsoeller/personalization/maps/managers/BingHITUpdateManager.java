@@ -52,8 +52,8 @@ public class BingHITUpdateManager {
 		return setMaps(updates);
 	}
 	
-	public List<BingHITUpdate> getUpdatesBasedOnBorderDifference(int count, int offset, boolean hasBorderDifference) {
-		List<BingHITUpdate> updates = updateDao.getHITUpdatesBasedOnBorderDifference(hasBorderDifference, count, offset);
+	public List<BingHITUpdate> getUpdatesBasedOnBorderDifference(int count, int offset, boolean hasBorderDifference, boolean finished) {
+		List<BingHITUpdate> updates = updateDao.getHITUpdatesBasedOnBorderDifference(hasBorderDifference, count, offset, finished);
 		return setMaps(updates);
 	}
 	
