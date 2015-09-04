@@ -6,8 +6,8 @@ define([
       model: Update,
       async: false,
       url: function() {
-        return 'http://127.0.0.1:9092/maps/' + this.getMapProvider() + '/hits/mturk/' + this.getHITId();
-        //return 'https://achtung.ccs.neu.edu/maps/maps/google/hits/mturk/' + this.getHITId()
+        //return 'http://127.0.0.1:9092/maps/' + this.getMapProvider() + '/hits/mturk/' + this.getHITId();
+        return 'https://achtung.ccs.neu.edu/maps/maps/google/hits/mturk/' + this.getHITId()
       },
 
       getMapProvider() {
