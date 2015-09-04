@@ -43,6 +43,7 @@ public class BingCrawlManager implements CrawlManager {
 		this.bingMapDao = bingMapDao;
 		this.controlManager = controlManager;
 		this.updateManager = updateManager;
+		this.hitManager = hitManager;
 	}
 	
 	public boolean isLastJobFinished() {

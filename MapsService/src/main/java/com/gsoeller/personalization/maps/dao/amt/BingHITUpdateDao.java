@@ -55,10 +55,10 @@ public interface BingHITUpdateDao {
 	@SqlUpdate("Update BingHITUpdate set controlResponse=:controlResponse where id = :id")
 	public int setControlResponse(@Bind("id") int id, @Bind("controlResponse") boolean controlResponse);
 	
-	@SqlQuery("select count(*) from BingHITUpdate hit inner join Map o on hit.oldMap = o.id inner join Map n on hit.newMap = n.id where (o.hash = :firstHash && n.hash = :secondHash) || (n.hash = :firstHash && o.hash = :secondHash);")
+	@SqlQuery("select count(*) from BingHITUpdate hit inner join BingMap o on hit.oldMap = o.id inner join BingMap n on hit.newMap = n.id where (o.hash = :firstHash && n.hash = :secondHash) || (n.hash = :firstHash && o.hash = :secondHash);")
 	public int countUpdatesWithTiles(@Bind("firstHash") String firstHash, @Bind("secondHash") String secondHash);
 	
-	@SqlQuery("select * from Map old, Map new where new.hash = :newHash && old.hash = :oldHash && new.mapRequest = old.mapRequest && new.FetchJob = old.FetchJob + 1")
+	@SqlQuery("select * from BingMap old, Map new where new.hash = :newHash && old.hash = :oldHash && new.mapRequest = old.mapRequest && new.FetchJob = old.FetchJob + 1")
 	@Mapper(BingHITUpdateJoinedMapper.class)
 	public List<BingHITUpdate> getSimilarUpdates(@Bind("oldHash") String oldHash, @Bind("newHash") String newHash);
 	
