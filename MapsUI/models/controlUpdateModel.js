@@ -4,7 +4,7 @@ define([
     return Backbone.Model.extend({
         url: function() {
           //return 'http://127.0.0.1:9092/maps/' + this.getMapProvider() + '/hits/' + this.getHITId() + '/control';
-          return 'https://achtung.ccs.neu.edu/maps/maps/google/hits/' + this.getHITId() + '/control';
+          return 'https://achtung.ccs.neu.edu/maps/maps/' + this.getMapProvider() + '/hits/' + this.getHITId() + '/control';
         },
 
         getMapProvider() {
