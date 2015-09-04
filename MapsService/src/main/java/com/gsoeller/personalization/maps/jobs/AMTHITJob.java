@@ -38,7 +38,7 @@ public class AMTHITJob {
 			if(!updatedMap.isPresent()) {
 				LOG.severe("updated is not present");
 			}
-			if(baselineMap.isPresent() && updatedMap.isPresent()) {
+			if(baselineMap.isPresent() && updatedMap.isPresent() && !baselineMap.get().getHash().equals(updatedMap.get().getHash())) {
 				int similarUpdatesCount = crawlManager.countSimilarUpdates(baselineMap.get(), updatedMap.get());
 				if(similarUpdatesCount < 1) {
 					LOG.info(String.format("Creating a new update for map request, `%s`, and fetch job, `%s`", requestId, fetchJob));
