@@ -18,6 +18,7 @@ import com.gsoeller.personalization.maps.dao.BingMapRequestDao;
 import com.gsoeller.personalization.maps.dao.amt.BingHITUpdateDao;
 import com.gsoeller.personalization.maps.data.BingMap;
 import com.gsoeller.personalization.maps.data.BingMapRequest;
+import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.data.Region;
 import com.gsoeller.personalization.maps.data.amt.BingHITUpdate;
@@ -138,5 +139,9 @@ public class BingHITUpdateManager {
 				
 		}
 		return Optional.fromNullable(map.get(0));
+	}
+	
+	public int countSimilarUpdates(Map oldMap, Map newMap) {
+		return updateDao.countUpdatesWithTiles(oldMap.getHash(), newMap.getHash());
 	}
 }

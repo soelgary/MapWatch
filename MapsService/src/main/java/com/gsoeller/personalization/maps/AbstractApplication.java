@@ -34,7 +34,7 @@ import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
-public abstract class AbstractApplication extends Application<MapsConfiguration> {
+public class AbstractApplication extends Application<MapsConfiguration> {
 	
 	protected GoogleHITDao googleHitDao;
     protected GoogleHITUpdateDao updateDao;
@@ -71,6 +71,7 @@ public abstract class AbstractApplication extends Application<MapsConfiguration>
 				return configuration.getDataSourceFactory();
 			}
 		});
+		bootstrap.addCommand(new UpdateCommand(new UpdateApplication()));
 	}
 	
 	public void initializeDaos(MapsConfiguration config, Environment environment) throws ClassNotFoundException, IOException {
@@ -100,5 +101,11 @@ public abstract class AbstractApplication extends Application<MapsConfiguration>
 	    
 	    userDao = jdbi.onDemand(UserDao.class);
 	    tokenDao = new TokenDao();
+	}
+
+	@Override
+	public void run(MapsConfiguration configuration, Environment environment)
+			throws Exception {
+		
 	}
 }

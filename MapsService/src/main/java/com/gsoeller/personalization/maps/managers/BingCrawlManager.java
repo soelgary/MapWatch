@@ -141,6 +141,10 @@ public class BingCrawlManager implements CrawlManager {
 		hitManager.markHITSForApproval(availableHits);
 	}
 	
+	public int getNumRequests() {
+		return bingMapRequestDao.countTiles();
+	}
+	
 	private void addUpdatesToHITs(BingMap oldMap, BingMap newMap, List<BingHIT> hits) {
 		for(BingHIT hit: hits) {
 			BingHITUpdate update = new BingHITUpdate.BingHITUpdateBuilder()
@@ -169,5 +173,17 @@ public class BingCrawlManager implements CrawlManager {
 		List<BingControlUpdate> controls = controlManager.getControls(0, 10);
 		int index = random.nextInt(controls.size());
 		return controls.get(index);
+	}
+	
+	public Optional<Map> getMap(int id, int fetchJob) {
+		List<Map> maps = bingMapDao.getMap(id, fetchJob);
+		if(maps.size() == 1) {
+			return Optional.of(maps.get(0));
+		}
+		return Optional.absent();
+	}
+	
+	public int countSimilarUpdates(Map oldMap, Map newMap) {
+		return updateManager.countSimilarUpdates(oldMap, newMap);
 	}
 }

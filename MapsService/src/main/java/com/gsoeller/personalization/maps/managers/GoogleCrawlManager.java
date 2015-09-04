@@ -142,6 +142,10 @@ public class GoogleCrawlManager implements CrawlManager {
 		hitManager.markHITSForApproval(availableHits);
 	}
 	
+	public int getNumRequests() {
+		return googleMapRequestDao.countAllTiles();
+	}
+	
 	private void addUpdatesToHITs(GoogleMap oldMap, GoogleMap newMap, List<GoogleHIT> hits) {
 		for(GoogleHIT hit: hits) {
 			GoogleHITUpdate update = new GoogleHITUpdate.GoogleHITUpdateBuilder()
@@ -170,5 +174,17 @@ public class GoogleCrawlManager implements CrawlManager {
 		List<GoogleControlUpdate> controls = controlManager.getControls(0, 10);
 		int index = random.nextInt(controls.size());
 		return controls.get(index);
+	}
+
+	public Optional<Map> getMap(int id, int fetchJob) {
+		List<Map> maps = googleMapDao.getMap(id, fetchJob);
+		if(maps.size() == 1) {
+			return Optional.of(maps.get(0));
+		}
+		return Optional.absent();
+	}
+
+	public int countSimilarUpdates(Map oldMap, Map newMap) {
+		return updateManager.countSimilarUpdates(oldMap, newMap);
 	}
 }

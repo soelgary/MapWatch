@@ -29,9 +29,6 @@ public class WebApplication extends AbstractApplication {
 	public void run(MapsConfiguration configuration, Environment environment) throws Exception {
 		super.initializeDaos(configuration, environment);
 		
-		//environment.jersey().register(AuthFactory.binder(new BasicAuthFactory<User>(new UserAuthenticator(userDao),
-        //        "SUPER SECRET STUFF",
-        //        User.class)));
 		final AuthManager authManager = new AuthManager(tokenDao, userDao);
 		environment.jersey().register(new PersonalizationAuthProvider<User>(new UserAuthenticator(userDao, authManager),
                 "SUPER SECRET STUFF"));

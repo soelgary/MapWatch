@@ -18,6 +18,7 @@ import com.gsoeller.personalization.maps.dao.GoogleMapRequestDao;
 import com.gsoeller.personalization.maps.dao.amt.GoogleHITUpdateDao;
 import com.gsoeller.personalization.maps.data.GoogleMap;
 import com.gsoeller.personalization.maps.data.GoogleMapRequest;
+import com.gsoeller.personalization.maps.data.Map;
 import com.gsoeller.personalization.maps.data.MapRequest;
 import com.gsoeller.personalization.maps.data.Region;
 import com.gsoeller.personalization.maps.data.amt.GoogleHITUpdate;
@@ -139,5 +140,9 @@ public class GoogleHITUpdateManager {
 				
 		}
 		return Optional.fromNullable(map.get(0));
+	}
+	
+	public int countSimilarUpdates(Map oldMap, Map newMap) {
+		return updateDao.countUpdatesWithTiles(oldMap.getHash(), newMap.getHash());
 	}
 }

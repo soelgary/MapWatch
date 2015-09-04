@@ -38,6 +38,12 @@ public interface CrawlManager {
 	
 	public Optional<Map> getMap(int id);
 	
+	public Optional<Map> getMap(int id, int fetchJob);
+	
 	public void addUpdate(Map oldMap, Map newMap);
+	
+	public int getNumRequests();
+	
+	public int countSimilarUpdates(Map oldMap, Map newMap);
 	
 }

@@ -30,4 +30,27 @@ public class MapsConfiguration extends Configuration {
         return jwtTokenSecret.getBytes("UTF-8");
     }
     
+    private String mapProvider;
+	
+	@JsonProperty("mapProvider")
+	public String getMapProvider() {
+		return mapProvider;
+	}
+	
+	@JsonProperty("mapProvider")
+	public void setMapProvider(String mapProvider) {
+		this.mapProvider = mapProvider;
+	}
+	
+	private int fetchJob;
+		
+	@JsonProperty("fetchJob")
+	public int getFetchJob() {
+		return fetchJob;
+	}
+		
+	@JsonProperty("fetchJob")
+	public void setFetchJob(int fetchJob) {
+		this.fetchJob = fetchJob;
+	}
 }

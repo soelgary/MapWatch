@@ -31,7 +31,7 @@ public interface BingMapRequestDao {
 	@SqlQuery("Select region from BingMapRequest where id = :id")
 	public List<String> getRegion(@Bind("id") int id);
 	
-	@SqlQuery("Select count(tileNumber distinct) from BingMapRequest")
+	@SqlQuery("Select count(1) from BingMapRequest")
 	public int countTiles();
 	
 	@SqlQuery("Select distinct tileNumber from BingMapRequest")
