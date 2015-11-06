@@ -65,7 +65,8 @@ public class AMTResource {
 			@PathParam("hitId") String hitId,
 			@PathParam("updateId") int updateId,
 			GoogleHITUpdate update) {
-		return manager.updateGoogleHITUpdate(updateId, update);
+		return Optional.of(update);
+		//return manager.updateGoogleHITUpdate(updateId, update);
 	}
 	
 	@PUT
@@ -73,7 +74,8 @@ public class AMTResource {
 	public Optional<GoogleHIT> updateGoogleHITControlResponse(@PathParam("mapProvider") String mapProvider,
 			@PathParam("hitId") String hitId,
 			GoogleHIT hit) {
-		return manager.updateGoogleHITControlResponse(hitId, hit);
+		return Optional.of(hit);
+		//return manager.updateGoogleHITControlResponse(hitId, hit);
 	}
 	
 	@GET

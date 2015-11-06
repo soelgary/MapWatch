@@ -65,7 +65,8 @@ public class BingAMTResource {
 			@PathParam("hitId") String hitId,
 			@PathParam("updateId") int updateId,
 			BingHITUpdate update) {
-		return manager.updateBingHITUpdate(updateId, update);
+		return Optional.of(update);
+		//return manager.updateBingHITUpdate(updateId, update);
 	}
 	
 	@PUT
@@ -73,7 +74,8 @@ public class BingAMTResource {
 	public Optional<BingHIT> updateBingHITControlResponse(@PathParam("mapProvider") String mapProvider,
 			@PathParam("hitId") String hitId,
 			BingHIT hit) {
-		return manager.updateBingHITControlResponse(hitId, hit);
+		return Optional.of(hit);
+		//return manager.updateBingHITControlResponse(hitId, hit);
 	}
 	
 	@GET
